@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "368429020561",
+    "project_id": "classwave-1a1ed",
+    "storage_bucket": "classwave-1a1ed.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:368429020561:android:923734f822915e84601630",
+        "android_client_info": {
+          "package_name": "com.example.classwave"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHrQVgcdyfNaIn4BSlrmNChJEKF7G9Y98"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

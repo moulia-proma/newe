@@ -6,29 +6,33 @@ import android.os.Bundle
 import androidx.cardview.widget.CardView
 import com.example.classwave.presentation.page.signUp.SignUpActivity
 import com.example.classwave.R
+import com.example.classwave.databinding.ActivityMaiBinding
+import com.example.classwave.databinding.UserTypeOptionBinding
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var cardTeacher: CardView
-    private lateinit var cardParent: CardView
-    private lateinit var cardStudent: CardView
+    private lateinit var binding: UserTypeOptionBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.user_type_option)
-        cardTeacher = findViewById(R.id.card_tcr)
-        cardParent = findViewById(R.id.card_parent)
-        cardStudent = findViewById(R.id.card_stdnt)
-        cardTeacher.setOnClickListener {
+
+        binding = UserTypeOptionBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+
+        binding.cardTcr.setOnClickListener {
             val Intent = Intent(this, SignUpActivity::class.java)
             Intent.putExtra("user_type", "teacher")
             startActivity(Intent)
         }
-        cardStudent.setOnClickListener {
+
+        binding.cardStdnt.setOnClickListener {
             val Intent = Intent(this, SignUpActivity::class.java)
             Intent.putExtra("user_type", "student")
             startActivity(Intent)
         }
-        cardParent.setOnClickListener {
+
+        binding.cardParent.setOnClickListener {
             val Intent = Intent(this, SignUpActivity::class.java)
             Intent.putExtra("user_type", "parent")
             startActivity(Intent)

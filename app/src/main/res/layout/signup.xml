@@ -16,6 +16,7 @@
         android:textStyle="bold" />
 
     <EditText
+        android:id="@+id/edit_text_email"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:backgroundTint="#BC607F"
@@ -23,17 +24,29 @@
         android:textColorHint="#BC607F" />
 
     <EditText
+        android:id="@+id/edit_text_password"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:backgroundTint="#BC607F"
         android:hint="Enter password"
         android:textColorHint="#BC607F" />
+
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:backgroundTint="#BC607F"
         android:hint="Enter Full name"
         android:textColorHint="#BC607F" />
+    <TextView
+        android:id="@+id/text_password_validation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text=""
+
+        android:textColor="#FF0000" />
+
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_signup"
@@ -42,6 +55,8 @@
         android:layout_gravity="center_horizontal"
         android:backgroundTint="#BC607F"
         android:text="Signup" />
+
+
 
     <TextView
         android:id="@+id/txt_already_have_an_account"
