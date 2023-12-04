@@ -57,8 +57,13 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
     implementation("com.google.firebase:firebase-analytics")
 
+
     //authentication
     implementation ("com.google.firebase:firebase-auth-ktx:20.0.2")
+
+    //realtime database
+    implementation("com.google.firebase:firebase-database-ktx")
+    //implementation ("com.google.firebase:firebase-database-ktx:latest_version")
 
     //depandency injection
     implementation("com.google.dagger:hilt-android:2.44")

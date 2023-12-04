@@ -6,4 +6,18 @@
         <item name="cornerSize">20dp</item>
     </style>
 
+
+    <style name="CustomSnackbarTheme">
+        <item name="snackbarStyle">@style/MySnackBarStyle</item>
+
+    </style>
+
+    <style name="MySnackBarStyle" parent="Theme.MaterialComponents.DayNight">
+        <item name="android:background">#DF7095</item>
+
+
+
+    </style>
+
+
 </resources>
