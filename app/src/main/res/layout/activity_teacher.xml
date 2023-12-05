@@ -6,10 +6,30 @@
     android:layout_height="match_parent"
     tools:context=".presentation.page.teacher.TeacherActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <androidx.fragment.app.FragmentContainerView
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:id="@+id/fragment_container_tcr"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:text="Teachers Home"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bttom_nav"
+        android:backgroundTint="@color/white"
+        android:background="@color/black"
+        app:navGraph="@navigation/teacher_navigation_bar"
+
+        />
+    
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:background="#BC607F"
+        android:id="@+id/bttom_nav"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/tr_bottom_nav"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+
+        />
+    
 </androidx.constraintlayout.widget.ConstraintLayout>
