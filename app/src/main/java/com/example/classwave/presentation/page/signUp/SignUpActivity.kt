@@ -1,24 +1,19 @@
 package com.example.classwave.presentation.page.signUp
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.example.classwave.R
-import com.example.classwave.databinding.CustomSnackbarLayoutBinding
 import com.example.classwave.databinding.SignupBinding
 import com.example.classwave.domain.model.Resource
 import com.example.classwave.presentation.page.signIn.SignInActivity
 import com.example.classwave.presentation.page.teacher.TeacherActivity
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -55,7 +50,7 @@ class SignUpActivity : AppCompatActivity() {
                 binding.editTextEmail.text.toString(),
                 binding.editTextName.text.toString(),
                 userType.toString(),
-                binding.editTextPassword.toString()
+                binding.editTextPassword.text.toString()
             )
         }
 
@@ -77,21 +72,13 @@ class SignUpActivity : AppCompatActivity() {
                                 binding.progressBarSignUpLoading.visibility = View.INVISIBLE
                                 binding.txtSignup.visibility = View.VISIBLE
 
-                                val snackView = View.inflate(
+                                val snackRef =
+                                    com.example.classwave.presentation.Snackbars.Snackbar()
+                                snackRef.ShowSnack(
                                     this@SignUpActivity,
-                                    R.layout.custom_snackbar_layout,
-                                    null
+                                    "${it.message}",
+                                    binding.btnSignup
                                 )
-                                val snack_binding = CustomSnackbarLayoutBinding.bind(snackView)
-                                val snackBar =
-                                    Snackbar.make(binding.btnSignup, "", Snackbar.LENGTH_LONG)
-                                snackBar.apply {
-                                    (view as ViewGroup).addView(snack_binding.root)
-                                    snack_binding.txnSnackMsg.text = it.message
-                                    show()
-                                }
-                                snackBar.setBackgroundTint(Color.TRANSPARENT)
-
                             }
 
                             is Resource.Loading -> {

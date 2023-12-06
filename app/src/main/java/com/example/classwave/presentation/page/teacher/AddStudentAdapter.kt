@@ -15,7 +15,7 @@ class AddStudentAdapter(
 ) : RecyclerView.Adapter<AddStudentAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val stdPhoto: ImageView = view.findViewById(R.id.img_add_icon)
+        private val stdPhoto: ImageView = view.findViewById(R.id.img_add_new_std)
         private val stdName: TextView = view.findViewById(R.id.txt_std_name)
         fun setStdData(Std: Student, Position: Int) {
             stdName.text = Std.name

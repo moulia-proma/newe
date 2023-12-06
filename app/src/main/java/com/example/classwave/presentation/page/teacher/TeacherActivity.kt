@@ -14,6 +14,9 @@ class TeacherActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragment_container_tcr) as NavHostFragment
         val navController = navHostFragment.navController
         val navView: BottomNavigationView = findViewById(R.id.bttom_nav)
+
+
+
         navView.setupWithNavController(navController)
     }
 }

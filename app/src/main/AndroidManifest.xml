@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-   <uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,7 +14,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ClassWave"
         tools:targetApi="31">
+        <activity
+            android:name=".presentation.page.main.MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".presentation.page.parent.ParentActivity"
             android:exported="false" />
@@ -21,17 +31,7 @@
             android:exported="false" />
         <activity
             android:name=".presentation.page.teacher.TeacherActivity"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
-
-
-        </activity>
-
+            android:exported="true"/>
         <activity
             android:name=".presentation.page.signIn.SignInActivity"
             android:exported="false" />
@@ -39,10 +39,12 @@
             android:name=".presentation.page.signUp.SignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.page.main.MainActivity"
-            android:exported="true">
+            android:name=".presentation.page.main.UserTypeActivity"
+            android:exported="true"/>
 
-        </activity>
+
+
+
     </application>
 
 </manifest>

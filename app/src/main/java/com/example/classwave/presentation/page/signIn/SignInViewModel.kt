@@ -15,17 +15,19 @@ class SignInViewModel : ViewModel() {
     private val _loginState = MutableStateFlow<Resource<loginResponse>?>(null)
     val loginState = _loginState.asStateFlow()
 
+
+
     fun signIn(email: String, password: String,context: Context) {
+        _loginState.value=Resource.Loading()
         Log.d("_xyz", "signIn: ${email} ${password}")
         Firebase.auth.signInWithEmailAndPassword(email, password).addOnCompleteListener{
 
-       /*     Log.d("mik", "signIn: ")
             if (it.isSuccessful) {
                 _loginState.value = Resource.Success(loginResponse(email, password))
             } else {
-                Log.d("_xyz", "signIn: ${it.exception}")
-                _loginState.value = Resource.Error("login failed")
-            }*/
+                _loginState.value = Resource.Error(it.exception.toString())
+            }
+
         }
     }
 

@@ -29,6 +29,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        app:itemActiveIndicatorStyle="@color/transparent"
+        app:itemIconTint="@color/white"
+        app:labelVisibilityMode="labeled"
+        app:itemTextColor="@color/white"
+
+
+
 
         />
     

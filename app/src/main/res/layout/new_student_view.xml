@@ -16,7 +16,7 @@
 
             <com.google.android.material.imageview.ShapeableImageView
 
-                android:id="@+id/add_icon"
+                android:id="@+id/img_add_new_std"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_gravity="center"
@@ -40,7 +40,7 @@
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/add_icon"
+                app:layout_constraintTop_toBottomOf="@id/img_add_new_std"
 
                 />
 

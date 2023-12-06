@@ -6,12 +6,16 @@
         <item name="cornerSize">20dp</item>
     </style>
 
+    <style name="ShapeAppearanceOverlay.MyApp.Image.20dp" parent="">
+        <!-- Define the shape appearance properties here -->
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">20dp</item>
+    </style>
     <style name="ShapeAppearanceOverlay.MyApp.Image.30dp" parent="">
         <!-- Define the shape appearance properties here -->
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">30dp</item>
     </style>
-
 
     <style name="CustomSnackbarTheme">
         <item name="snackbarStyle">@style/MySnackBarStyle</item>
@@ -21,7 +25,12 @@
     <style name="MySnackBarStyle" parent="Theme.MaterialComponents.DayNight">
         <item name="android:background">#DF7095</item>
 
-
+        <!--<style name="Widget.BottomNavigationView.ActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+            <item name="shapeAppearance">
+                @style/ShapeAppearance.M3.Comp.NavigationBar.ActiveIndicator.Shape
+            </item>
+            <item name="android:color">@color/white</item>
+        </style>-->
 
     </style>
 
