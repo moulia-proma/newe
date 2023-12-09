@@ -4,22 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
-
+    android:background="@color/colorBackground"
     tools:context=".presentation.page.teacher.TeacherHomeFragment">
 
     <com.google.android.material.appbar.AppBarLayout
-        app:elevation="16dp"
-
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:elevation="6dp"
+        app:elevation="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
-
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -27,124 +24,84 @@
             android:elevation="16dp"
             app:title="Class Name"
             app:titleCentered="true"
-            app:titleTextColor="#BC607F" />
+            app:titleTextColor="@color/primaryColor"
+            />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <LinearLayout
-        android:id="@+id/linear_layout_cards"
-        android:layout_width="match_parent"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_attendance"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
+        android:layout_weight="2"
+        app:cardCornerRadius="16dp"
+        app:layout_constraintEnd_toStartOf="@id/card_class_report"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/app_bar">
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card_attendance"
-            android:layout_width="80dp"
-            android:layout_height="30dp"
-            android:layout_marginHorizontal="16dp"
-            android:layout_weight="2"
-          >
-
-            <TextView
-                android:textStyle="bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Attendance"
-                android:textColor="#BC607F" />
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card_class_report"
-
-            android:layout_width="80dp"
-            android:layout_height="30dp"
-            android:layout_marginHorizontal="16dp"
-            android:layout_weight="2"
-
-            app:layout_constraintStart_toEndOf="@id/card_attendance"
-            app:layout_constraintTop_toBottomOf="@id/app_bar">
-
-            <TextView
-                android:textStyle="bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Class Report"
-                android:textColor="#BC607F" />
-
-
-        </com.google.android.material.card.MaterialCardView>
-
-    </LinearLayout>
-
-    <!-- TODO: Update blank fragment layout -->
-    <com.google.android.material.card.MaterialCardView
-        app:cardBackgroundColor="#FFFFFF"
-        android:id="@+id/card_add_std"
-        android:layout_width="96dp"
-        android:layout_height="90dp"
-        android:layout_margin="16dp"
-        app:contentPadding="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linear_layout_cards"
-
-        >
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <com.google.android.material.imageview.ShapeableImageView
-                android:layout_marginTop="8dp"
-                android:id="@+id/img_add_icon"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_add"
-
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Image.20dp"
-                app:strokeColor="#BC607F"
-                app:strokeWidth="2dp">
-
-            </com.google.android.material.imageview.ShapeableImageView>
-
-            <TextView
-                android:layout_marginTop="4dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Add Student"
-                android:textColor="#BC607F"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/img_add_icon"
-
-                />
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
+            android:text="@string/label_attendance"
+            android:textColor="@color/primaryColor"
+            android:textStyle="bold" />
 
     </com.google.android.material.card.MaterialCardView>
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
-        android:id="@+id/recycler_view_std_info"
-        android:layout_margin="16dp"
-      app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linear_layout_cards"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_class_report"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:itemCount="20"
-        android:orientation="horizontal"
-        tools:listitem="@layout/new_student_view"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_weight="2"
+        app:cardCornerRadius="16dp"
+        app:layout_constraintStart_toEndOf="@id/card_attendance"
+        app:layout_constraintTop_toBottomOf="@id/app_bar">
 
-        />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
+            android:text="@string/label_class_report"
+            android:textColor="@color/primaryColor"
+            android:textStyle="bold" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:barrierMargin="8dp"
+        app:constraint_referenced_ids="card_attendance, card_class_report" />
+
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:flexWrap="wrap"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/barrier_header">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_std_info"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
+            tools:itemCount="20"
+            tools:listitem="@layout/new_student_view" />
+
+    </com.google.android.flexbox.FlexboxLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,4 +6,7 @@
     </style>
 
     <style name="Theme.ClassWave" parent="Base.Theme.ClassWave" />
+
+    <style name="Theme.DependancyInjectionApplication" parent="Base.Theme.ClassWave" />
+
 </resources>

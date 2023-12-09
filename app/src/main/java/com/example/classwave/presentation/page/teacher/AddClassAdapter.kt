@@ -14,38 +14,38 @@ import com.example.classwave.presentation.dialog.AddNewStdDialog
 import com.google.android.material.card.MaterialCardView
 
 
-class AddStudentAdapter(
+class AddClassAdapter(
     private val context: Context,
     private val stdList: ArrayList<Student>
-) : RecyclerView.Adapter<AddStudentAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<AddClassAdapter.ViewHolder>() {
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val stdName: TextView = view.findViewById(R.id.txt_std_name)
-        private val stdImage: ImageView = view.findViewById(R.id.image_std_profile)
-        private val stdCard: MaterialCardView = view.findViewById(R.id.card_add_new_std)
+//        private val stdName: TextView = view.findViewById(R.id.txt_std_name)
+//        private val stdImage: ImageView = view.findViewById(R.id.image_std_profile)
+//        private val stdCard: MaterialCardView = view.findViewById(R.id.card_add_new_std)
 
         @SuppressLint("SuspiciousIndentation")
         fun setStdData(Std: Student, Position: Int, size: Int) {
-            if (Position != size) {
-                stdName.text = Std.name
-                stdImage.setImageResource(Std.img)
-            } else {
-                stdName.text = "Add"
-                stdCard.setOnClickListener {
-                    val dialog = AddNewStdDialog()
-                    val fm = (context as AppCompatActivity).supportFragmentManager;
-                    dialog.show(fm,"CreateStdDialog")
-
-                }
-
-            }
+//            if (Position != size) {
+//                stdName.text = Std.name
+//                stdImage.setImageResource(Std.img)
+//            } else {
+//                stdName.text = "Add"
+//                stdCard.setOnClickListener {
+//                    val dialog = AddNewStdDialog()
+//                    val fm = (context as AppCompatActivity).supportFragmentManager;
+//                    dialog.show(fm,"CreateStdDialog")
+//
+//                }
+//
+//            }
 
         }
     }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.new_student_view, parent, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.item_created_classroom, parent, false)
 
         return ViewHolder(view)
     }

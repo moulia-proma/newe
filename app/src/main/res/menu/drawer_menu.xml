@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+
+    >
+    <item
+        android:icon="@drawable/ic_chat"
+
+        android:id="@+id/chat"
+        android:title="chat" />
+
+    <item
+
+        android:id="@+id/update"
+        android:title="update" />
+
+
+
+
+<item android:title="Others">
+
+    <menu>
+        <item
+
+            android:id="@+id/logout"
+            android:title="Logout" />
+        <item
+
+            android:id="@+id/edit"
+            android:title="Edit" />
+
+
+    </menu>
+</item>
+
+    <item android:title="Communications">
+
+        <menu>
+            <item
+
+                android:id="@+id/Calls"
+                android:title="Calls" />
+            <item
+
+                android:id="@+id/status"
+                android:title="Status" />
+
+
+        </menu>
+
+
+</item>
+</menu>
