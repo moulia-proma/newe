@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import androidx.fragment.app.DialogFragment
 import com.example.classwave.R
 import com.google.android.material.button.MaterialButton
@@ -11,6 +12,7 @@ import com.google.android.material.button.MaterialButton
 
 class AddNewStdDialog : DialogFragment() {
     private lateinit var btnAdd:MaterialButton
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NO_FRAME, R.style.FullScreenDialog)
@@ -24,6 +26,8 @@ class AddNewStdDialog : DialogFragment() {
         btnAdd.setOnClickListener {
             dialog?.dismiss()
         }
+
+
         return view
     }
 

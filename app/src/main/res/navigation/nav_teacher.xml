@@ -2,9 +2,9 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/teacher_navigation_bar"
-
+    android:id="@+id/navigation_bar"
     app:startDestination="@id/home">
+
     <fragment
         android:id="@+id/home"
         android:name="com.example.classwave.presentation.page.teacher.TeacherHomeFragment"
@@ -13,5 +13,4 @@
         android:id="@+id/chat"
         android:name="com.example.classwave.presentation.page.teacher.TeacherChatFragment"
         tools:layout="@layout/fragment_teacher_chat" />
-
 </navigation>

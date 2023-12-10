@@ -4,6 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.page.main.MainActivity">
+    tools:context=".presentation.page.teacher.StdProfileViewActivity">
 
 </androidx.constraintlayout.widget.ConstraintLayout>

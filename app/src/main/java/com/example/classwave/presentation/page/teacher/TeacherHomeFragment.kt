@@ -10,17 +10,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.classwave.R
 import com.example.classwave.databinding.FragmentTeacherHomeBinding
-import com.example.classwave.presentation.page.signIn.SignInActivity
+import com.example.classwave.presentation.page.signin.SignInActivity
 import com.example.classwave.presentation.page.signout.SignoutViewModel
 import com.google.android.flexbox.FlexDirection
-import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import java.net.URI
 
 class TeacherHomeFragment : Fragment() {
    var imageList= arrayListOf<Int>(
@@ -57,7 +55,7 @@ class TeacherHomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.toolbar.title = currentUser.email
+        binding.toolbar.title = currentUser.uid
 
         binding.cardAttendance.setOnClickListener {
             viewModel.signOut()

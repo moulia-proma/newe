@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="ShapeAppearanceOverlay.MyApp.Image.16dp" parent="">
         <!-- Define the shape appearance properties here -->
         <item name="cornerFamily">rounded</item>
@@ -11,6 +12,7 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">20dp</item>
     </style>
+
     <style name="ShapeAppearanceOverlay.MyApp.Image.30dp" parent="">
         <!-- Define the shape appearance properties here -->
         <item name="cornerFamily">rounded</item>
@@ -24,14 +26,6 @@
 
     <style name="MySnackBarStyle" parent="Theme.MaterialComponents.DayNight">
         <item name="android:background">#DF7095</item>
-
-        <!--<style name="Widget.BottomNavigationView.ActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
-            <item name="shapeAppearance">
-                @style/ShapeAppearance.M3.Comp.NavigationBar.ActiveIndicator.Shape
-            </item>
-            <item name="android:color">@color/white</item>
-        </style>-->
-
     </style>
 
 
@@ -46,5 +40,23 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
+
+    <style name="BottomNavigationView.Inactive" parent="@style/TextAppearance.Material3.TitleSmall">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="BottomNavigationView.Active" parent="@style/TextAppearance.Material3.TitleSmall">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="BottomNavigationView.ActiveIndicator" parent="@style/Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/blue_100</item>
+    </style>
+
+    <style name="BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
+        <item name="itemTextAppearanceActive">@style/BottomNavigationView.Active</item>
+        <item name="itemTextAppearanceInactive">@style/BottomNavigationView.Inactive</item>
+        <item name="itemActiveIndicatorStyle">@style/BottomNavigationView.ActiveIndicator</item>
+    </style>
 
 </resources>

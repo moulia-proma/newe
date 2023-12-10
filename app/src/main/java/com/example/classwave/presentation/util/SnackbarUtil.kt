@@ -1,4 +1,4 @@
-package com.example.classwave.presentation.Snackbars
+package com.example.classwave.presentation.util
 
 import android.content.Context
 import android.graphics.Color
@@ -9,16 +9,13 @@ import com.example.classwave.databinding.CustomSnackbarLayoutBinding
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 
-class Snackbar {
-
-    fun ShowSnack(context: Context, msg: String, action: MaterialButton) {
-
+object SnackbarUtil {
+    fun show(context: Context, msg: String, action: MaterialButton) {
         val snackView = View.inflate(
             context,
             R.layout.custom_snackbar_layout,
             null
         )
-
         val snackBinding = CustomSnackbarLayoutBinding.bind(snackView)
         val snackBar = Snackbar.make(action, "", Snackbar.LENGTH_LONG)
 
@@ -27,10 +24,6 @@ class Snackbar {
             snackBinding.txnSnackMsg.text = msg
             show()
         }
-
         snackBar.setBackgroundTint(Color.TRANSPARENT)
-
     }
-
-
 }

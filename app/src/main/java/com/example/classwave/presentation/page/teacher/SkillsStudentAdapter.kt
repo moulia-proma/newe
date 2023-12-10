@@ -1,6 +1,8 @@
 package com.example.classwave.presentation.page.teacher
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.util.Log
@@ -16,10 +18,10 @@ import com.example.classwave.presentation.dialog.AddNewStdDialog
 import com.google.android.material.card.MaterialCardView
 
 
-class AddStudentAdapter(
+class SkillsStudentAdapter(
     private val context: Context,
     private val stdList: ArrayList<Student>
-) : RecyclerView.Adapter<AddStudentAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<SkillsStudentAdapter.ViewHolder>() {
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val stdName: TextView = view.findViewById(R.id.txt_std_name)
@@ -29,17 +31,23 @@ class AddStudentAdapter(
         @SuppressLint("SuspiciousIndentation")
         fun setStdData(Std: Student, Position: Int, size: Int) {
             if (Position != size) {
+
                 stdName.text = Std.name
                 stdImage.setImageResource(Std.img)
                 stdCard.setOnClickListener {
-                    Log.d("TAG", "setStdData:clicked ")
-                    val intent = Intent (context,StdProfileViewActivity::class.java)
-                    intent.putExtra("StdName","${Std.name}")
-                    context.startActivity(intent)
+                  val dialog =  AlertDialog.Builder(context)
+                    dialog.setTitle("Hiiii")
+                   dialog.setView(R.layout.give_marks_layout)
+
+                   //val view = LayoutInflater.from(context).createView()
+                   dialog.show()
+
                 }
+
             } else {
                 stdName.text = "Add"
                 stdCard.setOnClickListener {
+                    Log.d("TAG", "setStdData:clicked ")
                     val dialog = AddNewStdDialog()
                     val fm = (context as AppCompatActivity).supportFragmentManager;
                     dialog.show(fm,"CreateStdDialog")

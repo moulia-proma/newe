@@ -6,4 +6,19 @@
     <string name="label_class_report">Class Report</string>
     <string name="nav_open">open</string>
     <string name="nav_close">close</string>
+    <string name="hint_select_grade">Select Grade</string>
+
+    <string-array name="label_grades">
+        <item>1st Grade</item>
+        <item>2nd Grade</item>
+        <item>3rd Grade</item>
+        <item>4th Grade</item>
+        <item>5th Grade</item>
+        <item>1st Grade</item>
+        <item>2nd Grade</item>
+        <item>3rd Grade</item>
+        <item>4th Grade</item>
+        <item>5th Grade</item>
+    </string-array>
+
 </resources>

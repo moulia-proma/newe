@@ -1,12 +1,13 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+<resources>
+
     <style name="Base.Theme.ClassWave" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/cyan_900</item>
+        <item name="colorOnPrimary">@color/red_500</item>
+        <item name="colorAccent">@color/yellow_500</item>
+        <item name="colorOnBackground">@color/green_500</item>
+        <item name="colorSecondary">@color/pink_500</item>
+        <item name="colorContainer">@color/grey_500</item>
     </style>
 
     <style name="Theme.ClassWave" parent="Base.Theme.ClassWave" />
-
-    <style name="Theme.DependancyInjectionApplication" parent="Base.Theme.ClassWave" />
-
 </resources>
