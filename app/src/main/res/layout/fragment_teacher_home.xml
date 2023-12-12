@@ -83,7 +83,17 @@
         app:barrierDirection="bottom"
         app:barrierMargin="8dp"
         app:constraint_referenced_ids="card_attendance, card_class_report" />
-
+    <ProgressBar
+        android:id="@+id/progress_bar_student_loading"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:indeterminateTint="@color/blue_grey_800"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
     <com.google.android.flexbox.FlexboxLayout
         android:layout_width="match_parent"
@@ -94,13 +104,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/barrier_header">
 
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_std_info"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
-            tools:itemCount="20"
+            tools:itemCount="3"
             tools:listitem="@layout/new_student_view" />
+
 
     </com.google.android.flexbox.FlexboxLayout>
 

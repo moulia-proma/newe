@@ -2,9 +2,7 @@ package com.example.classwave.presentation.page.teacher
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.app.Dialog
 import android.content.Context
-import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -32,8 +30,8 @@ class SkillsStudentAdapter(
         fun setStdData(Std: Student, Position: Int, size: Int) {
             if (Position != size) {
 
-                stdName.text = Std.name
-                stdImage.setImageResource(Std.img)
+                stdName.text = Std.studentName
+               /* stdImage.setImageResource(Std.img)*/
                 stdCard.setOnClickListener {
                   val dialog =  AlertDialog.Builder(context)
                     dialog.setTitle("Hiiii")
@@ -48,9 +46,9 @@ class SkillsStudentAdapter(
                 stdName.text = "Add"
                 stdCard.setOnClickListener {
                     Log.d("TAG", "setStdData:clicked ")
-                    val dialog = AddNewStdDialog()
+                  /*  val dialog = AddNewStdDialog(cls)*/
                     val fm = (context as AppCompatActivity).supportFragmentManager;
-                    dialog.show(fm,"CreateStdDialog")
+                  /*  dialog.show(fm,"CreateStdDialog")*/
 
                 }
 

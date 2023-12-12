@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/primaryColor"
         android:text="Add"
-
+        android:textColor="@color/white"
         />
 
 

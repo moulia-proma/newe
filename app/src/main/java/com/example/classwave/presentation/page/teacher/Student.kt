@@ -1,7 +1,7 @@
 package com.example.classwave.presentation.page.teacher
 
 data class Student(
-    val name: String,
-    val img:Int
-
+    var classId :String,
+    var studentId:String,
+    var studentName:String
 )

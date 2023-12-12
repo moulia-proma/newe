@@ -8,6 +8,7 @@
     <fragment
         android:id="@+id/home"
         android:name="com.example.classwave.presentation.page.teacher.TeacherHomeFragment"
+        android:label="home"
         tools:layout="@layout/fragment_teacher_home" />
     <fragment
         android:id="@+id/chat"

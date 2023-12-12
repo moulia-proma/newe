@@ -1,10 +1,14 @@
 package com.example.classwave.presentation.page.teacher
 
+import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.classwave.R
 import com.example.classwave.databinding.ItemAddClassBinding
+import com.google.android.material.navigation.NavigationView
 
 
 class AddClassAdapter : RecyclerView.Adapter<AddClassAdapter.ViewHolder>() {
@@ -27,6 +31,7 @@ class AddClassAdapter : RecyclerView.Adapter<AddClassAdapter.ViewHolder>() {
 
     override fun getItemCount(): Int {
         return mClassList.size + 1
+
     }
 
 
@@ -40,8 +45,11 @@ class AddClassAdapter : RecyclerView.Adapter<AddClassAdapter.ViewHolder>() {
 
     fun setClasses(classes: List<Class>) {
         mClassList = classes
+        Log.d("TAG", "getItemCount: ${mClassList}")
         notifyDataSetChanged()
     }
+
+
 
     fun setListener(listener: Listener) {
         mListener = listener
@@ -52,7 +60,6 @@ class AddClassAdapter : RecyclerView.Adapter<AddClassAdapter.ViewHolder>() {
         RecyclerView.ViewHolder(binding.root) {
         fun setClass(cls: Class) {
             binding.txtClsName.text = cls.name
-
             binding.cardAddClass.setOnClickListener {
                 mListener?.onClassSelected(cls = cls)
             }

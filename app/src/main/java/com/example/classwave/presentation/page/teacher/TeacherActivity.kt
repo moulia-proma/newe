@@ -2,9 +2,10 @@ package com.example.classwave.presentation.page.teacher
 
 import android.os.Bundle
 import android.util.Log
-import android.widget.ArrayAdapter
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -13,13 +14,12 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.classwave.R
 import com.example.classwave.databinding.ActivityTeacherBinding
 import com.example.classwave.databinding.NavDrawerBinding
-import com.example.classwave.presentation.dialog.AddNewStdDialog
+import com.example.classwave.domain.model.Resource
 import com.example.classwave.presentation.dialog.CreateClassDialog
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-
 
 
 @AndroidEntryPoint
@@ -37,32 +37,27 @@ class TeacherActivity : AppCompatActivity() {
         binding = ActivityTeacherBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
         val navController = navHostFragment.navController
         val navView: BottomNavigationView = findViewById(R.id.bottom_navigation_view)
         navView.setupWithNavController(navController)
 
 
-        headerBinding =
-            NavDrawerBinding.inflate(layoutInflater, binding.navigationViewDrawer, false)
+        headerBinding = NavDrawerBinding.inflate(layoutInflater, binding.navigationViewDrawer, false)
         binding.navigationViewDrawer.addHeaderView(headerBinding.root)
+        binding.drawerLayout.openDrawer(GravityCompat.START)
+
         headerBinding.recyclerView.adapter = addClassAdapter
         addClassAdapter.setListener(listener = object : AddClassAdapter.Listener {
             override fun onAddNewClassClicked() {
-                Log.d("_xyz", "onAddNewClassClicked: clicked")
                 showCreateClassDialog()
             }
-
             override fun onClassSelected(cls: Class) {
-
-                Log.d("_xyz", "onClassSelected: clicked")
+                binding.drawerLayout.closeDrawer(GravityCompat.START)
+                viewModel.updateClass(cls = cls)
             }
         })
 
-
-        viewModel.fetchClassByTeacher(teacherId = "abc")
 
         initializeFlowCollectors()
     }
@@ -70,9 +65,7 @@ class TeacherActivity : AppCompatActivity() {
 
     private fun showCreateClassDialog() {
         val dialog = CreateClassDialog()
-        dialog.show(supportFragmentManager,"CreateStdDialog")
-
-
+        dialog.show(supportFragmentManager, "CreateStdDialog")
     }
 
 
@@ -80,10 +73,34 @@ class TeacherActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.classList.collectLatest {
-                    addClassAdapter.setClasses(it)
+                    it?.let {
+                        when (it) {
+                            is Resource.Error -> showErrorMessage(it.message ?: "")
+                            is Resource.Loading -> showLoadingView()
+                            is Resource.Success -> showSuccessView(it.data)
+                        }
+                    }
                 }
             }
         }
+    }
+
+    private fun showSuccessView(classList: List<Class>?) {
+        headerBinding.progressBarClassLoading.visibility = View.INVISIBLE
+        if (!classList.isNullOrEmpty()) {
+            viewModel.updateClass(classList[0])
+            addClassAdapter.setClasses(classList)
+        }
+    }
+
+    private fun showErrorMessage(message: String) {
+        /*   val view = LayoutInflater.from(applicationContext).inflate(R.layout.create_class_dialog,,false)
+           SnackbarUtil.show(this, message,view.findViewById(R.id.btn_create_class) )*/
+
+    }
+
+    private fun showLoadingView() {
+
     }
 
 }

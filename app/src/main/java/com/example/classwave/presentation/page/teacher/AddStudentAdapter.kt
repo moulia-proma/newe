@@ -1,83 +1,91 @@
 package com.example.classwave.presentation.page.teacher
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.classwave.R
-import com.example.classwave.presentation.dialog.AddNewStdDialog
-import com.google.android.material.card.MaterialCardView
+import com.example.classwave.databinding.NewStudentViewBinding
 
 
-class AddStudentAdapter(
-    private val context: Context,
-    private val stdList: ArrayList<Student>
-) : RecyclerView.Adapter<AddStudentAdapter.ViewHolder>() {
+class AddStudentAdapter : RecyclerView.Adapter<AddStudentAdapter.ViewHolder>() {
+    private var mStudentList = listOf<Student>()
+    private var mListener: AddStudentAdapter.Listener? = null
+    lateinit var classId: String
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val stdName: TextView = view.findViewById(R.id.txt_std_name)
-        private val stdImage: ImageView = view.findViewById(R.id.image_std_profile)
-        private val stdCard: MaterialCardView = view.findViewById(R.id.card_add_new_std)
-
-        @SuppressLint("SuspiciousIndentation")
-        fun setStdData(Std: Student, Position: Int, size: Int) {
-            if (Position != size) {
-                stdName.text = Std.name
-                stdImage.setImageResource(Std.img)
-                stdCard.setOnClickListener {
-                    Log.d("TAG", "setStdData:clicked ")
-                    val intent = Intent (context,StdProfileViewActivity::class.java)
-                    intent.putExtra("StdName","${Std.name}")
-                    context.startActivity(intent)
-                }
-            } else {
-                stdName.text = "Add"
-                stdCard.setOnClickListener {
-                    val dialog = AddNewStdDialog()
-                    val fm = (context as AppCompatActivity).supportFragmentManager;
-                    dialog.show(fm,"CreateStdDialog")
-
-                }
-
-            }
-
-        }
+    interface Listener {
+        fun onAddNewClassClicked(cls: String)
+        /*    fun onClassSelected(cls: Class)*/
     }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.new_student_view, parent, false)
-
-        return ViewHolder(view)
+        val binding = NewStudentViewBinding.inflate(
+            LayoutInflater.from(parent.context), parent, false
+        )
+        Log.d("TAG", "initializeFlowCollectors: bind ")
+        return ViewHolder(binding)
     }
 
+
     override fun getItemCount(): Int {
-        val size = (stdList.size) + 1
-        return size
+        val size = (mStudentList.size) + 1
+        Log.d("TAG", "initializeFlowCollectors: ${size}")
+        return (mStudentList.size + 1)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val listSize = stdList.size
-        val currentStd: Student
-        val itemPosition: Int
-        if (position == listSize) {
-            itemPosition = listSize
-            currentStd = stdList[position - 1]
+        Log.d("TAG", "initializeFlowCollectors: onviewholder ")
+        if (position == mStudentList.size) {
+            Log.d("TAG", "initializeFlowCollectors: 0 ")
+            holder.setAddStudent()
         } else {
-            itemPosition = position
-            currentStd = stdList[position]
-
+            holder.setStudent(mStudentList[position])
         }
 
-        holder.setStdData(Std = currentStd, Position = itemPosition, size = listSize)
     }
+
+    fun setStudents(students: List<Student>) {
+        mStudentList = students
+        Log.d("TAG", "setStudents:${mStudentList} ")
+        notifyDataSetChanged()
+    }
+
+    fun setId(classId: String) {
+        this.classId = classId
+        notifyDataSetChanged()
+    }
+
+    fun setListener(listener: AddStudentAdapter.Listener) {
+        mListener = listener
+    }
+
+    inner class ViewHolder(private val binding: NewStudentViewBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+
+        @SuppressLint("SuspiciousIndentation")
+        fun setStudent(student: Student) {
+            binding.txtStdName.text = student.studentName
+            /*  binding.cardAddClass.setOnClickListener {
+                  mListener?.onClassSelected(cls = cls)
+              }*/
+        }
+
+        fun setAddStudent() {
+            binding.imageStdProfile.setImageResource(
+                R.drawable.ic_add
+            )
+            binding.txtStdName.text = "Add Student"
+
+
+            binding.cardAddNewStd.setOnClickListener {
+                mListener?.onAddNewClassClicked(cls = classId)
+            }
+        }
+    }
+
+
 }
 
 

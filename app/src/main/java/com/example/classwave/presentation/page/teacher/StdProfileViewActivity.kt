@@ -22,12 +22,12 @@ class StdProfileViewActivity : AppCompatActivity() {
         binding = StdudentProfileFromTcrSideLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val adapter = SkillsStudentAdapter(this, getStudents())
-        binding.recyclerViewStdInfo.adapter = adapter
+        /*val adapter = SkillsStudentAdapter(this, getStudents())*/
+  /*      binding.recyclerViewStdInfo.adapter = adapter*/
 
     }
 
-    fun getStudents(): ArrayList<Student> {
+/*    fun getStudents(): ArrayList<Student> {
 
         val Students: ArrayList<Student> = arrayListOf()
 
@@ -104,5 +104,5 @@ class StdProfileViewActivity : AppCompatActivity() {
 
         return Students
 
-    }
+    }*/
 }
