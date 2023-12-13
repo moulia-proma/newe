@@ -6,8 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.classwave.R
-import com.example.classwave.databinding.NewStudentViewBinding
-
+import com.example.classwave.databinding.ItemStudentBinding
 
 class AddStudentAdapter : RecyclerView.Adapter<AddStudentAdapter.ViewHolder>() {
     private var mStudentList = listOf<Student>()
@@ -15,13 +14,14 @@ class AddStudentAdapter : RecyclerView.Adapter<AddStudentAdapter.ViewHolder>() {
     lateinit var classId: String
 
     interface Listener {
-        fun onAddNewClassClicked(cls: String)
-        /*    fun onClassSelected(cls: Class)*/
+        fun onAddNewStudentClicked(clsId: String)
+
+        fun onClassSelected(clsId: String,stdId:String)
+
     }
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = NewStudentViewBinding.inflate(
+        val binding = ItemStudentBinding.inflate(
             LayoutInflater.from(parent.context), parent, false
         )
         Log.d("TAG", "initializeFlowCollectors: bind ")
@@ -61,15 +61,16 @@ class AddStudentAdapter : RecyclerView.Adapter<AddStudentAdapter.ViewHolder>() {
         mListener = listener
     }
 
-    inner class ViewHolder(private val binding: NewStudentViewBinding) :
+    inner class ViewHolder(private val binding: ItemStudentBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         @SuppressLint("SuspiciousIndentation")
         fun setStudent(student: Student) {
             binding.txtStdName.text = student.studentName
-            /*  binding.cardAddClass.setOnClickListener {
-                  mListener?.onClassSelected(cls = cls)
-              }*/
+            binding.cardAddNewStd.setOnClickListener {
+                mListener?.onClassSelected(clsId = classId,student.studentId)
+            }
+
         }
 
         fun setAddStudent() {
@@ -78,9 +79,8 @@ class AddStudentAdapter : RecyclerView.Adapter<AddStudentAdapter.ViewHolder>() {
             )
             binding.txtStdName.text = "Add Student"
 
-
             binding.cardAddNewStd.setOnClickListener {
-                mListener?.onAddNewClassClicked(cls = classId)
+                mListener?.onAddNewStudentClicked(clsId = classId)
             }
         }
     }

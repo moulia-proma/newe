@@ -13,6 +13,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.example.classwave.databinding.FragmentTeacherHomeBinding
 import com.example.classwave.domain.model.Resource
 import com.example.classwave.presentation.dialog.AddNewStdDialog
+import com.example.classwave.presentation.dialog.SkillDialog
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
@@ -27,6 +28,7 @@ class TeacherHomeFragment : Fragment() {
     private var _binding: FragmentTeacherHomeBinding? = null
     private val binding get() = _binding!!
     private var addStudentAdapter = AddStudentAdapter()
+    private var skillsStudentAdapter = SkillsStudentAdapter()
 
      private lateinit var student:List<Student>
     override fun onCreateView(
@@ -53,13 +55,18 @@ class TeacherHomeFragment : Fragment() {
 
 
         addStudentAdapter.setListener(listener = object : AddStudentAdapter.Listener {
-            override fun onAddNewClassClicked(cls: String) {
-                val dialog = AddNewStdDialog(cls)
+
+            override fun onAddNewStudentClicked(clsId: String) {
+                val dialog = AddNewStdDialog(clsId)
                 dialog.show(parentFragmentManager, "CreateStdDialog")
+            }
+            override fun onClassSelected(clsId: String,stdId:String) {
+                val dialog = SkillDialog(clsId,stdId)
+                dialog.show(parentFragmentManager, "ProvideMarksdialog")
             }
 
         })
-        initializeFlowCollectorsCreateStudent()
+
 
         initializeFlowCollectors()
     }
@@ -72,6 +79,7 @@ class TeacherHomeFragment : Fragment() {
                         binding.toolbar.title = cls.name
                         Log.d("TAG", "initializeFlowCollectors: stdAdapter called ")
                          addStudentAdapter.setId(cls.classId)
+
                     } else {
                         binding.toolbar.title = "No Class"
                     }
@@ -91,8 +99,6 @@ class TeacherHomeFragment : Fragment() {
                     }
                 }
             }
-
-
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.createStudent.collectLatest {
@@ -131,9 +137,7 @@ class TeacherHomeFragment : Fragment() {
         }
     }*/
 
-    private fun initializeFlowCollectorsCreateStudent() {
 
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()
