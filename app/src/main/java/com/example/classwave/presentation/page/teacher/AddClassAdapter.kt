@@ -59,6 +59,9 @@ class AddClassAdapter : RecyclerView.Adapter<AddClassAdapter.ViewHolder>() {
     inner class ViewHolder(private val binding: ItemAddClassBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun setClass(cls: Class) {
+            binding.imageClsProfile.setImageResource(
+                cls.img.toInt()
+            )
             binding.txtClsName.text = cls.name
             binding.cardAddClass.setOnClickListener {
                 mListener?.onClassSelected(cls = cls)

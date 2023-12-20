@@ -60,8 +60,13 @@ class TeacherHomeFragment : Fragment() {
                 val dialog = AddNewStdDialog(clsId)
                 dialog.show(parentFragmentManager, "CreateStdDialog")
             }
-            override fun onClassSelected(clsId: String,stdId:String) {
-                val dialog = SkillDialog(clsId,stdId)
+            override fun onClassSelected(
+                clsId: String,
+                stdId: String,
+                studentName: String,
+                img: String
+            ) {
+                val dialog = SkillDialog(clsId,stdId,studentName,img)
                 dialog.show(parentFragmentManager, "ProvideMarksdialog")
             }
 

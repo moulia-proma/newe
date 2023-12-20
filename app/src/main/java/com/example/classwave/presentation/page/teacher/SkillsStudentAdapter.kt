@@ -66,6 +66,9 @@ class SkillsStudentAdapter : RecyclerView.Adapter<SkillsStudentAdapter.ViewHolde
 
         @SuppressLint("SuspiciousIndentation")
         fun setSkill(skill: Skill) {
+            binding.imageStdProfile.setImageResource(
+                skill.img.toInt()
+            )
             binding.txtStdName.text = skill.name
             binding.cardAddNewStd.setOnClickListener {
                 mListener?.onSkillSelected(skill.skillId)

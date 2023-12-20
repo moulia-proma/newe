@@ -7,14 +7,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import com.example.classwave.R
-import com.example.classwave.databinding.DialogAddNewStdBinding
 import com.example.classwave.databinding.DialogAddSkillBinding
-import com.example.classwave.databinding.DialogSkillsBinding
-import com.example.classwave.presentation.page.teacher.AddStudentAdapter
 import com.example.classwave.presentation.page.teacher.TeacherViewModel
 
 
-class AddSkillDialog(val clsId: String) : DialogFragment() {
+class AddSkillDialog(val clsId: String, val typeofSkill: String) : DialogFragment() {
     private val viewModel: TeacherViewModel by activityViewModels()
     private var _binding: DialogAddSkillBinding? = null
     private val binding get() = _binding!!
@@ -47,7 +44,7 @@ class AddSkillDialog(val clsId: String) : DialogFragment() {
         binding.btnAddSkill.setOnClickListener {
             val skillName = binding.editTextAddSkillName.text.toString()
             val hScore = binding.editTextAddSkillHighScoreName.text.toString()
-            viewModel.createSkill(clsId,skillName, hScore)
+            viewModel.createSkill(clsId,skillName, hScore,typeofSkill)
             dismiss()
 
         }

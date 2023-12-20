@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.classwave.R
 import com.example.classwave.domain.model.Resource
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
@@ -34,8 +35,11 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
     private val _studentList = MutableStateFlow<Resource<List<Student>>?>(null)
     var studentList = _studentList.asStateFlow()
 
-    private val _skillList = MutableStateFlow<Resource<List<Skill>>?>(null)
-    var skillList = _skillList.asStateFlow()
+    private val _posSkillList = MutableStateFlow<Resource<List<Skill>>?>(null)
+    var posSkillList = _posSkillList.asStateFlow()
+
+    private val _negSkillList = MutableStateFlow<Resource<List<Skill>>?>(null)
+    var negSkillList = _negSkillList.asStateFlow()
 
     private val _createClass = MutableStateFlow<Resource<Class>?>(null)
     val createClass = _createClass.asStateFlow()
@@ -52,6 +56,38 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
     private val _addMarks = MutableStateFlow<Resource<Marks>?>(null)
     val addMarks = _addMarks.asStateFlow()
 
+    private val clsImage = arrayListOf<Int>(
+        R.drawable.cls_chemistry,
+        R.drawable.cls_alculating,
+        R.drawable.cls_blackboard,
+        R.drawable.cls_calculator,
+        R.drawable.cls_maths,
+        R.drawable.cls_computer_science,
+        R.drawable.cls_mathematics_symbol,
+        R.drawable.cls_online_learning,
+        R.drawable.cls_teaching
+    )
+    private val stdImage = arrayListOf<Int>(
+        R.drawable.st_boy,
+        R.drawable.st_bussiness_man,
+        R.drawable.st_profile,
+        R.drawable.st_profile_boy,
+        R.drawable.st_profile_man,
+        R.drawable.st_user
+    )
+    private val skillImage = arrayListOf<Int>(
+        R.drawable.skill_competence,
+        R.drawable.skill_competition,
+        R.drawable.skill_ideas,
+        R.drawable.skill_question,
+        R.drawable.skill_competition1,
+        R.drawable.skill_quiz,
+        R.drawable.skill_quiz1,
+        R.drawable.skill_quiz2,
+        R.drawable.skill_test,
+        R.drawable.skill_requirements
+    )
+
     init {
         fetchClassList()
     }
@@ -63,21 +99,26 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun fetchClassList() {
+        val uid = Firebase.auth.currentUser?.uid
         viewModelScope.launch(Dispatchers.IO) {
             dbRef.addListenerForSingleValueEvent(
                 object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         val classList = arrayListOf<Class>()
                         dataSnapshot.children.forEach { classRoom ->
-                            classList.add(
-                                Class(
-                                    classRoom.child("classId").value.toString(),
-                                    classRoom.child("grade").value.toString(),
-                                    classRoom.child("name").value.toString(),
-                                    classRoom.child("teacherId").value.toString(),
-                                )
+                            if(classRoom.child("teacherId").value.toString() == uid.toString()){
+                                classList.add(
+                                    Class(
+                                        classRoom.child("classId").value.toString(),
+                                        classRoom.child("grade").value.toString(),
+                                        classRoom.child("name").value.toString(),
+                                        classRoom.child("teacherId").value.toString(),
+                                        classRoom.child("img").value.toString()
 
-                            )
+                                    )
+                                )
+                            }
+
                         }
                         _classList.value = Resource.Success(classList)
                     }
@@ -108,7 +149,8 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
                                     Student(
                                         student.child("classId").value.toString(),
                                         student.child("studentId").value.toString(),
-                                        student.child("studentName").value.toString()
+                                        student.child("studentName").value.toString(),
+                                        student.child("img").value.toString(),
                                     )
                                 )
 
@@ -127,39 +169,67 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
 
     }
 
-    private fun fetchSkillByClassId(classId: String) {
+    fun fetchSkillByClassId(classId: String) {
         Log.d(
             "TAG",
             "onDataChange name:rrrrrr "
         )
-        _skillList.value = Resource.Loading()
+        _posSkillList.value = Resource.Loading()
+        _negSkillList.value = Resource.Loading()
         viewModelScope.launch(Dispatchers.IO) {
             dbSkillRef.addListenerForSingleValueEvent(
                 object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         Log.d("TAG", "onDataChange dataSnapshot: ${dataSnapshot}")
-                        val skillList = arrayListOf<Skill>()
+                        val posSkillList = arrayListOf<Skill>()
+                        val negSkillList= arrayListOf<Skill>()
                         dataSnapshot.children.forEach { skill ->
 
                             if (skill.child("classId").value.toString() == classId) {
-
-                                skillList.add(
-                                    Skill(
-                                        skill.child("classId").value.toString(),
-                                        skill.child("skillId").value.toString(),
-                                        skill.child("name").value.toString(),
-                                        skill.child("highestScore").value.toString(),
+                                if( skill.child("type").value.toString() == "pos"){
+                                    posSkillList.add(
+                                        Skill(
+                                            skill.child("classId").value.toString(),
+                                            skill.child("skillId").value.toString(),
+                                            skill.child("name").value.toString(),
+                                            skill.child("highestScore").value.toString(),
+                                            skill.child("img").value.toString(),
+                                            skill.child("type").value.toString()
+                                        )
                                     )
-                                )
+
+                                }else{
+                                    negSkillList.add(
+                                        Skill(
+                                            skill.child("classId").value.toString(),
+                                            skill.child("skillId").value.toString(),
+                                            skill.child("name").value.toString(),
+                                            skill.child("highestScore").value.toString(),
+                                            skill.child("img").value.toString(),
+                                            skill.child("type").value.toString()
+                                        )
+                                    )
+
+
+
+                                }
+
 
                             }
 
                         }
-                        _skillList.value = Resource.Success(skillList)
+
+                            _posSkillList.value = Resource.Success(posSkillList)
+
+                            _negSkillList.value=Resource.Success(negSkillList)
+
+
+
                     }
 
                     override fun onCancelled(databaseError: DatabaseError) {
-                        _skillList.value = Resource.Error("Data Retrieve unsuccessful")
+                        _posSkillList.value = Resource.Error("Data Retrieve unsuccessful")
+                        _negSkillList.value=Resource.Error("Data Retrieve unsuccessful")
                     }
                 })
         }
@@ -179,7 +249,7 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
         }
 
         val clsId = dbRef.push().key
-        val clsRoom = Class(clsId ?: "", uid ?: "", name, grade)
+        val clsRoom = Class(clsId ?: "", uid ?: "", name, grade,clsImage.random().toString())
 
         dbRef.push().setValue(clsRoom)
             .addOnCompleteListener {
@@ -189,6 +259,9 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
                 _createClass.value = Resource.Error("User creation Failed")
                 Log.d("TAG", "createClass: cls created")
             }
+
+        fetchClassList()
+
     }
 
 
@@ -200,7 +273,7 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
         }
 
         val stdId = dbStdRef.push().key
-        val student = Student(clsId ?: "", stdId ?: "", name)
+        val student = Student(clsId ?: "", stdId ?: "", name,stdImage.random().toString())
 
         dbStdRef.push().setValue(student)
             .addOnCompleteListener {
@@ -213,7 +286,7 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
         fetchStudentByClassId(clsId)
     }
 
-    fun createSkill(clsId: String, name: String, hScore: String) {
+    fun createSkill(clsId: String, name: String, hScore: String, typeofSkill: String) {
         Log.d("TAG", "createSkill: Created")
         _createSkill.value = Resource.Loading()
         if (name.isEmpty()) {
@@ -222,7 +295,7 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
         }
 
         val skillId = dbSkillRef.push().key
-        val skill = Skill(clsId ?: "", skillId ?: "", name, hScore)
+        val skill = Skill(clsId ?: "", skillId ?: "", name, hScore,skillImage.random().toString(),typeofSkill)
 
         dbSkillRef.push().setValue(skill)
             .addOnCompleteListener {
@@ -329,14 +402,17 @@ data class Class(
     var classId: String,
     var teacherId: String,
     var name: String,
-    var grade: String
+    var grade: String,
+    var img:String
 )
 
 data class Skill(
     var classId: String,
     var skillId: String,
     var name: String,
-    var highestScore: String
+    var highestScore: String,
+    var img:String,
+    var type:String
 )
 
 data class Marks(

@@ -3,18 +3,17 @@ package com.example.classwave.presentation.page.teacher
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.classwave.R
-import com.example.classwave.databinding.ActivityTeacherBinding
 import com.example.classwave.databinding.StdudentProfileFromTcrSideLayoutBinding
 
 class StdProfileViewActivity : AppCompatActivity() {
     private lateinit var binding: StdudentProfileFromTcrSideLayoutBinding
     var imageList = arrayListOf<Int>(
-        R.drawable.boy,
-        R.drawable.bussiness_man,
-        R.drawable.profile_boy,
-        R.drawable.profile,
-        R.drawable.profile_man,
-        R.drawable.user
+        R.drawable.st_boy,
+        R.drawable.st_bussiness_man,
+        R.drawable.st_profile_boy,
+        R.drawable.st_profile,
+        R.drawable.st_profile_man,
+        R.drawable.st_user
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {

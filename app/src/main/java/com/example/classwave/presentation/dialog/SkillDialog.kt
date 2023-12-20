@@ -10,21 +10,26 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.GridLayoutManager
 import com.example.classwave.R
 import com.example.classwave.databinding.DialogSkillsBinding
-import com.example.classwave.presentation.page.teacher.SkillsStudentAdapter
 import com.example.classwave.presentation.page.teacher.TeacherViewModel
+import com.example.classwave.presentation.page.teacher.ViewPagerAdapter
+import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
-class SkillDialog(val classId: String, val stdId: String) : DialogFragment() {
+class SkillDialog(val classId: String, val stdId: String,val stdName:String,val stdProfile:String) : DialogFragment() {
+
+    val tabArray = arrayOf(
+        "Positive",
+        "Needs work"
+    )
 
     private val viewModel: TeacherViewModel by activityViewModels()
     private var _binding: DialogSkillsBinding? = null
     private val binding get() = _binding!!
-    private var skillStudentAdapter = SkillsStudentAdapter()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NO_FRAME, R.style.FullScreenDialog)
@@ -43,23 +48,18 @@ class SkillDialog(val classId: String, val stdId: String) : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         super.onViewCreated(view, savedInstanceState)
-        val layoutManager = GridLayoutManager(context, 3, GridLayoutManager.VERTICAL, false)
-        binding.recyclerViewSkills.layoutManager = layoutManager
-        binding.recyclerViewSkills.adapter = skillStudentAdapter
 
-        skillStudentAdapter.setListener(listener = object : SkillsStudentAdapter.Listener {
-            override fun onAddNewSkillClicked() {
-                val dialog = AddSkillDialog(classId)
-                dialog.show(parentFragmentManager, "SkillDialog")
-            }
 
-            override fun onSkillSelected(skillId: String) {
-                val dialog = ProvideMarksDialog(classId, stdId, skillId)
-                dialog.show(parentFragmentManager, "ProvideMarksdialog")
-            }
-        })
+        val adapter = ViewPagerAdapter(childFragmentManager, lifecycle,classId,stdId)
+        binding.viewPager.adapter = adapter
 
-        initializeFlowCollectors()
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
+            tab.text = tabArray[position]
+        }.attach()
+
+        binding.textViewName.text= stdName
+        binding.imgViewProfilePic.setImageResource(stdProfile.toInt())
+
         registerListener()
     }
 
@@ -67,31 +67,7 @@ class SkillDialog(val classId: String, val stdId: String) : DialogFragment() {
         binding.imgCancel.setOnClickListener {
             dismiss()
         }
-        /*
-            binding.editTxtClassName.addTextChangedListener {
-                binding.btnCreateClass.isClickable = true
-                binding.btnCreateClass.setBackgroundColor(getResources().getColor(R.color.colorPrimary))
-            }*/
-        /*     binding.btnAddStd.setOnClickListener {
-                 val studentName = binding.editTextAddStdName.text.toString()
-                 viewModel.createStudent(clsId,studentName)
-                 dismiss()
-
-             }*/
     }
-
-    private fun initializeFlowCollectors() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.skillList.collectLatest { skill ->
-                    if (skill != null) {
-                        skill.data?.let { skillStudentAdapter.setStudents(skill.data) }
-                    }
-                }
-            }
-        }
-    }
-
 
     companion object {
         const val TAG = "ProvideMarksdialog"

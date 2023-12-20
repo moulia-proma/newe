@@ -16,7 +16,7 @@ class AddStudentAdapter : RecyclerView.Adapter<AddStudentAdapter.ViewHolder>() {
     interface Listener {
         fun onAddNewStudentClicked(clsId: String)
 
-        fun onClassSelected(clsId: String,stdId:String)
+        fun onClassSelected(clsId: String, stdId: String, studentName: String, img: String)
 
     }
 
@@ -66,9 +66,12 @@ class AddStudentAdapter : RecyclerView.Adapter<AddStudentAdapter.ViewHolder>() {
 
         @SuppressLint("SuspiciousIndentation")
         fun setStudent(student: Student) {
+            binding.imageStdProfile.setImageResource(
+                student.img.toInt()
+            )
             binding.txtStdName.text = student.studentName
             binding.cardAddNewStd.setOnClickListener {
-                mListener?.onClassSelected(clsId = classId,student.studentId)
+                mListener?.onClassSelected(clsId = classId,student.studentId,student.studentName,student.img)
             }
 
         }
