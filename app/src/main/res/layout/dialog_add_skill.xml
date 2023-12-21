@@ -9,15 +9,16 @@
     <ImageView
         android:layout_marginTop="40dp"
         android:id="@+id/image_std_profile"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/edit_text_add_skill_name"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/std_profile"
+        app:srcCompat="@drawable/logical_thinking"
         />
     <EditText
+        android:padding="16dp"
         android:layout_marginTop="8dp"
         android:id="@+id/edit_text_add_skill_name"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,21 +26,19 @@
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:hint="Enter skill name"
-        android:textColorHint="@color/primaryColor"
-        android:backgroundTint="@color/primaryColor"
-        android:textColor="@color/primaryColor"
+        android:background="@drawable/edit_text_style"
+
         />
     <EditText
+        android:padding="16dp"
         android:layout_marginTop="8dp"
         android:id="@+id/edit_text_add_skill_high_score_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/edit_text_add_skill_name"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:hint="Enter skill name"
-        android:textColorHint="@color/primaryColor"
-        android:backgroundTint="@color/primaryColor"
-        android:textColor="@color/primaryColor"
+        android:hint="Enter highest score"
+        android:background="@drawable/edit_text_style"
 
         />
     <com.google.android.material.button.MaterialButton
@@ -50,7 +49,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/primaryColor"
+        android:backgroundTint="@color/cyan_600"
         android:text="Add"
         android:textColor="@color/white"
         />

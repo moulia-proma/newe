@@ -6,15 +6,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.annotation.RequiresApi
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import com.example.classwave.R
 import com.example.classwave.databinding.DialogProvideMarksBinding
 import com.example.classwave.presentation.page.teacher.TeacherViewModel
 
-class ProvideMarksDialog(val clsId: String, val stdId: String, val skillId: String) : DialogFragment() {
+class ProvideMarksDialog(
+    private val clsId: String,
+    private val stdId: String,
+    private val skillId: String,
+    private val highestScore: String,
+    private val type: String
+) : DialogFragment() {
     private val viewModel: TeacherViewModel by activityViewModels()
     private var _binding: DialogProvideMarksBinding? = null
     private val binding get() = _binding!!
@@ -34,21 +40,18 @@ class ProvideMarksDialog(val clsId: String, val stdId: String, val skillId: Stri
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         super.onViewCreated(view, savedInstanceState)
+        val grade =  viewModel.getMarksDropdownList(highestScore,type)
 
+
+        val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, grade)
+        binding.autoCompleteTextViewDropdownItems.setAdapter(arrayAdapter)
         registerListener()
     }
     @SuppressLint("SuspiciousIndentation")
     @RequiresApi(Build.VERSION_CODES.O)
     private fun registerListener() {
-    /*    binding.imgCancel.setOnClickListener {
-            dismiss()
-        }
-        binding.editTxtClassName.addTextChangedListener {
-            binding.btnCreateClass.isClickable = true
-            binding.btnCreateClass.setBackgroundColor(getResources().getColor(R.color.colorPrimary))
-        }*/
         binding.btnAddMarks.setOnClickListener {
-          val mark = binding.editTextAddSkillName.text.toString()
+          val mark =  binding.autoCompleteTextViewDropdownItems.text.toString()
             viewModel.addMarks(clsId,stdId,skillId,mark)
             dismiss()
 

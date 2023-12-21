@@ -16,7 +16,7 @@ class SkillsStudentAdapter : RecyclerView.Adapter<SkillsStudentAdapter.ViewHolde
     interface Listener {
         fun onAddNewSkillClicked()
 
-        fun onSkillSelected(skillId: String)
+        fun onSkillSelected(skillId: String, highestScore: String)
 
     }
 
@@ -71,7 +71,7 @@ class SkillsStudentAdapter : RecyclerView.Adapter<SkillsStudentAdapter.ViewHolde
             )
             binding.txtStdName.text = skill.name
             binding.cardAddNewStd.setOnClickListener {
-                mListener?.onSkillSelected(skill.skillId)
+                mListener?.onSkillSelected(skill.skillId,skill.highestScore)
             }
 
         }
@@ -80,7 +80,7 @@ class SkillsStudentAdapter : RecyclerView.Adapter<SkillsStudentAdapter.ViewHolde
             binding.imageStdProfile.setImageResource(
                 R.drawable.ic_add
             )
-            binding.txtStdName.text = "Add Student"
+            binding.txtStdName.text = "Add Skill"
 
             binding.cardAddNewStd.setOnClickListener {
                 mListener?.onAddNewSkillClicked()

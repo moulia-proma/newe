@@ -48,8 +48,8 @@ class NeedsWorkFragment(val classId: String, val stdId: String) : Fragment() {
                 dialog.show(parentFragmentManager, "SkillDialog")
             }
 
-            override fun onSkillSelected(skillId: String) {
-                val dialog = ProvideMarksDialog(classId, stdId, skillId)
+            override fun onSkillSelected(skillId: String, highestScore: String) {
+                val dialog = ProvideMarksDialog(classId, stdId, skillId,highestScore,"neg")
                 dialog.show(parentFragmentManager, "ProvideMarksdialog")
             }
         })

@@ -98,6 +98,27 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
         fetchSkillByClassId(classId = cls.classId)
     }
 
+     fun getMarksDropdownList(highestScore: String, type: String):ArrayList<Int> {
+         if(type=="pos"){
+             val grade = arrayListOf<Int>()
+             var i =1
+             while(i<=highestScore.toInt()){
+                 grade.add(i)
+                 i++
+             }
+             return grade
+         }else{
+             val grade = arrayListOf<Int>()
+             var i =highestScore.toInt()
+             while(i<=0){
+                 grade.add(i)
+                 i++
+             }
+             return grade
+         }
+
+     }
+
     private fun fetchClassList() {
         val uid = Firebase.auth.currentUser?.uid
         viewModelScope.launch(Dispatchers.IO) {

@@ -3,8 +3,8 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
 
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="120dp"
+    android:layout_height="100dp"
     android:layout_margin="4dp"
     app:cardCornerRadius="8dp"
     app:contentPadding="12dp">
@@ -16,8 +16,8 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_add_new_std"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_gravity="center"
             app:cardCornerRadius="30dp"
             app:layout_constraintBottom_toTopOf="@id/txt_std_name"
@@ -44,7 +44,7 @@
             android:textAlignment="center"
             android:textColor="#BC607F"
             android:textStyle="bold"
-            android:textSize="10sp"
+            android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/card_add_new_std" />

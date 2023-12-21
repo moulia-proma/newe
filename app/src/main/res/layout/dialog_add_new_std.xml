@@ -15,7 +15,7 @@
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintBottom_toTopOf="@id/edit_text_add_std_name"
     app:layout_constraintTop_toTopOf="parent"
-    app:srcCompat="@drawable/std_profile"
+    app:srcCompat="@drawable/user"
 
     />
 <EditText
@@ -25,10 +25,9 @@
     app:layout_constraintTop_toBottomOf="@id/image_std_profile"
     android:layout_width="match_parent"
     android:layout_height="80dp"
+    android:background="@drawable/edit_text_style"
     android:hint="Enter Student Name"
-    android:textColorHint="@color/primaryColor"
-    android:backgroundTint="@color/primaryColor"
-    android:textColor="@color/primaryColor"
+    android:padding="16dp"
 
 
     />
@@ -40,7 +39,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/primaryColor"
+        android:backgroundTint="@color/cyan_600"
         android:text="Add"
         android:textColor="@color/white"
         />

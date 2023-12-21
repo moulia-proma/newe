@@ -15,20 +15,26 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/edit_text_add_skill_name"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/std_profile"
+        app:srcCompat="@drawable/question_mark"
         />
-    <EditText
-        android:layout_marginTop="8dp"
+<com.google.android.material.textfield.TextInputLayout
         android:id="@+id/edit_text_add_skill_name"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/image_std_profile"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:hint="Enter marks"
-        android:textColorHint="@color/primaryColor"
-        android:backgroundTint="@color/primaryColor"
-        android:textColor="@color/primaryColor"
-        />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/image_std_profile">
+
+        <AutoCompleteTextView
+            android:id="@+id/auto_complete_text_view_dropdown_items"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/hint_select_grade"
+            android:inputType="none" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_add_marks"
