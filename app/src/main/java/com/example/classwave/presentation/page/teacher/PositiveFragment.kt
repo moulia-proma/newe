@@ -1,10 +1,10 @@
 package com.example.classwave.presentation.page.teacher
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -12,6 +12,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.example.classwave.databinding.FragmentPositiveBinding
 import com.example.classwave.presentation.dialog.AddSkillDialog
 import com.example.classwave.presentation.dialog.ProvideMarksDialog
+import com.example.classwave.presentation.dialog.ViewStdReportDialog
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
@@ -51,14 +52,35 @@ class positiveFragment(val classId: String, val stdId: String) : Fragment() {
                 dialog.show(parentFragmentManager, "SkillDialog")
             }
 
-            override fun onSkillSelected(skillId: String, highestScore: String) {
-                val dialog = ProvideMarksDialog(classId, stdId, skillId, highestScore, "pos")
+
+            override fun onViewReportClicked() {
+                val dialog = ViewStdReportDialog(stdId)
+                dialog.show(parentFragmentManager, "viewStdDialog")
+            }
+
+
+            override fun onSkillSelected(
+                skillId: String,
+                highestScore: String,
+                name: String,
+                img: String
+            ) {
+                val dialog = ProvideMarksDialog(
+                    classId,
+                    stdId,
+                    skillId,
+                    highestScore,
+                    "pos",
+                    name,
+                    img
+                )
                 dialog.show(parentFragmentManager, "ProvideMarksdialog")
             }
         })
 
         initializeFlowCollectors()
     }
+
     private fun initializeFlowCollectors() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
@@ -70,9 +92,6 @@ class positiveFragment(val classId: String, val stdId: String) : Fragment() {
             }
         }
     }
-
-
-
 
 
 }

@@ -10,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.example.classwave.R
 import com.example.classwave.databinding.FragmentTeacherHomeBinding
 import com.example.classwave.domain.model.Resource
 import com.example.classwave.presentation.dialog.AddNewStdDialog
@@ -17,6 +18,7 @@ import com.example.classwave.presentation.dialog.SkillDialog
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -28,7 +30,6 @@ class TeacherHomeFragment : Fragment() {
     private var _binding: FragmentTeacherHomeBinding? = null
     private val binding get() = _binding!!
     private var addStudentAdapter = AddStudentAdapter()
-    private var skillsStudentAdapter = SkillsStudentAdapter()
 
      private lateinit var student:List<Student>
     override fun onCreateView(
@@ -52,7 +53,8 @@ class TeacherHomeFragment : Fragment() {
         binding.recyclerViewStdInfo.layoutManager = layoutManager
         binding.recyclerViewStdInfo.adapter = addStudentAdapter
 
-
+     /*   val modal = ModalBottomSheetDialog()
+        supportFragmentManager.let { modal.show(it, ModalBottomSheetDialog.TAG) }*/
         addStudentAdapter.setListener(listener = object : AddStudentAdapter.Listener {
 
             override fun onAddNewStudentClicked(clsId: String) {
@@ -65,6 +67,7 @@ class TeacherHomeFragment : Fragment() {
                 studentName: String,
                 img: String
             ) {
+                viewModel.fetchStudentReport(stdId)
                 val dialog = SkillDialog(clsId,stdId,studentName,img)
                 dialog.show(parentFragmentManager, "ProvideMarksdialog")
             }
@@ -96,6 +99,7 @@ class TeacherHomeFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.studentList.collectLatest { std->
                     if (std != null) {
+
                         binding.progressBarStudentLoading.visibility=View.INVISIBLE
                         std.data?.let { addStudentAdapter.setStudents(it) }
 
@@ -117,29 +121,6 @@ class TeacherHomeFragment : Fragment() {
             }
         }
         }
-
-
-
-/*    fun StudentList(): List<Student>{
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.selectedClass.collectLatest { std ->
-
-                }
-            }
-        }
-    }*/
- /*   private fun initializeFlowCollectorsStudentList() : List<Student>{
-
-
-                viewModel.studentList.collectLatest { std ->
-                    if (std != null) {
-
-                    }
-
-
-        }
-    }*/
 
 
 

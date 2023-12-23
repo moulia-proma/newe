@@ -16,7 +16,9 @@ class SkillsStudentAdapter : RecyclerView.Adapter<SkillsStudentAdapter.ViewHolde
     interface Listener {
         fun onAddNewSkillClicked()
 
-        fun onSkillSelected(skillId: String, highestScore: String)
+        fun onViewReportClicked()
+
+        fun onSkillSelected(skillId: String, highestScore: String, name: String, img: String)
 
     }
 
@@ -30,17 +32,16 @@ class SkillsStudentAdapter : RecyclerView.Adapter<SkillsStudentAdapter.ViewHolde
 
 
     override fun getItemCount(): Int {
-        val size = (mSkillList.size) + 1
-        Log.d("TAG", "initializeFlowCollectors: ${size}")
-        return (mSkillList.size + 1)
+        return (mSkillList.size + 2)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         Log.d("TAG", "initializeFlowCollectors: onviewholder ")
         if (position == mSkillList.size) {
-            Log.d("TAG", "initializeFlowCollectors: 0 ")
             holder.setAddSkill()
-        } else {
+        }else if(position==mSkillList.size+1){
+            holder.viewStdReport()
+        } else  {
             holder.setSkill(mSkillList[position])
         }
 
@@ -51,12 +52,6 @@ class SkillsStudentAdapter : RecyclerView.Adapter<SkillsStudentAdapter.ViewHolde
         Log.d("TAG", "setStudents:${mSkillList} ")
         notifyDataSetChanged()
     }
-
-    /*  fun setId(classId: String) {
-          this.classId = classId
-          notifyDataSetChanged()
-      }*/
-
     fun setListener(listener: SkillsStudentAdapter.Listener) {
         mListener = listener
     }
@@ -71,7 +66,7 @@ class SkillsStudentAdapter : RecyclerView.Adapter<SkillsStudentAdapter.ViewHolde
             )
             binding.txtStdName.text = skill.name
             binding.cardAddNewStd.setOnClickListener {
-                mListener?.onSkillSelected(skill.skillId, skill.highestScore)
+                mListener?.onSkillSelected(skill.skillId, skill.highestScore,skill.name,skill.img)
             }
 
         }
@@ -84,6 +79,16 @@ class SkillsStudentAdapter : RecyclerView.Adapter<SkillsStudentAdapter.ViewHolde
 
             binding.cardAddNewStd.setOnClickListener {
                 mListener?.onAddNewSkillClicked()
+            }
+        }
+        fun viewStdReport() {
+            binding.imageStdProfile.setImageResource(
+                R.drawable.business_report
+            )
+            binding.txtStdName.text = "view report"
+
+            binding.cardAddNewStd.setOnClickListener {
+                mListener?.onViewReportClicked()
             }
         }
     }

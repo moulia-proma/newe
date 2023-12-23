@@ -1,5 +1,6 @@
 package com.example.classwave.presentation.page.teacher
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.example.classwave.databinding.FragmentNeedsWorkBinding
 import com.example.classwave.presentation.dialog.AddSkillDialog
 import com.example.classwave.presentation.dialog.ProvideMarksDialog
+import com.example.classwave.presentation.dialog.ViewStdReportDialog
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
@@ -48,8 +50,20 @@ class NeedsWorkFragment(val classId: String, val stdId: String) : Fragment() {
                 dialog.show(parentFragmentManager, "SkillDialog")
             }
 
-            override fun onSkillSelected(skillId: String, highestScore: String) {
-                val dialog = ProvideMarksDialog(classId, stdId, skillId,highestScore,"neg")
+
+            @SuppressLint("SuspiciousIndentation")
+            override fun onViewReportClicked() {
+             val dialog = ViewStdReportDialog(stdId)
+                 dialog.show(parentFragmentManager,"viewStdDialog")
+            }
+
+            override fun onSkillSelected(
+                skillId: String,
+                highestScore: String,
+                name: String,
+                img: String
+            ) {
+                val dialog = ProvideMarksDialog(classId, stdId, skillId,highestScore,"neg",name,img)
                 dialog.show(parentFragmentManager, "ProvideMarksdialog")
             }
         })

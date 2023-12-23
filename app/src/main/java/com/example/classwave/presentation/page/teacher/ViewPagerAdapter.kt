@@ -10,8 +10,8 @@ public const val TABS = 2
 class ViewPagerAdapter(
     fragmentManager: FragmentManager,
     lifecycle: Lifecycle,
-    val classId: String,
-    val stdId: String
+    private val classId: String,
+    private val stdId: String
 ) :
     FragmentStateAdapter(fragmentManager, lifecycle) {
     override fun getItemCount(): Int {
@@ -19,10 +19,10 @@ class ViewPagerAdapter(
     }
 
     override fun createFragment(position: Int): Fragment {
+
         when (position) {
             0 -> return positiveFragment(classId,stdId)
             1 -> return NeedsWorkFragment(classId,stdId)
-
         }
         return positiveFragment(classId, stdId)
     }
