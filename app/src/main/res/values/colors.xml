@@ -6,6 +6,6 @@
     <color name="colorBackground">#FFFFFF</color>
     <color name="primaryColor">#BC607F</color>
 
-    <color name="colorPrimary">@color/blue_grey_700</color>
+    <color name="colorPrimary">#19082E</color>
 
 </resources>

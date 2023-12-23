@@ -98,26 +98,26 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
         fetchSkillByClassId(classId = cls.classId)
     }
 
-     fun getMarksDropdownList(highestScore: String, type: String):ArrayList<Int> {
-         if(type=="pos"){
-             val grade = arrayListOf<Int>()
-             var i =1
-             while(i<=highestScore.toInt()){
-                 grade.add(i)
-                 i++
-             }
-             return grade
-         }else{
-             val grade = arrayListOf<Int>()
-             var i =highestScore.toInt()
-             while(i<=0){
-                 grade.add(i)
-                 i++
-             }
-             return grade
-         }
+    fun getMarksDropdownList(highestScore: String, type: String): ArrayList<Int> {
+        if (type == "pos") {
+            val grade = arrayListOf<Int>()
+            var i = 1
+            while (i <= highestScore.toInt()) {
+                grade.add(i)
+                i++
+            }
+            return grade
+        } else {
+            val grade = arrayListOf<Int>()
+            var i = highestScore.toInt()
+            while (i <= 0) {
+                grade.add(i)
+                i++
+            }
+            return grade
+        }
 
-     }
+    }
 
     private fun fetchClassList() {
         val uid = Firebase.auth.currentUser?.uid
@@ -127,7 +127,7 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         val classList = arrayListOf<Class>()
                         dataSnapshot.children.forEach { classRoom ->
-                            if(classRoom.child("teacherId").value.toString() == uid.toString()){
+                            if (classRoom.child("teacherId").value.toString() == uid.toString()) {
                                 classList.add(
                                     Class(
                                         classRoom.child("classId").value.toString(),
@@ -203,11 +203,11 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         Log.d("TAG", "onDataChange dataSnapshot: ${dataSnapshot}")
                         val posSkillList = arrayListOf<Skill>()
-                        val negSkillList= arrayListOf<Skill>()
+                        val negSkillList = arrayListOf<Skill>()
                         dataSnapshot.children.forEach { skill ->
 
                             if (skill.child("classId").value.toString() == classId) {
-                                if( skill.child("type").value.toString() == "pos"){
+                                if (skill.child("type").value.toString() == "pos") {
                                     posSkillList.add(
                                         Skill(
                                             skill.child("classId").value.toString(),
@@ -219,7 +219,7 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
                                         )
                                     )
 
-                                }else{
+                                } else {
                                     negSkillList.add(
                                         Skill(
                                             skill.child("classId").value.toString(),
@@ -232,7 +232,6 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
                                     )
 
 
-
                                 }
 
 
@@ -240,17 +239,16 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
 
                         }
 
-                            _posSkillList.value = Resource.Success(posSkillList)
+                        _posSkillList.value = Resource.Success(posSkillList)
 
-                            _negSkillList.value=Resource.Success(negSkillList)
-
+                        _negSkillList.value = Resource.Success(negSkillList)
 
 
                     }
 
                     override fun onCancelled(databaseError: DatabaseError) {
                         _posSkillList.value = Resource.Error("Data Retrieve unsuccessful")
-                        _negSkillList.value=Resource.Error("Data Retrieve unsuccessful")
+                        _negSkillList.value = Resource.Error("Data Retrieve unsuccessful")
                     }
                 })
         }
@@ -270,7 +268,7 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
         }
 
         val clsId = dbRef.push().key
-        val clsRoom = Class(clsId ?: "", uid ?: "", name, grade,clsImage.random().toString())
+        val clsRoom = Class(clsId ?: "", uid ?: "", name, grade, clsImage.random().toString())
 
         dbRef.push().setValue(clsRoom)
             .addOnCompleteListener {
@@ -294,7 +292,7 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
         }
 
         val stdId = dbStdRef.push().key
-        val student = Student(clsId ?: "", stdId ?: "", name,stdImage.random().toString())
+        val student = Student(clsId ?: "", stdId ?: "", name, stdImage.random().toString())
 
         dbStdRef.push().setValue(student)
             .addOnCompleteListener {
@@ -316,7 +314,14 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
         }
 
         val skillId = dbSkillRef.push().key
-        val skill = Skill(clsId ?: "", skillId ?: "", name, hScore,skillImage.random().toString(),typeofSkill)
+        val skill = Skill(
+            clsId ?: "",
+            skillId ?: "",
+            name,
+            hScore,
+            skillImage.random().toString(),
+            typeofSkill
+        )
 
         dbSkillRef.push().setValue(skill)
             .addOnCompleteListener {
@@ -333,88 +338,26 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
     @RequiresApi(Build.VERSION_CODES.O)
     fun addMarks(clsId: String, stdId: String, skillId: String, score: String) {
 
-        dbSkillRef.addListenerForSingleValueEvent(
-            object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    var hScore: String
-                    dataSnapshot.children.forEach { skill ->
-                        Log.d(
-                            "TAGG",
-                            "onDataChange: ${skill.child("clsId").value.toString()}  ${skill.child("skillId").value.toString()}"
-                        )
-                        if (skill.child("classId").value.toString() == clsId && skill.child("skillId").value.toString() == skillId) {
-                            hScore = skill.child("highestScore").value.toString()
-                            if (hScore.toInt() < score.toInt()) {
-                                _addMarks.value =
-                                    Resource.Error("Marks should be greater than ${hScore.toInt()}")
-                                return
-                            }
+        val dltPrevMarks = dbMarksRef.orderByChild("skillIdStdId").equalTo(skillId + "_" + stdId)
+        dltPrevMarks.ref.removeValue()
 
-                            _addMarks.value = Resource.Loading()
-                            val crndDate = LocalDate.now()
-                            val mark = Marks(skillId, stdId, score, crndDate.toString())
-                            dbMarksRef.push().setValue(mark)
-                                .addOnCompleteListener {
-                                    _addMarks.value = Resource.Success(mark)
-                                }
-                                .addOnFailureListener {
-                                    _createSkill.value = Resource.Error("Skill creation Failed")
-                                    Log.d("TAG", "createSkill: skill created")
-                                }
+        _addMarks.value = Resource.Loading()
 
+        val currentDate = LocalDate.now()
+        val mark = Marks(skillId, stdId, score, currentDate.toString(), skillId + "_" + stdId)
 
-                        }
-                    }
-
-                }
-
-                override fun onCancelled(databaseError: DatabaseError) {
-
-                }
-            })
-        /*  val hScore = getMaxMark(clsId, skillId)
-          Log.d("TAB", "addMarks: ${hScore} ${score} ")
-          if (score.toInt() < hScore.toInt()) {
-              _addMarks.value = Resource.Error(
-                  "score should be greated than $hScore"
-              )
-              return
-          }*/
+        dbMarksRef.push().setValue(mark)
+            .addOnCompleteListener {
+                _addMarks.value = Resource.Success(mark)
+            }
+            .addOnFailureListener {
+                _createSkill.value = Resource.Error("Skill creation Failed")
+                Log.d("TAG", "createSkill: skill created")
+            }
 
 
     }
 
-    fun getMaxMark(clsId: String, skillId: String) {
-
-        viewModelScope.launch(Dispatchers.IO) {
-            dbSkillRef.addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        var hScore: String
-                        dataSnapshot.children.forEach { skill ->
-                            Log.d(
-                                "TAGG",
-                                "onDataChange: ${skill.child("clsId").value.toString()}  ${
-                                    skill.child("skillId").value.toString()
-                                }"
-                            )
-                            if (skill.child("classId").value.toString() == clsId && skill.child("skillId").value.toString() == skillId) {
-                                hScore = skill.child("highestScore").value.toString()
-                                Log.d("TAGG", "onDataChange: {$hScore}")
-
-                            }
-                        }
-
-
-                    }
-
-                    override fun onCancelled(databaseError: DatabaseError) {
-
-                    }
-                })
-        }
-
-    }
 
 }
 
@@ -424,7 +367,7 @@ data class Class(
     var teacherId: String,
     var name: String,
     var grade: String,
-    var img:String
+    var img: String
 )
 
 data class Skill(
@@ -432,13 +375,14 @@ data class Skill(
     var skillId: String,
     var name: String,
     var highestScore: String,
-    var img:String,
-    var type:String
+    var img: String,
+    var type: String
 )
 
 data class Marks(
     var skillId: String,
     var stdId: String,
     var marks: String,
-    var date: String
+    var date: String,
+    var skillIdStdId: String
 )

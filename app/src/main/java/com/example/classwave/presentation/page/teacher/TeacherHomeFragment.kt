@@ -50,8 +50,7 @@ class TeacherHomeFragment : Fragment() {
         layoutManager.justifyContent = JustifyContent.FLEX_START
 
         binding.recyclerViewStdInfo.layoutManager = layoutManager
-        /*  val adapter = context?.let { AddStudentAdapter(it, getStudents()) }*/
-          binding.recyclerViewStdInfo.adapter = addStudentAdapter
+        binding.recyclerViewStdInfo.adapter = addStudentAdapter
 
 
         addStudentAdapter.setListener(listener = object : AddStudentAdapter.Listener {

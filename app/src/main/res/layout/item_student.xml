@@ -24,7 +24,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:strokeColor="#BC607F"
+            app:strokeColor="@color/colorPrimary"
             app:strokeWidth="2dp">
 
             <ImageView
@@ -42,7 +42,7 @@
             android:layout_marginTop="8dp"
             android:text="Student Name"
             android:textAlignment="center"
-            android:textColor="#BC607F"
+            android:textColor="@color/colorPrimary"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

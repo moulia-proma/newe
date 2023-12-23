@@ -44,7 +44,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/primaryColor"
+        android:backgroundTint="@color/colorPrimary"
         android:text="Add"
         android:textColor="@color/white"
         />

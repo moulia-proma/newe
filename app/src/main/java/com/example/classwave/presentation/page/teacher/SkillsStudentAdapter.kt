@@ -52,10 +52,10 @@ class SkillsStudentAdapter : RecyclerView.Adapter<SkillsStudentAdapter.ViewHolde
         notifyDataSetChanged()
     }
 
-  /*  fun setId(classId: String) {
-        this.classId = classId
-        notifyDataSetChanged()
-    }*/
+    /*  fun setId(classId: String) {
+          this.classId = classId
+          notifyDataSetChanged()
+      }*/
 
     fun setListener(listener: SkillsStudentAdapter.Listener) {
         mListener = listener
@@ -71,7 +71,7 @@ class SkillsStudentAdapter : RecyclerView.Adapter<SkillsStudentAdapter.ViewHolde
             )
             binding.txtStdName.text = skill.name
             binding.cardAddNewStd.setOnClickListener {
-                mListener?.onSkillSelected(skill.skillId,skill.highestScore)
+                mListener?.onSkillSelected(skill.skillId, skill.highestScore)
             }
 
         }
