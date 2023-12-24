@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.classwave.databinding.ItemReportDetailBinding
 
 
-class StudentReportAdapter : RecyclerView.Adapter<StudentReportAdapter.ViewHolder>() {
+class StudentReportAdapter(private val mark: List<Marks>, private val date: String) :
+    RecyclerView.Adapter<StudentReportAdapter.ViewHolder>() {
 
-    private lateinit var mark:List<Marks>
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemReportDetailBinding.inflate(
@@ -22,20 +22,22 @@ class StudentReportAdapter : RecyclerView.Adapter<StudentReportAdapter.ViewHolde
         Log.d("kk", "onBindViewHolder: ${mark.size}")
         return mark.size
     }
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         Log.d("kk", "onBindViewHolder: jjj")
-        holder.viewMarks(mark[position])
+        if (mark[position].date == date) {
+            holder.viewMarks(mark[position])
+        }
+
     }
 
-    fun setMarks(mark: List<Marks>) {
-          this.mark = mark
-    }
+
     inner class ViewHolder(private val binding: ItemReportDetailBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun viewMarks(marks: Marks) {
-             binding.textMarksDetails.text = "${marks.marks} marks achived on ${marks.skillName}"
+            binding.textMarksDetails.text = "${marks.marks} marks achived on ${marks.skillName}"
 
-            binding.textDate.text= marks.date
+            binding.textDate.text = marks.date
             binding.imageViewMarks.setImageResource(marks.skillPhoto.toInt())
 
 
