@@ -61,6 +61,9 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
     private val _addMarks = MutableStateFlow<Resource<Marks>?>(null)
     val addMarks = _addMarks.asStateFlow()
 
+    private val _uniqueDays= MutableStateFlow<String>("")
+    val marksByDay= _uniqueDays.asStateFlow()
+
     private val clsImage = arrayListOf<Int>(
         R.drawable.cls_chemistry,
         R.drawable.cls_alculating,
@@ -500,7 +503,8 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         val markList = arrayListOf<Marks>()
                         dataSnapshot.children.forEach { mark ->
-                            if (mark.child("stdId").value.toString() == stdId && mark.child("date").value.toString() == date) {
+                            Log.d("date", "onDataChange: ${mark.child("date").value.toString()}   ${date}" )
+                            if (mark.child("stdId").value.toString() == stdId ) {
                                 markList.add(
                                     Marks(
                                         mark.child("skillId").value.toString(),
@@ -526,6 +530,10 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
         }
 
     }
+
+
+
+
 
 
 

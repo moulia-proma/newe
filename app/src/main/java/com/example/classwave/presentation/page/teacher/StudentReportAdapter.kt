@@ -5,13 +5,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.classwave.databinding.ItemReportDetailBinding
+import java.time.LocalDate
 
 
-class StudentReportAdapter() :
-
-    RecyclerView.Adapter<StudentReportAdapter.ViewHolder>() {
+class StudentReportAdapter : RecyclerView.Adapter<StudentReportAdapter.ViewHolder>() {
     private lateinit var mark: List<Marks>
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemReportDetailBinding.inflate(
             LayoutInflater.from(parent.context), parent, false
@@ -26,12 +24,12 @@ class StudentReportAdapter() :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         Log.d("kk", "onBindViewHolder: jjj")
+
         holder.viewMarks(mark[position])
     }
 
     fun setMarks(mark: List<Marks>) {
         this.mark = mark
-
         notifyDataSetChanged()
     }
 
