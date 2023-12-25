@@ -10,7 +10,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.example.classwave.R
 import com.example.classwave.databinding.FragmentTeacherHomeBinding
 import com.example.classwave.domain.model.Resource
 import com.example.classwave.presentation.dialog.AddNewStdDialog
@@ -18,7 +17,6 @@ import com.example.classwave.presentation.dialog.SkillDialog
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -31,7 +29,7 @@ class TeacherHomeFragment : Fragment() {
     private val binding get() = _binding!!
     private var addStudentAdapter = AddStudentAdapter()
 
-     private lateinit var student:List<Student>
+    private lateinit var student: List<Student>
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -53,22 +51,23 @@ class TeacherHomeFragment : Fragment() {
         binding.recyclerViewStdInfo.layoutManager = layoutManager
         binding.recyclerViewStdInfo.adapter = addStudentAdapter
 
-     /*   val modal = ModalBottomSheetDialog()
-        supportFragmentManager.let { modal.show(it, ModalBottomSheetDialog.TAG) }*/
+        /*   val modal = ModalBottomSheetDialog()
+           supportFragmentManager.let { modal.show(it, ModalBottomSheetDialog.TAG) }*/
         addStudentAdapter.setListener(listener = object : AddStudentAdapter.Listener {
 
             override fun onAddNewStudentClicked(clsId: String) {
                 val dialog = AddNewStdDialog(clsId)
                 dialog.show(parentFragmentManager, "CreateStdDialog")
             }
+
             override fun onClassSelected(
                 clsId: String,
                 stdId: String,
                 studentName: String,
                 img: String
             ) {
-                viewModel.fetchStudentReport(stdId)
-                val dialog = SkillDialog(clsId,stdId,studentName,img)
+                // viewModel.fetchStudentReport(stdId)
+                val dialog = SkillDialog(clsId, stdId, studentName, img)
                 dialog.show(parentFragmentManager, "ProvideMarksdialog")
             }
 
@@ -85,7 +84,7 @@ class TeacherHomeFragment : Fragment() {
                     if (cls != null) {
                         binding.toolbar.title = cls.name
                         Log.d("TAG", "initializeFlowCollectors: stdAdapter called ")
-                         addStudentAdapter.setId(cls.classId)
+                        addStudentAdapter.setId(cls.classId)
 
                     } else {
                         binding.toolbar.title = "No Class"
@@ -97,16 +96,16 @@ class TeacherHomeFragment : Fragment() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.studentList.collectLatest { std->
+                viewModel.studentList.collectLatest { std ->
                     if (std != null) {
 
-                        binding.progressBarStudentLoading.visibility=View.INVISIBLE
+                        binding.progressBarStudentLoading.visibility = View.INVISIBLE
                         std.data?.let { addStudentAdapter.setStudents(it) }
 
                     }
-                    }
                 }
             }
+        }
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.createStudent.collectLatest {
@@ -120,8 +119,7 @@ class TeacherHomeFragment : Fragment() {
                 }
             }
         }
-        }
-
+    }
 
 
     override fun onDestroyView() {

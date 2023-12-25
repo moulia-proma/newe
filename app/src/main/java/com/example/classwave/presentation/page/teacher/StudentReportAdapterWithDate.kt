@@ -8,11 +8,7 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.example.classwave.databinding.ItemStdReportInDetailsWithDateBinding
-import com.google.android.flexbox.FlexDirection
-import com.google.android.flexbox.FlexboxLayoutManager
-import com.google.android.flexbox.JustifyContent
 import java.time.LocalDate
-import kotlin.math.min
 
 
 class StudentReportAdapterWithDate : RecyclerView.Adapter<StudentReportAdapterWithDate.ViewHolder>() {
@@ -22,7 +18,17 @@ class StudentReportAdapterWithDate : RecyclerView.Adapter<StudentReportAdapterWi
     private lateinit var context: Context
 
     private lateinit var date: String
+    private var dateListSize:Int = 0
+    private var mListener: Listener? = null
 
+    interface Listener {
+        fun ShowMarksDetails(
+            date: String,
+            marks: Marks,
+            binding: ItemStdReportInDetailsWithDateBinding
+        )
+
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemStdReportInDetailsWithDateBinding.inflate(
             LayoutInflater.from(parent.context), parent, false
@@ -30,36 +36,39 @@ class StudentReportAdapterWithDate : RecyclerView.Adapter<StudentReportAdapterWi
         return ViewHolder(binding)
     }
 
+
     override fun getItemCount(): Int {
-        return min(mark.size, 1)
+        return dateListSize
     }
+
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.viewMarks(mark[position])
     }
 
-    fun setMarks(mark: List<Marks>, context: Context, date: LocalDate) {
+    fun setMarks(mark: List<Marks>, context: Context, date: LocalDate,dateListSize:Int) {
         this.mark = mark
         this.date=date.toString()
         this.context = context
+        this.dateListSize =dateListSize
         notifyDataSetChanged()
     }
 
+    fun setListener(listener: StudentReportAdapterWithDate.Listener) {
+        mListener = listener
+    }
     inner class ViewHolder(private val binding: ItemStdReportInDetailsWithDateBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+
         @RequiresApi(Build.VERSION_CODES.O)
         fun viewMarks(marks: Marks) {
+            mListener?.ShowMarksDetails(date,marks,binding)
             //val found = dateShowed.contains(marks.date)
             Log.d("_xyz", "viewMarks:${date} ${marks.date} ")
-                val layoutManager2 = FlexboxLayoutManager(context)
-                layoutManager2.flexDirection = FlexDirection.ROW
-                layoutManager2.justifyContent = JustifyContent.FLEX_START
-                binding.textMarksDate.text = marks.date
-                val childAdapter = StudentReportAdapter(mark, date)
-                binding.recyclerViewMarksDetails.layoutManager = layoutManager2
-                binding.recyclerViewMarksDetails.adapter = childAdapter
+
         }
     }
 }

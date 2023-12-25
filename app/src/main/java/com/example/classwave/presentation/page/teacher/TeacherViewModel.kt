@@ -493,16 +493,14 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
 
     }
 
-    fun fetchMarksByDay(stdId: String) {
+    fun fetchMarksByDay(stdId: String,date:String) {
         viewModelScope.launch(Dispatchers.IO) {
             dbMarksRef.addListenerForSingleValueEvent(
                 object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         val markList = arrayListOf<Marks>()
                         dataSnapshot.children.forEach { mark ->
-                            Log.d("xyz", "onDataChange: ${mark.child("stdId").value.toString()}  ${stdId}")
-                            Log.d("TAG", "onDataChange:${mark.child("stdId").value.toString()}  ${stdId}")
-                            if (mark.child("stdId").value.toString() == stdId) {
+                            if (mark.child("stdId").value.toString() == stdId && mark.child("date").value.toString() == date) {
                                 markList.add(
                                     Marks(
                                         mark.child("skillId").value.toString(),

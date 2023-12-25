@@ -14,7 +14,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.classwave.R
 import com.example.classwave.databinding.DialogViewStdReportBinding
+import com.example.classwave.databinding.ItemStdReportInDetailsWithDateBinding
 import com.example.classwave.presentation.page.teacher.Marks
+import com.example.classwave.presentation.page.teacher.StudentReportAdapter
 import com.example.classwave.presentation.page.teacher.StudentReportAdapterWithDate
 import com.example.classwave.presentation.page.teacher.TeacherViewModel
 import com.google.android.flexbox.FlexDirection
@@ -34,8 +36,10 @@ class ViewStdReportDialog(private val stdId: String) : DialogFragment() {
     var date = LocalDate.now()
     private val binding get() = _binding!!
     private var studentReportAdapterWithDate = StudentReportAdapterWithDate()
-
+    private var childAdapter= StudentReportAdapter()
     var markList: List<Marks> = listOf()
+
+    private var dateListSize=1
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,9 +63,29 @@ class ViewStdReportDialog(private val stdId: String) : DialogFragment() {
         binding.textDateFilter.text = date.toString()
 
 
+        studentReportAdapterWithDate.setListener(listener = object : StudentReportAdapterWithDate.Listener {
+            override fun ShowMarksDetails(
+                date: String,
+                marks: Marks,
+                binding: ItemStdReportInDetailsWithDateBinding
+            ) {
+                val layoutManager2 = FlexboxLayoutManager(context)
+                layoutManager2.flexDirection = FlexDirection.ROW
+                layoutManager2.justifyContent = JustifyContent.FLEX_START
+                binding.textMarksDate.text = marks.date
+                viewModel.fetchMarksByDay(stdId,date)
+                initializeFlowCollectors()
 
-        viewModel.fetchStudentReport(stdId)
+                binding.recyclerViewMarksDetails.layoutManager = layoutManager2
+                binding.recyclerViewMarksDetails.adapter = childAdapter
+
+
+            }
+
+        })
         registerListener()
+
+       // viewModel.fetchMarksByDay(stdId,date.toString())
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -70,6 +94,7 @@ class ViewStdReportDialog(private val stdId: String) : DialogFragment() {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.markList.collectLatest { mark ->
                     if (mark != null) {
+
                         val totalPos = mark.data?.let { viewModel.getTotalPosMarks(it) }
                         val posAchived = mark.data?.let { viewModel.getTotalAchivedPosMarks(it) }
 
@@ -88,14 +113,17 @@ class ViewStdReportDialog(private val stdId: String) : DialogFragment() {
                         mark.data?.let {
                             markList = it
                         }
-                        studentReportAdapterWithDate.setMarks(markList, requireContext(),date)
+                         childAdapter.setMarks(markList)
+
+
+                        studentReportAdapterWithDate.setMarks(markList, requireContext(),date,dateListSize)
                         val layoutManager = FlexboxLayoutManager(context)
                         layoutManager.flexDirection = FlexDirection.ROW
                         layoutManager.justifyContent = JustifyContent.FLEX_START
 
                         binding.recyclerViewReportDetailsWithDate.layoutManager = layoutManager
                         binding.recyclerViewReportDetailsWithDate.adapter = studentReportAdapterWithDate
-                        studentReportAdapterWithDate.setMarks(markList, requireContext(),date)
+
                     } else {
                         binding.toolbar.title = "No Class"
                     }
@@ -107,38 +135,50 @@ class ViewStdReportDialog(private val stdId: String) : DialogFragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun registerListener() {
-
         binding.cardDayReport.setOnClickListener {
+   if(!markList.isEmpty()){
+       studentReportAdapterWithDate.setMarks(markList, requireContext(),date,dateListSize)
+       adapterAndLayoutSet()
+   }
 
-            studentReportAdapterWithDate.setMarks(markList, requireContext(),date)
         }
         binding.imageViewBackArrow.setOnClickListener {
 
             date = date.minusDays(1)
+            viewModel.fetchMarksByDay(stdId,date.toString())
+            if(!markList.isEmpty()){
+                studentReportAdapterWithDate.setMarks(markList, requireContext(),date,dateListSize)
+            }
 
-            val layoutManager = FlexboxLayoutManager(context)
-            layoutManager.flexDirection = FlexDirection.ROW
-            layoutManager.justifyContent = JustifyContent.FLEX_START
-
-            binding.recyclerViewReportDetailsWithDate.layoutManager = layoutManager
-            binding.recyclerViewReportDetailsWithDate.adapter = studentReportAdapterWithDate
-            studentReportAdapterWithDate.setMarks(markList, requireContext(),date)
-
+            adapterAndLayoutSet()
             binding.textDateFilter.text = date.toString()
         }
         binding.imageViewFrontArrow.setOnClickListener {
             date = date.plusDays(1)
-            val layoutManager = FlexboxLayoutManager(context)
-            layoutManager.flexDirection = FlexDirection.ROW
-            layoutManager.justifyContent = JustifyContent.FLEX_START
 
-            binding.recyclerViewReportDetailsWithDate.layoutManager = layoutManager
-            binding.recyclerViewReportDetailsWithDate.adapter = studentReportAdapterWithDate
-            studentReportAdapterWithDate.setMarks(markList, requireContext(),date)
+            studentReportAdapterWithDate.setMarks(markList, requireContext(),date,dateListSize)
+            adapterAndLayoutSet()
 
             binding.textDateFilter.text = date.toString()
             Log.d(TAG, "registerListener haha: ${date.minusDays(1)}")
         }
+    }
+    private fun adapterAndLayoutSet(){
+        Log.d("kk", "adapterAndLayoutSet: ")
+        val layoutManager = FlexboxLayoutManager(context)
+        layoutManager.flexDirection = FlexDirection.ROW
+        layoutManager.justifyContent = JustifyContent.FLEX_START
+
+        binding.recyclerViewReportDetailsWithDate.layoutManager = layoutManager
+        binding.recyclerViewReportDetailsWithDate.adapter = studentReportAdapterWithDate
+    }
+    private fun childAdapterAndLayoutSet(){
+        val layoutManager = FlexboxLayoutManager(context)
+        layoutManager.flexDirection = FlexDirection.ROW
+        layoutManager.justifyContent = JustifyContent.FLEX_START
+
+        binding.recyclerViewReportDetailsWithDate.layoutManager = layoutManager
+        binding.recyclerViewReportDetailsWithDate.adapter = studentReportAdapterWithDate
     }
 
     companion object {

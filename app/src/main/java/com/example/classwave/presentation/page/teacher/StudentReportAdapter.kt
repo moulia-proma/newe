@@ -7,9 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.classwave.databinding.ItemReportDetailBinding
 
 
-class StudentReportAdapter(private val mark: List<Marks>, private val date: String) :
-    RecyclerView.Adapter<StudentReportAdapter.ViewHolder>() {
+class StudentReportAdapter() :
 
+    RecyclerView.Adapter<StudentReportAdapter.ViewHolder>() {
+    private lateinit var mark: List<Marks>
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemReportDetailBinding.inflate(
@@ -25,10 +26,13 @@ class StudentReportAdapter(private val mark: List<Marks>, private val date: Stri
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         Log.d("kk", "onBindViewHolder: jjj")
-        if (mark[position].date == date) {
-            holder.viewMarks(mark[position])
-        }
+        holder.viewMarks(mark[position])
+    }
 
+    fun setMarks(mark: List<Marks>) {
+        this.mark = mark
+
+        notifyDataSetChanged()
     }
 
 
