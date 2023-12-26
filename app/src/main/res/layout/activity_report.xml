@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".presentation.page.report.ReportActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/cyan_500"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:title="Report Analysis"
+        app:titleTextColor="@color/white" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_year_report"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_weight="2"
+                app:cardCornerRadius="16dp"
+                app:layout_constraintBottom_toTopOf="@id/barrier_header"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="8dp"
+                    android:text="Year"
+                    android:textColor="@color/cyan_600"
+                    android:textStyle="bold" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_month_report"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_weight="2"
+                app:cardCornerRadius="16dp"
+                app:layout_constraintBottom_toTopOf="@id/barrier_header"
+                app:layout_constraintStart_toEndOf="@id/card_year_report"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="8dp"
+                    android:text="Month"
+                    android:textColor="@color/cyan_600"
+                    android:textStyle="bold" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_day_report"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_weight="2"
+                app:cardCornerRadius="16dp"
+                app:layout_constraintBottom_toTopOf="@id/barrier_header"
+                app:layout_constraintStart_toEndOf="@id/card_month_report"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="8dp"
+                    android:text="Day"
+                    android:textColor="@color/cyan_600"
+                    android:textStyle="bold" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="card_day_report,card_month_report,card_year_report" />
+
+
+            <ImageButton
+                android:id="@+id/btn_prev"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginVertical="8dp"
+                android:layout_marginStart="16dp"
+                android:background="@color/transparent"
+                app:layout_constraintBottom_toTopOf="@id/barrier_date"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/barrier_header"
+                app:srcCompat="@drawable/ic_arrow_back"
+                app:tint="@color/black" />
+
+            <TextView
+                android:id="@+id/text_report_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                app:layout_constraintBottom_toTopOf="@id/barrier_date"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/barrier_header"
+                tools:text="21/12/2023" />
+
+            <ImageButton
+                android:id="@+id/btn_next"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="16dp"
+                android:background="@color/transparent"
+                app:layout_constraintBottom_toTopOf="@id/barrier_date"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/barrier_header"
+                app:srcCompat="@drawable/ic_arrow_front"
+                app:tint="@color/black" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="btn_prev, text_report_date, btn_next" />
+
+
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                style="@style/CircularDeterminateProgressBar"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_margin="16dp"
+                android:progress="60"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/barrier_date"
+                tools:progress="60" />
+
+            <TextView
+                android:id="@+id/text_marks_in_percent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="20%"
+                android:textColor="@color/green_500"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@id/progress_bar"
+                app:layout_constraintEnd_toEndOf="@id/progress_bar"
+                app:layout_constraintStart_toStartOf="@id/progress_bar"
+                app:layout_constraintTop_toTopOf="@id/progress_bar"
+                app:layout_constraintVertical_bias="0.4" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Marks"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@id/progress_bar"
+                app:layout_constraintEnd_toEndOf="@id/progress_bar"
+                app:layout_constraintStart_toStartOf="@id/progress_bar"
+                app:layout_constraintTop_toTopOf="@id/progress_bar"
+                app:layout_constraintVertical_bias="0.6" />
+
+            <TextView
+                android:id="@+id/text_positive_mark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Positive 40/200"
+                android:textColor="@color/green_500"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toTopOf="@id/text_negative_mark"
+                app:layout_constraintStart_toEndOf="@id/progress_bar"
+                app:layout_constraintTop_toTopOf="@id/progress_bar"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <TextView
+                android:id="@+id/text_negative_mark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="negative 40/50"
+                android:textColor="@color/red_500"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@id/progress_bar"
+                app:layout_constraintStart_toEndOf="@id/progress_bar"
+                app:layout_constraintTop_toBottomOf="@id/text_positive_mark" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier_report"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:barrierMargin="8dp"
+                app:constraint_referenced_ids="text_positive_mark,text_negative_mark,progress_bar" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:orientation="vertical"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/barrier_report"
+                tools:itemCount="2"
+                tools:listitem="@layout/item_std_report_in_details_with_date" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

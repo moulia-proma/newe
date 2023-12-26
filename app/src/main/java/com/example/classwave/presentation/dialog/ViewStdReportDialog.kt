@@ -26,6 +26,12 @@ import java.time.LocalDate
 
 
 class ViewStdReportDialog(private val stdId: String) : DialogFragment() {
+    enum class Type { DAY, MONTH, YEAR }
+
+    private var reportType = Type.DAY
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    var currentDate = LocalDate.now()
 
     private val viewModel: TeacherViewModel by activityViewModels()
     private var _binding: DialogViewStdReportBinding? = null
@@ -46,8 +52,7 @@ class ViewStdReportDialog(private val stdId: String) : DialogFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         _binding = DialogViewStdReportBinding.inflate(inflater, container, false)
         return binding.root
@@ -56,6 +61,7 @@ class ViewStdReportDialog(private val stdId: String) : DialogFragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        reportType = Type.DAY
         dayUpdate()
         initializeFlowCollectors()
 
@@ -65,8 +71,7 @@ class ViewStdReportDialog(private val stdId: String) : DialogFragment() {
         layoutManager.justifyContent = JustifyContent.FLEX_START
 
         binding.recyclerViewReportDetailsWithDate.layoutManager = layoutManager
-        binding.recyclerViewReportDetailsWithDate.adapter =
-            studentReportAdapterWithDate
+        binding.recyclerViewReportDetailsWithDate.adapter = studentReportAdapterWithDate
 
         // viewModel.fetchMarksByDay(stdId,date.toString())
     }
@@ -78,20 +83,7 @@ class ViewStdReportDialog(private val stdId: String) : DialogFragment() {
                 viewModel.markList.collectLatest { mark ->
                     if (mark != null) {
 
-                        val totalPos = mark.data?.let { viewModel.getTotalPosMarks(it) }
-                        val posAchived = mark.data?.let { viewModel.getTotalAchivedPosMarks(it) }
 
-                        val totalNeg = mark.data?.let { viewModel.getTotalNegMarks(it) }
-                        val negAchived = mark.data?.let { viewModel.getTotalAchivedNegMarks(it) }
-
-                        binding.textViewPositive.text = "Positive ${posAchived}/${totalPos}"
-                        binding.textViewNegative.text = "Negative -${negAchived}/-${totalNeg}"
-
-                        var progress =
-                            viewModel.getProgress(totalNeg, totalPos, negAchived, posAchived)
-
-                        binding.progressBar.progress = progress
-                        binding.textMarksInPercent.text = "${progress.toString()}%"
 
                         mark.data?.let {
                             markList = it
@@ -100,18 +92,12 @@ class ViewStdReportDialog(private val stdId: String) : DialogFragment() {
 
                         if (markList.isNotEmpty()) {
                             studentReportAdapterWithDate.setMarks(
-                                markList,
-                                requireContext(),
-                                date,
-                                dateListSize
+                                markList, requireContext(), date, dateListSize
                             )
 
                         } else {
                             studentReportAdapterWithDate.setMarks(
-                                markList,
-                                requireContext(),
-                                date,
-                                0
+                                markList, requireContext(), date, 0
                             )
 
                         }
@@ -129,12 +115,65 @@ class ViewStdReportDialog(private val stdId: String) : DialogFragment() {
     private fun registerListener() {
 
         binding.cardDayReport.setOnClickListener {
+            reportType = Type.DAY
             dayUpdate()
         }
 
         binding.cardMonthReport.setOnClickListener {
+            reportType = Type.MONTH
             monthUpdate()
         }
+
+        binding.imageViewBackArrow.setOnClickListener {
+            if (reportType == Type.DAY) {
+
+                date = arrayListOf(
+                    date[0].minusDays(1)
+                )
+                viewModel.fetchMarksByDay(stdId, date[0].toString())
+                binding.textDateFilter.text = date[0].toString()
+
+            } else if (reportType == Type.MONTH) {
+                currentDate = LocalDate.now()
+                binding.imageViewBackArrow.setOnClickListener {
+                    currentDate = currentDate.minusMonths(1)
+                    var str = "${currentDate.month.toString()} ${currentDate.year.toString()}"
+                    val d = date.distinct()
+                    date = d as ArrayList<LocalDate>
+                    Log.d("_xyz", "monthUpdate: $date ")
+
+                    studentReportAdapterWithDate.setMarks(
+                        markList, requireContext(), date, dateListSize
+                    )
+                    binding.textDateFilter.text = str
+                }
+
+            } else {
+
+
+            }
+
+        }
+
+
+
+        binding.imageViewFrontArrow.setOnClickListener {
+            if (reportType == Type.DAY) {
+                date = arrayListOf(
+                    date[0].plusDays(1)
+                )
+                viewModel.fetchMarksByDay(stdId, date[0].toString())
+                binding.textDateFilter.text = date[0].toString()
+
+            } else if (reportType == Type.MONTH) {
+                currentDate = currentDate.plusMonths(1)
+
+                var str = "${currentDate.month.toString()} ${currentDate.year.toString()}"
+                binding.textDateFilter.text = str
+            }
+
+        }
+
 
     }
 
@@ -164,9 +203,8 @@ class ViewStdReportDialog(private val stdId: String) : DialogFragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun monthUpdate() {
-
-
-        var currentDate = LocalDate.now()
+        date = arrayListOf()
+        date.add(LocalDate.now())
         var month = currentDate.month
         val year = currentDate.year
         var str = "${month.toString()} ${year.toString()}"
@@ -189,64 +227,20 @@ class ViewStdReportDialog(private val stdId: String) : DialogFragment() {
         }
 
 
-        val d = date.distinct()
-        date = d as ArrayList<LocalDate>
-        Log.d("_xyz", "monthUpdate: $date $d")
-        Log.d("_xyz", "monthUpdate: ${dat}")
-        studentReportAdapterWithDate.setMarks(
-            markList,
-            requireContext(),
-            date,
-            dateListSize
-        )
-
-
-
-
-//        binding.imageViewBackArrow.setOnClickListener {
-//            currentDate = currentDate.minusMonths(1)
-//            str = "${currentDate.month.toString()} ${currentDate.year.toString()}"
-//            binding.textDateFilter.text = str
-//        }
-//        binding.imageViewFrontArrow.setOnClickListener {
-//
-//            currentDate = currentDate.plusMonths(1)
-//
-//            str = "${currentDate.month.toString()} ${currentDate.year.toString()}"
-//            binding.textDateFilter.text = str
-//        }
-
-
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun dayUpdate() {
+
+        date = arrayListOf()
+        date.add(LocalDate.now())
+        Log.d("see", "dayUpdate: ${markList}  abcdefg ${date}")
         viewModel.fetchMarksByDay(stdId, date[0].toString())
         binding.textDateFilter.text = date[0].toString()
         if (markList.isNotEmpty()) {
             studentReportAdapterWithDate.setMarks(
-                markList,
-                requireContext(),
-                date,
-                dateListSize
+                markList, requireContext(), date, dateListSize
             )
-        }
-        binding.imageViewBackArrow.setOnClickListener {
-
-            date = arrayListOf(
-                date[0].minusDays(1)
-            )
-            viewModel.fetchMarksByDay(stdId, date[0].toString())
-            binding.textDateFilter.text = date[0].toString()
-        }
-
-        binding.imageViewFrontArrow.setOnClickListener {
-
-            date = arrayListOf(
-                date[0].plusDays(1)
-            )
-            viewModel.fetchMarksByDay(stdId, date[0].toString())
-            binding.textDateFilter.text = date[0].toString()
         }
 
 

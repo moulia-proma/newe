@@ -1,5 +1,6 @@
 package com.example.classwave.presentation.page.teacher
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +13,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.example.classwave.databinding.FragmentPositiveBinding
 import com.example.classwave.presentation.dialog.AddSkillDialog
 import com.example.classwave.presentation.dialog.ProvideMarksDialog
-import com.example.classwave.presentation.dialog.ViewStdReportDialog
+import com.example.classwave.presentation.page.report.Repo0rtActivity
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
@@ -51,11 +52,10 @@ class positiveFragment(val classId: String, val stdId: String) : Fragment() {
                 val dialog = AddSkillDialog(classId, "pos")
                 dialog.show(parentFragmentManager, "SkillDialog")
             }
-
-
             override fun onViewReportClicked() {
-                val dialog = ViewStdReportDialog(stdId)
-                dialog.show(parentFragmentManager, "viewStdDialog")
+                val intent = Intent(requireContext(), Repo0rtActivity::class.java)
+                intent.putExtra("student_id", stdId)
+                startActivity(intent)
             }
 
 

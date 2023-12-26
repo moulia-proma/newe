@@ -1,6 +1,7 @@
 package com.example.classwave.presentation.page.teacher
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,8 @@ import com.example.classwave.databinding.FragmentNeedsWorkBinding
 import com.example.classwave.presentation.dialog.AddSkillDialog
 import com.example.classwave.presentation.dialog.ProvideMarksDialog
 import com.example.classwave.presentation.dialog.ViewStdReportDialog
+import com.example.classwave.presentation.page.report.Repo0rtActivity
+import com.example.classwave.presentation.page.signup.SignUpActivity
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
@@ -53,8 +56,9 @@ class NeedsWorkFragment(val classId: String, val stdId: String) : Fragment() {
 
             @SuppressLint("SuspiciousIndentation")
             override fun onViewReportClicked() {
-             val dialog = ViewStdReportDialog(stdId)
-                 dialog.show(parentFragmentManager,"viewStdDialog")
+                val intent = Intent(requireContext(), Repo0rtActivity::class.java)
+                intent.putExtra("student_id" , stdId)
+                startActivity(intent)
             }
 
             override fun onSkillSelected(
