@@ -61,8 +61,8 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
     private val _addMarks = MutableStateFlow<Resource<Marks>?>(null)
     val addMarks = _addMarks.asStateFlow()
 
-    private val _uniqueDays= MutableStateFlow<String>("")
-    val marksByDay= _uniqueDays.asStateFlow()
+    private val _uniqueDays = MutableStateFlow<String>("")
+    val marksByDay = _uniqueDays.asStateFlow()
 
     private val clsImage = arrayListOf<Int>(
         R.drawable.cls_chemistry,
@@ -104,6 +104,7 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
         _selectedClass.value = cls
         fetchStudentByClassId(classId = cls.classId)
         fetchSkillByClassId(classId = cls.classId)
+        fetchSkillByClassId(classId = cls.classId)
     }
 
     fun getMarksDropdownList(highestScore: String, type: String): ArrayList<Int> {
@@ -128,25 +129,26 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
     }
 
     @SuppressLint("SuspiciousIndentation")
-    fun getTotalPosMarks(marks: List<Marks>):Int{
+    fun getTotalPosMarks(marks: List<Marks>): Int {
 
-        var sum =0
-        var i =0
-        while(i<marks.size){
-            if(marks[i].highestScore.toInt()>0)
-            sum += marks[i].highestScore.toInt()
-           i++
+        var sum = 0
+        var i = 0
+        while (i < marks.size) {
+            if (marks[i].highestScore.toInt() > 0)
+                sum += marks[i].highestScore.toInt()
+            i++
         }
         return sum
 
     }
-    @SuppressLint("SuspiciousIndentation")
-    fun getTotalNegMarks(marks: List<Marks>):Int{
 
-        var sum =0
-        var i =0
-        while(i<marks.size){
-            if(marks[i].highestScore.toInt()<=0){
+    @SuppressLint("SuspiciousIndentation")
+    fun getTotalNegMarks(marks: List<Marks>): Int {
+
+        var sum = 0
+        var i = 0
+        while (i < marks.size) {
+            if (marks[i].highestScore.toInt() <= 0) {
                 Log.d("sum", "getTotalNegMarks: ${marks[i].highestScore.toInt()}")
                 sum += kotlin.math.abs(marks[i].highestScore.toInt())
             }
@@ -157,39 +159,42 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
         return sum
 
     }
-    fun getTotalAchivedNegMarks(marks: List<Marks>):Int{
 
-        var sum =0
-        var i =0
-        while(i<marks.size){
-            if(marks[i].marks.toInt()<=0)
+    fun getTotalAchivedNegMarks(marks: List<Marks>): Int {
+
+        var sum = 0
+        var i = 0
+        while (i < marks.size) {
+            if (marks[i].marks.toInt() <= 0)
                 sum += kotlin.math.abs(marks[i].marks.toInt())
             i++
         }
         return sum
 
     }
-    fun getTotalAchivedPosMarks(marks: List<Marks>):Int{
 
-        var sum =0
-        var i =0
-        while(i<marks.size){
-            if(marks[i].marks.toInt()>0)
+    fun getTotalAchivedPosMarks(marks: List<Marks>): Int {
+
+        var sum = 0
+        var i = 0
+        while (i < marks.size) {
+            if (marks[i].marks.toInt() > 0)
                 sum += marks[i].marks.toInt()
             i++
         }
         return sum
 
     }
-    fun getProgress(totalNeg: Int?, totalPos: Int?, negAchived: Int?, posAchived: Int?):Int {
+
+    fun getProgress(totalNeg: Int?, totalPos: Int?, negAchived: Int?, posAchived: Int?): Int {
 
 
         if (posAchived != null) {
-            if(posAchived>0){
-                return ((posAchived / (totalPos!!*1.0)*100)).toInt()
+            if (posAchived > 0) {
+                return ((posAchived / (totalPos!! * 1.0) * 100)).toInt()
             }
-            }
-            return 0
+        }
+        return 0
 
 
     }
@@ -226,7 +231,7 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    private fun fetchStudentByClassId(classId: String) {
+    fun fetchStudentByClassId(classId: String) {
         _studentList.value = Resource.Loading()
         viewModelScope.launch(Dispatchers.IO) {
             dbStdRef.addListenerForSingleValueEvent(
@@ -345,9 +350,22 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
         val clsId = dbRef.push().key
         val clsRoom = Class(clsId ?: "", uid ?: "", name, grade, clsImage.random().toString())
 
+
+        val attendanceSkill = clsId?.let {
+            Skill(
+                it,
+                "attendance123",
+                "Attendance",
+                "1",
+                (R.drawable.cls_alculating).toString(),
+                "pos"
+            )
+        }
+
         dbRef.push().setValue(clsRoom)
             .addOnCompleteListener {
                 _createClass.value = Resource.Success(clsRoom)
+                dbSkillRef.push().setValue(attendanceSkill)
             }
             .addOnFailureListener {
                 _createClass.value = Resource.Error("User creation Failed")
@@ -417,9 +435,10 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
         score: String,
         name: String,
         img: String,
-        highestScore: String
+        highestScore: String,
+        clsId: String
     ) {
-        val st = (skillId+"_"+stdId)
+        val st = (skillId + "_" + stdId)
         Log.d("tag", "addMarks: ${st}")
 
 
@@ -429,18 +448,32 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
 
                         dataSnapshot.children.forEach { mark ->
-                            Log.d("xyz", "onDataChange: ${mark.child("stdId").value.toString()}  ${stdId}")
-                            Log.d("man", "${mark.child("skillIdStdId").value.toString() } ${st}")
+                            Log.d(
+                                "xyz",
+                                "onDataChange: ${mark.child("stdId").value.toString()}  ${stdId}"
+                            )
+                            Log.d("man", "${mark.child("skillIdStdId").value.toString()} ${st}")
                             if (mark.child("skillIdStdId").value.toString() == st) {
                                 val k = mark.key
-                                 FirebaseDatabase.getInstance().getReference("Marks").child(k.toString()).removeValue()
+                                FirebaseDatabase.getInstance().getReference("Marks")
+                                    .child(k.toString()).removeValue()
                             }
 
                         }
                         _addMarks.value = Resource.Loading()
 
                         val currentDate = LocalDate.now()
-                        val mark = Marks(skillId, stdId, score, currentDate.toString(), st,name,img,highestScore)
+                        val mark = Marks(
+                            clsId,
+                            skillId,
+                            stdId,
+                            score,
+                            currentDate.toString(),
+                            st,
+                            name,
+                            img,
+                            highestScore
+                        )
 
                         dbMarksRef.push().setValue(mark)
                             .addOnCompleteListener {
@@ -460,81 +493,41 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
         }
 
     }
-    fun fetchStudentReport(stdId: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            dbMarksRef.addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val markList = arrayListOf<Marks>()
-                        dataSnapshot.children.forEach { mark ->
-                            Log.d("xyz", "onDataChange: ${mark.child("stdId").value.toString()}  ${stdId}")
-                            Log.d("TAG", "onDataChange:${mark.child("stdId").value.toString()}  ${stdId}")
-                            if (mark.child("stdId").value.toString() == stdId) {
-                                markList.add(
-                                    Marks(
-                                        mark.child("skillId").value.toString(),
-                                        mark.child("stdId").value.toString(),
-                                        mark.child("marks").value.toString(),
-                                        mark.child("date").value.toString(),
-                                        mark.child("skillIdStdId").value.toString(),
-                                        mark.child("skillName").value.toString(),
-                                        mark.child("skillPhoto").value.toString(),
-                                        mark.child("highestScore").value.toString()
+    /*    fun fetchStudentReport(stdId: String) {
+            viewModelScope.launch(Dispatchers.IO) {
+                dbMarksRef.addListenerForSingleValueEvent(
+                    object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            val markList = arrayListOf<Marks>()
+                            dataSnapshot.children.forEach { mark ->
+                                Log.d("xyz", "onDataChange: ${mark.child("stdId").value.toString()}  ${stdId}")
+                                Log.d("TAG", "onDataChange:${mark.child("stdId").value.toString()}  ${stdId}")
+                                if (mark.child("stdId").value.toString() == stdId) {
+                                    markList.add(
+                                        Marks(
+                                            mark.child("skillId").value.toString(),
+                                            mark.child("stdId").value.toString(),
+                                            mark.child("marks").value.toString(),
+                                            mark.child("date").value.toString(),
+                                            mark.child("skillIdStdId").value.toString(),
+                                            mark.child("skillName").value.toString(),
+                                            mark.child("skillPhoto").value.toString(),
+                                            mark.child("highestScore").value.toString()
+                                        )
                                     )
-                                )
+                                }
+
                             }
-
+                            _markList.value = Resource.Success(markList)
                         }
-                        _markList.value = Resource.Success(markList)
-                    }
 
-                    override fun onCancelled(databaseError: DatabaseError) {
-                        _markList.value = Resource.Error("Data Retrieve unsuccessful")
-                    }
-                })
-        }
-
-    }
-
-    fun fetchMarksByDay(stdId: String,date:String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            dbMarksRef.addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val markList = arrayListOf<Marks>()
-                        dataSnapshot.children.forEach { mark ->
-                            Log.d("date", "onDataChange: ${mark.child("date").value.toString()}   ${date}" )
-                            if (mark.child("stdId").value.toString() == stdId ) {
-                                markList.add(
-                                    Marks(
-                                        mark.child("skillId").value.toString(),
-                                        mark.child("stdId").value.toString(),
-                                        mark.child("marks").value.toString(),
-                                        mark.child("date").value.toString(),
-                                        mark.child("skillIdStdId").value.toString(),
-                                        mark.child("skillName").value.toString(),
-                                        mark.child("skillPhoto").value.toString(),
-                                        mark.child("highestScore").value.toString()
-                                    )
-                                )
-                            }
-
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            _markList.value = Resource.Error("Data Retrieve unsuccessful")
                         }
-                        _markList.value = Resource.Success(markList)
-                    }
+                    })
+            }
 
-                    override fun onCancelled(databaseError: DatabaseError) {
-                        _markList.value = Resource.Error("Data Retrieve unsuccessful")
-                    }
-                })
-        }
-
-    }
-
-
-
-
-
+        }*/
 
 
 }
@@ -558,13 +551,14 @@ data class Skill(
 )
 
 data class Marks(
+    val classId: String,
     var skillId: String,
     var stdId: String,
     var marks: String,
     var date: String,
     var skillIdStdId: String,
-    var skillName:String,
-    var skillPhoto:String,
+    var skillName: String,
+    var skillPhoto: String,
     var highestScore: String
 )
 

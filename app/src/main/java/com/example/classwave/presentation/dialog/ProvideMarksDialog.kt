@@ -54,7 +54,7 @@ class ProvideMarksDialog(
     private fun registerListener() {
         binding.btnAddMarks.setOnClickListener {
           val mark =  binding.autoCompleteTextViewDropdownItems.text.toString()
-            viewModel.addMarks(stdId,skillId,mark,name,img,highestScore)
+            viewModel.addMarks(stdId,skillId,mark,name,img,highestScore,clsId)
 
             dismiss()
 

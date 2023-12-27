@@ -29,11 +29,11 @@ class ReportViewModel @Inject constructor() : ViewModel() {
     )
     var reportList: StateFlow<Resource<MutableMap<String, MutableList<Report>>>> =
         _reportList.asStateFlow()
-    private val _reportPercentage = MutableStateFlow<MutableMap<ReportPercentage, String>>(
-        mutableMapOf()
+    private val _reportClassList = MutableStateFlow<Resource<MutableMap<String, MutableList<Report>>>>(
+        Resource.Success(mutableMapOf())
     )
-    var reportPercentage: StateFlow<MutableMap<ReportPercentage, String>> =
-        _reportPercentage.asStateFlow()
+    var reportClassList: StateFlow<Resource<MutableMap<String, MutableList<Report>>>> =
+        _reportClassList.asStateFlow()
 
     fun fetchReport(stdId: String, day: Int?, month: Int?, year: Int?) {
 
@@ -70,7 +70,60 @@ class ReportViewModel @Inject constructor() : ViewModel() {
                         }
 
                         _reportList.value = Resource.Success(reportMaps)
-                        getTotalPosMarks(reportMaps)
+                       /* getTotalPosMarks(reportMaps)
+                        getTotalNegMarks(reportMaps)
+                        getTotalAchivedNegMarks(reportMaps)
+                        getTotalAchivedPosMarks(reportMaps)*/
+                    }
+
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        _reportList.value = Resource.Error("Data Retrieve unsuccessful")
+                    }
+                })
+        }
+    }
+    fun fetchClassReport(clsId: String, day: Int?, month: Int?, year: Int?) {
+
+        val regex = createRegex(year, month, day)
+
+        viewModelScope.launch(Dispatchers.IO) {
+            dbMarksRef.addListenerForSingleValueEvent(
+                object : ValueEventListener {
+                    @RequiresApi(Build.VERSION_CODES.O)
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        val reportMaps: MutableMap<String, MutableList<Report>> = mutableMapOf()
+
+                        dataSnapshot.children.filter {
+                            Log.d("IT", "onDataChange: ${it}")
+                            Log.d("_debug", "onDataChange: ${  it.child("classId").value.toString()} ${clsId}  ${ it.child("date").value.toString().matches(regex)}")
+                            it.child("classId").value.toString() == clsId &&
+                                    it.child(
+                                        "date"
+                                    ).value.toString().matches(regex)
+                        }.forEach { mark ->
+
+                            val report = Report(
+                                mark.child("skillId").value.toString(),
+                                mark.child("stdId").value.toString(),
+                                mark.child("marks").value.toString(),
+                                mark.child("date").value.toString(),
+                                mark.child("skillIdStdId").value.toString(),
+                                mark.child("skillName").value.toString(),
+                                mark.child("skillPhoto").value.toString(),
+                                mark.child("highestScore").value.toString()
+                            )
+                            val dateInStr = mark.child("date").value.toString()
+                            val data = reportMaps[dateInStr] ?: mutableListOf()
+                            data.add(report)
+                            reportMaps[dateInStr] = data
+                        }
+                        Log.d("pik", "onDataChange: ${reportMaps}")
+
+                        _reportClassList.value = Resource.Success(reportMaps)
+                        /* getTotalPosMarks(reportMaps)
+                         getTotalNegMarks(reportMaps)
+                         getTotalAchivedNegMarks(reportMaps)
+                         getTotalAchivedPosMarks(reportMaps)*/
                     }
 
                     override fun onCancelled(databaseError: DatabaseError) {
@@ -97,7 +150,7 @@ class ReportViewModel @Inject constructor() : ViewModel() {
         return Regex(regexPattern)
     }
 
-    fun getTotalPosMarks(marks: MutableMap<String, MutableList<Report>>) {
+    fun getTotalPosMarks(marks: MutableMap<String, MutableList<Report>>) : Int{
         var sum = 0
         var map = mutableMapOf<String, String>()
         marks.forEach { key ->
@@ -108,11 +161,11 @@ class ReportViewModel @Inject constructor() : ViewModel() {
             }
         }
 
-        _reportPercentage.value[ReportPercentage.TotalPositive] = sum.toString()
+       return sum
     }
 
-    fun getTotalNegMarks(marks: MutableMap<String, MutableList<Report>>) {
-
+    fun getTotalNegMarks(marks: MutableMap<String, MutableList<Report>>):Int {
+        Log.d("pp", "getTotalNegMarks: I m negative")
         var sum = 0
 
         var map = mutableMapOf<String, String>()
@@ -129,19 +182,21 @@ class ReportViewModel @Inject constructor() : ViewModel() {
             }
         }
 
-        _reportPercentage.value[ReportPercentage.TotalNegative] = sum.toString()
+       return sum
 
 
     }
 
-    fun getTotalAchivedNegMarks(marks: MutableMap<String, MutableList<Report>>){
+    fun getTotalAchivedNegMarks(marks: MutableMap<String, MutableList<Report>>):Int{
 
         var sum =0
         var map = mutableMapOf<String, String>()
+        Log.d("_size", "getTotalAchivedNegMarks: ${marks.size}")
         marks.forEach {key->
             val list = marks[key.key]
             Log.d("_pro", "getTotalPosMarks: ${list}")
             if (list != null) {
+                Log.d("_abc", "getTotalAchivedNegMarks: ${sum}")
                 list.forEach {
                     if(it.marks.toInt()<=0)
                         sum += kotlin.math.abs(it.marks.toInt())
@@ -149,12 +204,12 @@ class ReportViewModel @Inject constructor() : ViewModel() {
 
                 }
             }
-        _reportPercentage.value[ReportPercentage.AchievedNegative] = sum.toString()
+        return sum
 
 
     }
 
-    fun getTotalAchivedPosMarks(marks: MutableMap<String, MutableList<Report>>){
+    fun getTotalAchivedPosMarks(marks: MutableMap<String, MutableList<Report>>):Int{
 
         var sum =0
         var map = mutableMapOf<String, String>()
@@ -163,30 +218,28 @@ class ReportViewModel @Inject constructor() : ViewModel() {
             Log.d("_pro", "getTotalPosMarks: ${list}")
             if (list != null) {
                 list.forEach {
+                    Log.d("_pos", "getTotalAchivedPosMarks: ${sum}")
                     if(it.marks.toInt()>0)
                         sum += it.marks.toInt()
                 }
 
             }
         }
-        _reportPercentage.value[ReportPercentage.AchievedPositive] = sum.toString()
+        return sum
 
 
     }
 
 
- /*   fun getProgress(reportPercentage: ReportPercentage[reportPercentage: ReportPercentage.]):Int {
+    fun getProgress(totalPos:Int,achievedPos:Int):Int {
 
-
-        if (posAchived != null) {
-            if(posAchived>0){
-                return ((posAchived / (totalPos!!*1.0)*100)).toInt()
+        if (achievedPos!= null) {
+            if(achievedPos>0){
+                return ((achievedPos / (totalPos!!*1.0)*100)).toInt()
             }
         }
         return 0
-
-
-    }*/
+    }
 }
 
 enum class FilterType {

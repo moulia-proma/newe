@@ -1,25 +1,22 @@
 package com.example.classwave.presentation.page.report
 
 import android.os.Build
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.example.classwave.R
 import com.example.classwave.databinding.ActivityReportBinding
 import com.example.classwave.domain.model.Resource
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
-
-@AndroidEntryPoint
-class Repo0rtActivity : AppCompatActivity() {
-
+class ClassReportActivity : AppCompatActivity() {
     private lateinit var binding: ActivityReportBinding
     private val viewModel: ReportViewModel by viewModels()
 
@@ -38,12 +35,12 @@ class Repo0rtActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private var currentDate = LocalDate.now()
-    private var stdId = ""
-
+    private var clsId= ""
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
-        stdId = intent.getStringExtra("student_id").toString()
         super.onCreate(savedInstanceState)
+        clsId= intent.getStringExtra("clsId").toString()
+
 
         binding = ActivityReportBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -56,9 +53,9 @@ class Repo0rtActivity : AppCompatActivity() {
         binding.textReportDate.text = currentDate.toString()
 
 
-        if (stdId != null) {
-            viewModel.fetchReport(
-                stdId = stdId!!,
+        if (clsId != null) {
+            viewModel.fetchClassReport(
+                clsId = clsId!!,
                 day = selectedDay,
                 month = selectedMonth,
                 year = selectedYear,
@@ -68,13 +65,13 @@ class Repo0rtActivity : AppCompatActivity() {
 
         registerListener()
         initializeFlowCollectors()
-    }
 
+    }
     private fun initializeFlowCollectors() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.reportList.collectLatest { data ->
+                viewModel.reportClassList.collectLatest { data ->
                     when (data) {
                         is Resource.Error -> {}
                         is Resource.Loading -> {}
@@ -82,6 +79,7 @@ class Repo0rtActivity : AppCompatActivity() {
 
                             Log.d("_xyz", "initializeFlowCollectors: called ${data.data}")
                             data.data?.let {
+                                Log.d("oo", "initializeFlowCollectors: ${it}")
                                 reportParentAdapter.setReports(it)
                                 Log.d("_check", "initializeFlowCollectors: ${it}")
                                 viewModel.getTotalPosMarks(it)
@@ -126,8 +124,8 @@ class Repo0rtActivity : AppCompatActivity() {
                 Log.d("_xyz", "registerListener: jj")
                 currentDate = currentDate.plusDays(1)
                 binding.textReportDate.text = currentDate.toString()
-                stdId?.let { it1 ->
-                    viewModel.fetchReport(
+                clsId?.let { it1 ->
+                    viewModel.fetchClassReport(
                         it1,
                         currentDate.dayOfMonth,
                         currentDate.monthValue,
@@ -141,8 +139,8 @@ class Repo0rtActivity : AppCompatActivity() {
                 currentDate = currentDate.plusMonths(1)
                 binding.textReportDate.text =
                     currentDate.month.toString() + " " + currentDate.year.toString()
-                stdId?.let { it1 ->
-                    viewModel.fetchReport(
+                clsId?.let { it1 ->
+                    viewModel.fetchClassReport(
                         it1, null, currentDate.monthValue, currentDate.year
                     )
                 }
@@ -151,8 +149,8 @@ class Repo0rtActivity : AppCompatActivity() {
 
                 currentDate = currentDate.plusYears(1)
                 binding.textReportDate.text = currentDate.year.toString()
-                stdId?.let { it1 ->
-                    viewModel.fetchReport(
+                clsId?.let { it1 ->
+                    viewModel.fetchClassReport(
                         it1, null, null, currentDate.year
                     )
                 }
@@ -166,8 +164,8 @@ class Repo0rtActivity : AppCompatActivity() {
                 Log.d("_xyz", "registerListener: jj")
                 currentDate = currentDate.minusDays(1)
                 binding.textReportDate.text = currentDate.toString()
-                stdId?.let { it1 ->
-                    viewModel.fetchReport(
+                clsId?.let { it1 ->
+                    viewModel.fetchClassReport(
                         it1, currentDate.dayOfMonth, null, currentDate.year
                     )
                 }
@@ -178,8 +176,8 @@ class Repo0rtActivity : AppCompatActivity() {
                 currentDate = currentDate.minusMonths(1)
                 binding.textReportDate.text =
                     currentDate.month.toString() + " " + currentDate.year.toString()
-                stdId?.let { it1 ->
-                    viewModel.fetchReport(
+                clsId?.let { it1 ->
+                    viewModel.fetchClassReport(
                         it1, null, currentDate.monthValue, currentDate.year
                     )
                 }
@@ -187,8 +185,8 @@ class Repo0rtActivity : AppCompatActivity() {
             if (selectedFilterType == FilterType.Year) {
                 currentDate = currentDate.minusYears(1)
                 binding.textReportDate.text = currentDate.year.toString()
-                stdId?.let { it1 ->
-                    viewModel.fetchReport(
+                clsId?.let { it1 ->
+                    viewModel.fetchClassReport(
                         it1, null, null, currentDate.year
                     )
                 }
@@ -199,8 +197,8 @@ class Repo0rtActivity : AppCompatActivity() {
             currentDate = LocalDate.now()
             selectedFilterType = FilterType.Day
             binding.textReportDate.text = currentDate.toString()
-            stdId?.let { it1 ->
-                viewModel.fetchReport(
+          clsId?.let { it1 ->
+                viewModel.fetchClassReport(
                     it1,
                     currentDate.dayOfMonth,
                     currentDate.monthValue,
@@ -216,8 +214,8 @@ class Repo0rtActivity : AppCompatActivity() {
             selectedFilterType = FilterType.Month
             binding.textReportDate.text =
                 currentDate.month.toString() + " " + currentDate.year.toString()
-            stdId?.let { it1 ->
-                viewModel.fetchReport(
+           clsId?.let { it1 ->
+                viewModel.fetchClassReport(
                     it1, null, currentDate.monthValue, currentDate.year
                 )
             }
@@ -227,8 +225,8 @@ class Repo0rtActivity : AppCompatActivity() {
             currentDate = LocalDate.now()
             binding.textReportDate.text = currentDate.year.toString()
             selectedFilterType = FilterType.Year
-            stdId?.let { it1 ->
-                viewModel.fetchReport(
+            clsId?.let { it1 ->
+                viewModel.fetchClassReport(
                     it1, null, null, currentDate.year
                 )
             }

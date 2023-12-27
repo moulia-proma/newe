@@ -1,5 +1,6 @@
 package com.example.classwave.presentation.page.teacher
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,6 +15,9 @@ import com.example.classwave.databinding.FragmentTeacherHomeBinding
 import com.example.classwave.domain.model.Resource
 import com.example.classwave.presentation.dialog.AddNewStdDialog
 import com.example.classwave.presentation.dialog.SkillDialog
+import com.example.classwave.presentation.page.Attandance.AttendanceActivity
+import com.example.classwave.presentation.page.report.ClassReportActivity
+import com.example.classwave.presentation.page.report.Repo0rtActivity
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
@@ -30,6 +34,8 @@ class TeacherHomeFragment : Fragment() {
     private var addStudentAdapter = AddStudentAdapter()
 
     private lateinit var student: List<Student>
+    var clsId=""
+    var stdId=""
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -37,6 +43,7 @@ class TeacherHomeFragment : Fragment() {
         _binding = FragmentTeacherHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
@@ -71,10 +78,26 @@ class TeacherHomeFragment : Fragment() {
                 dialog.show(parentFragmentManager, "ProvideMarksdialog")
             }
 
+
         })
 
 
+
         initializeFlowCollectors()
+        registerListener()
+    }
+
+    fun registerListener(){
+        binding.cardClassReport.setOnClickListener {
+            val intent = Intent(requireContext(), ClassReportActivity::class.java)
+            intent.putExtra("clsId" ,clsId)
+            startActivity(intent)
+        }
+        binding.cardAttendance.setOnClickListener {
+            val intent = Intent(requireContext(), AttendanceActivity::class.java)
+            intent.putExtra("clsId" ,clsId)
+            startActivity(intent)
+        }
     }
 
     private fun initializeFlowCollectors() {
@@ -85,7 +108,7 @@ class TeacherHomeFragment : Fragment() {
                         binding.toolbar.title = cls.name
                         Log.d("TAG", "initializeFlowCollectors: stdAdapter called ")
                         addStudentAdapter.setId(cls.classId)
-
+                        clsId=cls.classId
                     } else {
                         binding.toolbar.title = "No Class"
                     }
@@ -98,7 +121,6 @@ class TeacherHomeFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.studentList.collectLatest { std ->
                     if (std != null) {
-
                         binding.progressBarStudentLoading.visibility = View.INVISIBLE
                         std.data?.let { addStudentAdapter.setStudents(it) }
 

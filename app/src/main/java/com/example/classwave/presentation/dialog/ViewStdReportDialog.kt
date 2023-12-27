@@ -130,7 +130,7 @@ class ViewStdReportDialog(private val stdId: String) : DialogFragment() {
                 date = arrayListOf(
                     date[0].minusDays(1)
                 )
-                viewModel.fetchMarksByDay(stdId, date[0].toString())
+               /* viewModel.fetchMarksByDay(stdId, date[0].toString())*/
                 binding.textDateFilter.text = date[0].toString()
 
             } else if (reportType == Type.MONTH) {
@@ -162,7 +162,7 @@ class ViewStdReportDialog(private val stdId: String) : DialogFragment() {
                 date = arrayListOf(
                     date[0].plusDays(1)
                 )
-                viewModel.fetchMarksByDay(stdId, date[0].toString())
+         /*       viewModel.fetchMarksByDay(stdId, date[0].toString())*/
                 binding.textDateFilter.text = date[0].toString()
 
             } else if (reportType == Type.MONTH) {
@@ -235,7 +235,7 @@ class ViewStdReportDialog(private val stdId: String) : DialogFragment() {
         date = arrayListOf()
         date.add(LocalDate.now())
         Log.d("see", "dayUpdate: ${markList}  abcdefg ${date}")
-        viewModel.fetchMarksByDay(stdId, date[0].toString())
+        /*viewModel.fetchMarksByDay(stdId, date[0].toString())*/
         binding.textDateFilter.text = date[0].toString()
         if (markList.isNotEmpty()) {
             studentReportAdapterWithDate.setMarks(
