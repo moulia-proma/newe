@@ -83,7 +83,8 @@ class Repo0rtActivity : AppCompatActivity() {
                             data.data?.let {
                                 reportParentAdapter.setReports(it)
                             }
-      /*                      val totalPos = data.data?.let { viewModel.getTotalPosMarks(it) }
+
+                          /*  val totalPos = data.data?.let { viewModel.getTotalPosMarks(it) }
                             val posAchived = data.data?.let { viewModel.getTotalAchivedPosMarks(it) }
 
                             val totalNeg = data.data?.let { viewModel.getTotalNegMarks(it) }
@@ -96,8 +97,7 @@ class Repo0rtActivity : AppCompatActivity() {
                                 viewModel.getProgress(totalNeg, totalPos, negAchived, posAchived)
 
                             binding.progressBar.progress = progress
-                            binding.textMarksInPercent.text = "${progress.toString()}%"
-                            */
+                            binding.textMarksInPercent.text = "${progress.toString()}%"*/
 
 
 

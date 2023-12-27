@@ -25,7 +25,7 @@ class AddSkillDialog(private val clsId: String, private val typeofSkill: String)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View?{
+    ): View? {
         _binding = DialogAddSkillBinding.inflate(inflater, container, false)
         return binding.root
     }
