@@ -28,52 +28,38 @@ class AttendanceViewModel @Inject constructor() : ViewModel() {
     )
     var reportList: StateFlow<Resource<MutableMap<String, MutableList<Report>>>> =
         _reportList.asStateFlow()
+
     private val _studentList = MutableStateFlow<Resource<List<Student>>?>(null)
     var studentList = _studentList.asStateFlow()
     private var dbStdRef = FirebaseDatabase.getInstance().getReference("Students")
     private val _addMarks = MutableStateFlow<Resource<Marks>?>(null)
     val addMarks = _addMarks.asStateFlow()
 
-
-    fun fetchReport(stdId: String, day: Int?, month: Int?, year: Int?) {
-
-        val regex = createRegex(year, month, day)
-
+    private var _attendance = MutableStateFlow<MutableMap<String,Boolean>>(mutableMapOf())
+    val attendance = _attendance.asStateFlow()
+    fun fetchAttendance() {
         viewModelScope.launch(Dispatchers.IO) {
             dbMarksRef.addListenerForSingleValueEvent(
                 object : ValueEventListener {
                     @RequiresApi(Build.VERSION_CODES.O)
+                     var attendance = mutableMapOf<String,Boolean>()
+
+                    @RequiresApi(Build.VERSION_CODES.O)
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val reportMaps: MutableMap<String, MutableList<Report>> = mutableMapOf()
+
 
                         dataSnapshot.children.filter {
-                            it.child("stdId").value.toString() == stdId &&
-                                    it.child(
-                                        "date"
-                                    ).value.toString().matches(regex)
+                            it.child("date").value == LocalDate.now()
+                                .toString() && it.child("skillId").value == "attendance123"
                         }.forEach { mark ->
+                            attendance[mark.child("stdId").value.toString()] =
+                                mark.child("marks").value.toString().toBoolean()
 
-                            val report = Report(
-                                mark.child("skillId").value.toString(),
-                                mark.child("stdId").value.toString(),
-                                mark.child("marks").value.toString(),
-                                mark.child("date").value.toString(),
-                                mark.child("skillIdStdId").value.toString(),
-                                mark.child("skillName").value.toString(),
-                                mark.child("skillPhoto").value.toString(),
-                                mark.child("highestScore").value.toString()
-                            )
-                            val dateInStr = mark.child("date").value.toString()
-                            val data = reportMaps[dateInStr] ?: mutableListOf()
-                            data.add(report)
-                            reportMaps[dateInStr] = data
+
                         }
+                        Log.d("pk", "onDataChange: $attendance")
 
-                        _reportList.value = Resource.Success(reportMaps)
-                        /* getTotalPosMarks(reportMaps)
-                         getTotalNegMarks(reportMaps)
-                         getTotalAchivedNegMarks(reportMaps)
-                         getTotalAchivedPosMarks(reportMaps)*/
+                        _attendance.value = attendance
                     }
 
                     override fun onCancelled(databaseError: DatabaseError) {
@@ -81,6 +67,44 @@ class AttendanceViewModel @Inject constructor() : ViewModel() {
                     }
                 })
         }
+    }
+    fun fetchStudentByClassId(classId: String) {
+        _studentList.value = Resource.Loading()
+        viewModelScope.launch(Dispatchers.IO) {
+            dbStdRef.addListenerForSingleValueEvent(
+                object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        Log.d("TAG", "onDataChange dataSnapshot: ${dataSnapshot}")
+                        val studentList = arrayListOf<Student>()
+                        dataSnapshot.children.forEach { student ->
+
+                            if (student.child("classId").value.toString() == classId) {
+                                Log.d(
+                                    "TAG",
+                                    "onDataChange name: ${student.child("StudentName").value.toString()}"
+                                )
+                                studentList.add(
+                                    Student(
+                                        student.child("classId").value.toString(),
+                                        student.child("studentId").value.toString(),
+                                        student.child("studentName").value.toString(),
+                                        student.child("img").value.toString(),
+                                    )
+                                )
+
+                            }
+
+                        }
+                        _studentList.value = Resource.Success(studentList)
+                    }
+
+                    override fun onCancelled(databaseError: DatabaseError) {
+
+                    }
+                })
+        }
+
+
     }
     fun addMarks(
         stdId: String,
@@ -148,7 +172,7 @@ class AttendanceViewModel @Inject constructor() : ViewModel() {
 
     }
 
-    fun fetchStudentByClassId(classId: String) {
+    /*fun defaultAttendance(classId: String) {
         _studentList.value = Resource.Loading()
         viewModelScope.launch(Dispatchers.IO) {
             dbStdRef.addListenerForSingleValueEvent(
@@ -185,7 +209,7 @@ class AttendanceViewModel @Inject constructor() : ViewModel() {
         }
 
 
-    }
+    }*/
 
     private fun createRegex(year: Int?, month: Int?, day: Int?): Regex {
         val yearRegex = year?.toString() ?: "\\d{4}"

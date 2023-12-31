@@ -17,7 +17,6 @@ import com.example.classwave.presentation.dialog.AddNewStdDialog
 import com.example.classwave.presentation.dialog.SkillDialog
 import com.example.classwave.presentation.page.Attandance.AttendanceActivity
 import com.example.classwave.presentation.page.report.ClassReportActivity
-import com.example.classwave.presentation.page.report.Repo0rtActivity
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
@@ -34,8 +33,9 @@ class TeacherHomeFragment : Fragment() {
     private var addStudentAdapter = AddStudentAdapter()
 
     private lateinit var student: List<Student>
-    var clsId=""
-    var stdId=""
+    var clsId = ""
+    var stdId = ""
+    private lateinit var clas: Class
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -87,15 +87,16 @@ class TeacherHomeFragment : Fragment() {
         registerListener()
     }
 
-    fun registerListener(){
+    fun registerListener() {
         binding.cardClassReport.setOnClickListener {
             val intent = Intent(requireContext(), ClassReportActivity::class.java)
-            intent.putExtra("clsId" ,clsId)
+            intent.putExtra("clsId", clsId)
             startActivity(intent)
         }
         binding.cardAttendance.setOnClickListener {
             val intent = Intent(requireContext(), AttendanceActivity::class.java)
-            intent.putExtra("clsId" ,clsId)
+            intent.putExtra("clsId", clsId)
+            intent.putExtra("stdId", stdId)
             startActivity(intent)
         }
     }
@@ -108,7 +109,9 @@ class TeacherHomeFragment : Fragment() {
                         binding.toolbar.title = cls.name
                         Log.d("TAG", "initializeFlowCollectors: stdAdapter called ")
                         addStudentAdapter.setId(cls.classId)
-                        clsId=cls.classId
+                        clsId = cls.classId
+                        clas = cls
+
                     } else {
                         binding.toolbar.title = "No Class"
                     }

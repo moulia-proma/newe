@@ -19,6 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.io.Serializable
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -533,8 +534,9 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
 }
 
 
+
 data class Class(
-    var classId: String,
+   var classId: String,
     var teacherId: String,
     var name: String,
     var grade: String,

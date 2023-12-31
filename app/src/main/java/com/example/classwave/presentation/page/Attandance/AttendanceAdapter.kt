@@ -13,10 +13,10 @@ class AttendanceAdapter : RecyclerView.Adapter<AttendanceAdapter.ViewHolder>() {
     lateinit var classId: String
 
     private var mListener: AttendanceAdapter.Listener? = null
-    private var attendance = arrayListOf<Boolean>()
+    private var attendance = mutableMapOf<String, Boolean>()
 
     interface Listener {
-        fun onStudentClicked( b: Boolean, position: Int, studentId: String)
+        fun onStudentClicked(b: Boolean, studentId: String)
 
     }
 
@@ -34,14 +34,22 @@ class AttendanceAdapter : RecyclerView.Adapter<AttendanceAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         Log.d("abc", "onBindViewHolder:ee")
-        attendance.add(false)
         holder.Attendance(mStudentList[position], position)
     }
 
     fun setStudents(students: List<Student>) {
         mStudentList = students
         notifyDataSetChanged()
+
     }
+
+    fun setDefaultAttendance(attendance: MutableMap<String, Boolean>) {
+        this.attendance = attendance
+        Log.d("pik", "setDefaultAttendance: ${this.attendance.size}")
+        notifyDataSetChanged()
+
+    }
+
 
     fun setListener(listener: AttendanceAdapter.Listener) {
         mListener = listener
@@ -53,22 +61,41 @@ class AttendanceAdapter : RecyclerView.Adapter<AttendanceAdapter.ViewHolder>() {
         @SuppressLint("SuspiciousIndentation")
 
         fun Attendance(student: Student, position: Int) {
+            Log.d("pik", "Attendance: ${attendance[student.studentId]}")
 
-            Log.d("_siz", "Attendance: ${attendance.size}")
             binding.textViewName.text = student.studentName
+            if (attendance[student.studentId] == null) {
+                attendance[student.studentId] = false
+            }
+            if (attendance[student.studentId] == true) {
+                binding.textViewAttendance.text = "1"
 
+            } else {
+                binding.textViewAttendance.text = "0"
+            }
             binding.textViewName.setOnClickListener {
-                attendance[position] = !attendance[position]
-                if (attendance[position]) {
-                    binding.textViewAttendance.text = "1"
 
+                attendance[student.studentId] = !attendance[student.studentId]!!
+                if (attendance[student.studentId] == true) {
+                    binding.textViewAttendance.text = "1"
                 } else {
-                    binding.textViewAttendance.text = "N/A"
+                    binding.textViewAttendance.text = "0"
                 }
-                mListener?.onStudentClicked(attendance[position],position,student.studentId)
+                attendance[student.studentId]?.let { it1 ->
+                    mListener?.onStudentClicked(
+                        it1,
+                        student.studentId
+                    )
+                }
 
             }
 
+            attendance[student.studentId]?.let {
+                mListener?.onStudentClicked(
+                    it,
+                    student.studentId
+                )
+            }
 
         }
     }
