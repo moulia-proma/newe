@@ -38,62 +38,81 @@
         </com.google.android.material.appbar.MaterialToolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card_attendance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_weight="2"
-        app:cardCornerRadius="16dp"
-        app:layout_constraintEnd_toStartOf="@id/card_class_report"
+    <HorizontalScrollView
+        android:id="@+id/scroll"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/app_bar">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="8dp"
-            android:text="@string/label_attendance"
-            android:textColor="@color/cyan_600"
-            android:textStyle="bold" />
-
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card_class_report"
+        app:layout_constraintTop_toBottomOf="@id/app_bar"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_weight="2"
-        app:cardCornerRadius="16dp"
-        app:layout_constraintStart_toEndOf="@id/card_attendance"
-        app:layout_constraintTop_toBottomOf="@id/app_bar">
-
-        <TextView
+        android:layout_height="wrap_content">
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="8dp"
-            android:text="@string/label_class_report"
-            android:textColor="@color/cyan_600"
-            android:textStyle="bold" />
+            android:layout_height="wrap_content">
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_attendance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_weight="2"
+                app:cardCornerRadius="16dp"
+                app:layout_constraintEnd_toStartOf="@id/card_class_report"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-    </com.google.android.material.card.MaterialCardView>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="8dp"
+                    android:text="@string/label_attendance"
+                    android:textColor="@color/cyan_600"
+                    android:textStyle="bold" />
 
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier_header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="bottom"
-        app:barrierMargin="8dp"
-        app:constraint_referenced_ids="card_attendance, card_class_report" />
+            </com.google.android.material.card.MaterialCardView>
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_class_report"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_weight="2"
+                app:cardCornerRadius="16dp"
+                app:layout_constraintStart_toEndOf="@id/card_attendance"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="8dp"
+                    android:text="@string/label_class_report"
+                    android:textColor="@color/cyan_600"
+                    android:textStyle="bold" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+          <androidx.recyclerview.widget.RecyclerView
+              android:layout_marginTop="16dp"
+              android:orientation="horizontal"
+              app:layout_constraintStart_toEndOf="@id/card_class_report"
+               app:layout_constraintTop_toTopOf="parent"
+              app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+              android:layout_width="wrap_content"
+              tools:listitem="@layout/item_skill_report"
+              android:layout_height="wrap_content"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+    </HorizontalScrollView>
+
+
+
     <ProgressBar
         android:id="@+id/progress_bar_student_loading"
         android:layout_width="40dp"
@@ -113,7 +132,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/barrier_header">
+        app:layout_constraintTop_toBottomOf="@id/scroll">
 
 
         <androidx.recyclerview.widget.RecyclerView

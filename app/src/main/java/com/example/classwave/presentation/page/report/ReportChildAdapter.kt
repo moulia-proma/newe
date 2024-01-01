@@ -40,6 +40,4 @@ class ReportChildAdapter : RecyclerView.Adapter<ReportChildAdapter.ViewHolder>()
             binding.imageViewMarks.setImageResource(report.skillPhoto.toInt())
         }
     }
-
-
 }
