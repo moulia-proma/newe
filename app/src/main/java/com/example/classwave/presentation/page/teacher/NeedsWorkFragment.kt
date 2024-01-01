@@ -14,16 +14,14 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.example.classwave.databinding.FragmentNeedsWorkBinding
 import com.example.classwave.presentation.dialog.AddSkillDialog
 import com.example.classwave.presentation.dialog.ProvideMarksDialog
-import com.example.classwave.presentation.dialog.ViewStdReportDialog
 import com.example.classwave.presentation.page.report.Repo0rtActivity
-import com.example.classwave.presentation.page.signup.SignUpActivity
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class NeedsWorkFragment(val classId: String, val stdId: String) : Fragment() {
+class NeedsWorkFragment(val classId: String, val stdId: String,val  stdName: String, val stdProfile: String) : Fragment() {
     private val viewModel: TeacherViewModel by activityViewModels()
     private var _binding: FragmentNeedsWorkBinding? = null
     private val binding get() = _binding!!
@@ -67,7 +65,17 @@ class NeedsWorkFragment(val classId: String, val stdId: String) : Fragment() {
                 name: String,
                 img: String
             ) {
-                val dialog = ProvideMarksDialog(classId, stdId, skillId,highestScore,"neg",name,img)
+                val dialog = ProvideMarksDialog(
+                    classId,
+                    stdId,
+                    skillId,
+                    highestScore,
+                    "neg",
+                    name,
+                    img,
+                    stdName,
+                    stdProfile
+                )
                 dialog.show(parentFragmentManager, "ProvideMarksdialog")
             }
         })

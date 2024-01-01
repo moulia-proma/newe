@@ -21,7 +21,12 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
-class positiveFragment(val classId: String, val stdId: String) : Fragment() {
+class positiveFragment(
+    val classId: String,
+    val stdId: String,
+    val stdName: String,
+    val stdProfile: String
+) : Fragment() {
     private val viewModel: TeacherViewModel by activityViewModels()
     private var _binding: FragmentPositiveBinding? = null
     private val binding get() = _binding!!
@@ -52,6 +57,7 @@ class positiveFragment(val classId: String, val stdId: String) : Fragment() {
                 val dialog = AddSkillDialog(classId, "pos")
                 dialog.show(parentFragmentManager, "SkillDialog")
             }
+
             override fun onViewReportClicked() {
                 val intent = Intent(requireContext(), Repo0rtActivity::class.java)
                 intent.putExtra("student_id", stdId)
@@ -72,7 +78,9 @@ class positiveFragment(val classId: String, val stdId: String) : Fragment() {
                     highestScore,
                     "pos",
                     name,
-                    img
+                    img,
+                    stdName,
+                    stdProfile
                 )
                 dialog.show(parentFragmentManager, "ProvideMarksdialog")
             }

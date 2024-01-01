@@ -11,7 +11,9 @@ class ViewPagerAdapter(
     fragmentManager: FragmentManager,
     lifecycle: Lifecycle,
     private val classId: String,
-    private val stdId: String
+    private val stdId: String,
+    private val stdName: String,
+    private  val stdProfile: String
 ) :
     FragmentStateAdapter(fragmentManager, lifecycle) {
     override fun getItemCount(): Int {
@@ -21,9 +23,9 @@ class ViewPagerAdapter(
     override fun createFragment(position: Int): Fragment {
 
         when (position) {
-            0 -> return positiveFragment(classId,stdId)
-            1 -> return NeedsWorkFragment(classId,stdId)
+            0 -> return positiveFragment(classId,stdId,stdName,stdProfile)
+            1 -> return NeedsWorkFragment(classId,stdId,stdName,stdProfile)
         }
-        return positiveFragment(classId, stdId)
+        return positiveFragment(classId, stdId, stdName, stdProfile)
     }
 }

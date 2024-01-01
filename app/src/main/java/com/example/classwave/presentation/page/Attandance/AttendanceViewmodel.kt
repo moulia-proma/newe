@@ -35,31 +35,87 @@ class AttendanceViewModel @Inject constructor() : ViewModel() {
     private val _addMarks = MutableStateFlow<Resource<Marks>?>(null)
     val addMarks = _addMarks.asStateFlow()
 
-    private var _attendance = MutableStateFlow<MutableMap<String,Boolean>>(mutableMapOf())
+    private var _attendance =
+        MutableStateFlow<MutableMap<String, MutableList<Report>>>(mutableMapOf())
     val attendance = _attendance.asStateFlow()
-    fun fetchAttendance() {
+
+    fun fetchAttendance(clsId: String, stdList: List<Student>, day: Int?, month: Int?, year: Int?) {
+        val regex = createRegex(year, month, day)
         viewModelScope.launch(Dispatchers.IO) {
             dbMarksRef.addListenerForSingleValueEvent(
                 object : ValueEventListener {
                     @RequiresApi(Build.VERSION_CODES.O)
-                     var attendance = mutableMapOf<String,Boolean>()
+                    //  var attendance : MutableMap<String, MutableList<Attendance>> = mutableMapOf()
 
-                    @RequiresApi(Build.VERSION_CODES.O)
+
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-
+                        val reportAttendance: MutableMap<String, MutableList<Report>> =
+                            mutableMapOf()
 
                         dataSnapshot.children.filter {
-                            it.child("date").value == LocalDate.now()
-                                .toString() && it.child("skillId").value == "attendance123"
+                            /*       if(it.child("skillId").value.toString() is String){
+                                   Log.d("_xyz", "onDataChange: uu")
+                               }*/
+
+                            /*    Log.d(
+                                    "_xyz",
+                                    "onDataChange: see   ${it.child("skillId").value == "attendance123"}    ${
+                                        it.child("date").value.toString().matches(regex)
+                                    }  ${it.child("clsId").value.toString()} ${clsId}"
+                                )*/
+                            it.child("skillId").value.toString() == "attendance123" && it.child("date").value.toString()
+                                .matches(regex) && it.child("classId").value == clsId
                         }.forEach { mark ->
-                            attendance[mark.child("stdId").value.toString()] =
-                                mark.child("marks").value.toString().toBoolean()
+                            Log.d("pro", "onDataChange: iii")
+                            val atten = Report(
+                                mark.child("skillId").value.toString(),
+                                mark.child("stdId").value.toString(),
+                                mark.child("marks").value.toString(),
+                                mark.child("date").value.toString(),
+                                mark.child("skillIdStdId").value.toString(),
+                                mark.child("skillName").value.toString(),
+                                mark.child("skillPhoto").value.toString(),
+                                mark.child("highestScore").value.toString(),
+                                mark.child("stdName").value.toString(),
+                                mark.child("stdProfile").value.toString(),
 
-
+                            )
+                            val dateInStr = mark.child("date").value.toString()
+                            val data = reportAttendance[dateInStr] ?: mutableListOf()
+                            data.add(atten)
+                            Log.d("_xyz", "onDataChange: $data")
+                            reportAttendance[dateInStr] = data
                         }
-                        Log.d("pk", "onDataChange: $attendance")
+                        val d = LocalDate.now().toString()
 
-                        _attendance.value = attendance
+                        if (reportAttendance.isEmpty()) {
+                            Log.d("mikasa", "onDataChange: $stdList")
+                            stdList.forEach {
+                                val atten = Report(
+
+                                    "attendance123",
+                                    it.studentId,
+                                    "0",
+                                    d,
+                                    "",
+                                    "Attendance",
+                                    "",
+                                    "1",
+                                     "",
+                                    ""
+
+
+                                )
+                                Log.d("mikasa", "onDataChange: uu $atten")
+
+                                val data = reportAttendance[d] ?: mutableListOf()
+                                data.add(atten)
+                                Log.d("_xyz", "onDataChange: $data")
+                                reportAttendance[d] = data
+                            }
+                        }
+
+                        _attendance.value = reportAttendance
                     }
 
                     override fun onCancelled(databaseError: DatabaseError) {
@@ -68,6 +124,7 @@ class AttendanceViewModel @Inject constructor() : ViewModel() {
                 })
         }
     }
+
     fun fetchStudentByClassId(classId: String) {
         _studentList.value = Resource.Loading()
         viewModelScope.launch(Dispatchers.IO) {
@@ -77,12 +134,14 @@ class AttendanceViewModel @Inject constructor() : ViewModel() {
                         Log.d("TAG", "onDataChange dataSnapshot: ${dataSnapshot}")
                         val studentList = arrayListOf<Student>()
                         dataSnapshot.children.forEach { student ->
-
+                            Log.d(
+                                "_y",
+                                "onDataChange: ${student.child("studentName").value} ${
+                                    student.child("classId").value
+                                }  ${classId}"
+                            )
                             if (student.child("classId").value.toString() == classId) {
-                                Log.d(
-                                    "TAG",
-                                    "onDataChange name: ${student.child("StudentName").value.toString()}"
-                                )
+
                                 studentList.add(
                                     Student(
                                         student.child("classId").value.toString(),
@@ -95,6 +154,7 @@ class AttendanceViewModel @Inject constructor() : ViewModel() {
                             }
 
                         }
+                        Log.d("mikasa", "onDataChange: $studentList")
                         _studentList.value = Resource.Success(studentList)
                     }
 
@@ -106,6 +166,7 @@ class AttendanceViewModel @Inject constructor() : ViewModel() {
 
 
     }
+
     fun addMarks(
         stdId: String,
         skillId: String,
@@ -113,7 +174,9 @@ class AttendanceViewModel @Inject constructor() : ViewModel() {
         name: String,
         img: String,
         highestScore: String,
-        clsId: String
+        clsId: String,
+        s: String,
+        s1: String
     ) {
         val st = (skillId + "_" + stdId)
         Log.d("tag", "addMarks: ${st}")
@@ -150,7 +213,10 @@ class AttendanceViewModel @Inject constructor() : ViewModel() {
                             st,
                             name,
                             img,
-                            highestScore
+                            highestScore,
+                            s,
+                            s1
+
                         )
 
                         dbMarksRef.push().setValue(mark)
@@ -158,7 +224,7 @@ class AttendanceViewModel @Inject constructor() : ViewModel() {
                                 _addMarks.value = Resource.Success(mark)
                             }
                             .addOnFailureListener {
-                               _addMarks.value = Resource.Error("Skill creation Failed")
+                                _addMarks.value = Resource.Error("Skill creation Failed")
                                 Log.d("TAG", "createSkill: skill created")
                             }
 

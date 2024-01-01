@@ -21,7 +21,9 @@ class ProvideMarksDialog(
     private val highestScore: String,
     private val type: String,
     private val name: String,
-    private val img: String
+    private val img: String,
+    private val stdName: String,
+    private val stdProfile: String
 ) : DialogFragment() {
     private val viewModel: TeacherViewModel by activityViewModels()
     private var _binding: DialogProvideMarksBinding? = null
@@ -54,7 +56,7 @@ class ProvideMarksDialog(
     private fun registerListener() {
         binding.btnAddMarks.setOnClickListener {
           val mark =  binding.autoCompleteTextViewDropdownItems.text.toString()
-            viewModel.addMarks(stdId,skillId,mark,name,img,highestScore,clsId)
+            viewModel.addMarks(stdId,skillId,mark,name,img,highestScore,clsId,stdName,stdProfile)
 
             dismiss()
 

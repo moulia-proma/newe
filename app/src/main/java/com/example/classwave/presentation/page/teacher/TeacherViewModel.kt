@@ -19,7 +19,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.io.Serializable
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -378,6 +377,7 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun createStudent(clsId: String, name: String) {
         _createStudent.value = Resource.Loading()
         if (name.isEmpty()) {
@@ -386,11 +386,33 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
         }
 
         val stdId = dbStdRef.push().key
-        val student = Student(clsId ?: "", stdId ?: "", name, stdImage.random().toString())
+        var profile = stdImage.random().toString()
+        val student = Student(clsId ?: "", stdId ?: "", name, profile)
+
+
+        val stdAttendance =
+            stdId?.let {
+                Marks(
+                    clsId,
+                    "attendance123",
+                    stdId,
+                    "0",
+                    LocalDate.now().toString(),
+                    "",
+                    name,
+                    "",
+                    "1",
+                    name,
+                    profile
+
+                )
+            }
+
 
         dbStdRef.push().setValue(student)
             .addOnCompleteListener {
                 _createStudent.value = Resource.Success(student)
+                dbMarksRef.push().setValue(stdAttendance)
             }
             .addOnFailureListener {
                 _createStudent.value = Resource.Error("User creation Failed")
@@ -437,7 +459,9 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
         name: String,
         img: String,
         highestScore: String,
-        clsId: String
+        clsId: String,
+        stdName: String,
+        stdProfile: String
     ) {
         val st = (skillId + "_" + stdId)
         Log.d("tag", "addMarks: ${st}")
@@ -473,7 +497,9 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
                             st,
                             name,
                             img,
-                            highestScore
+                            highestScore,
+                            stdName,
+                            stdProfile
                         )
 
                         dbMarksRef.push().setValue(mark)
@@ -534,9 +560,8 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
 }
 
 
-
 data class Class(
-   var classId: String,
+    var classId: String,
     var teacherId: String,
     var name: String,
     var grade: String,
@@ -561,7 +586,9 @@ data class Marks(
     var skillIdStdId: String,
     var skillName: String,
     var skillPhoto: String,
-    var highestScore: String
+    var highestScore: String,
+    var stdName: String,
+    var stdProfile: String
 )
 
 

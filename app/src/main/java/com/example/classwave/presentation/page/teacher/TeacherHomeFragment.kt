@@ -71,7 +71,8 @@ class TeacherHomeFragment : Fragment() {
                 clsId: String,
                 stdId: String,
                 studentName: String,
-                img: String
+                img: String,
+
             ) {
                 // viewModel.fetchStudentReport(stdId)
                 val dialog = SkillDialog(clsId, stdId, studentName, img)

@@ -16,7 +16,13 @@ class AddStudentAdapter : RecyclerView.Adapter<AddStudentAdapter.ViewHolder>() {
     interface Listener {
         fun onAddNewStudentClicked(clsId: String)
 
-        fun onClassSelected(clsId: String, stdId: String, studentName: String, img: String)
+        fun onClassSelected(
+            clsId: String,
+            stdId: String,
+            studentName: String,
+            img: String,
+
+        )
 
     }
 

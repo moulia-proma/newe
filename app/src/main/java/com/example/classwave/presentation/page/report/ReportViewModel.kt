@@ -6,7 +6,6 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.classwave.domain.model.Resource
-import com.example.classwave.presentation.page.teacher.Marks
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -29,9 +28,10 @@ class ReportViewModel @Inject constructor() : ViewModel() {
     )
     var reportList: StateFlow<Resource<MutableMap<String, MutableList<Report>>>> =
         _reportList.asStateFlow()
-    private val _reportClassList = MutableStateFlow<Resource<MutableMap<String, MutableList<Report>>>>(
-        Resource.Success(mutableMapOf())
-    )
+    private val _reportClassList =
+        MutableStateFlow<Resource<MutableMap<String, MutableList<Report>>>>(
+            Resource.Success(mutableMapOf())
+        )
     var reportClassList: StateFlow<Resource<MutableMap<String, MutableList<Report>>>> =
         _reportClassList.asStateFlow()
 
@@ -61,7 +61,9 @@ class ReportViewModel @Inject constructor() : ViewModel() {
                                 mark.child("skillIdStdId").value.toString(),
                                 mark.child("skillName").value.toString(),
                                 mark.child("skillPhoto").value.toString(),
-                                mark.child("highestScore").value.toString()
+                                mark.child("highestScore").value.toString(),
+                                mark.child("stdName").value.toString(),
+                                mark.child("stdProfile").value.toString(),
                             )
                             val dateInStr = mark.child("date").value.toString()
                             val data = reportMaps[dateInStr] ?: mutableListOf()
@@ -70,10 +72,10 @@ class ReportViewModel @Inject constructor() : ViewModel() {
                         }
 
                         _reportList.value = Resource.Success(reportMaps)
-                       /* getTotalPosMarks(reportMaps)
-                        getTotalNegMarks(reportMaps)
-                        getTotalAchivedNegMarks(reportMaps)
-                        getTotalAchivedPosMarks(reportMaps)*/
+                        /* getTotalPosMarks(reportMaps)
+                         getTotalNegMarks(reportMaps)
+                         getTotalAchivedNegMarks(reportMaps)
+                         getTotalAchivedPosMarks(reportMaps)*/
                     }
 
                     override fun onCancelled(databaseError: DatabaseError) {
@@ -82,6 +84,7 @@ class ReportViewModel @Inject constructor() : ViewModel() {
                 })
         }
     }
+
     fun fetchClassReport(clsId: String, day: Int?, month: Int?, year: Int?) {
 
         val regex = createRegex(year, month, day)
@@ -95,7 +98,12 @@ class ReportViewModel @Inject constructor() : ViewModel() {
 
                         dataSnapshot.children.filter {
                             Log.d("IT", "onDataChange: ${it}")
-                            Log.d("_debug", "onDataChange: ${  it.child("classId").value.toString()} ${clsId}  ${ it.child("date").value.toString().matches(regex)}")
+                            Log.d(
+                                "_debug",
+                                "onDataChange: ${it.child("classId").value.toString()} ${clsId}  ${
+                                    it.child("date").value.toString().matches(regex)
+                                }"
+                            )
                             it.child("classId").value.toString() == clsId &&
                                     it.child(
                                         "date"
@@ -110,7 +118,9 @@ class ReportViewModel @Inject constructor() : ViewModel() {
                                 mark.child("skillIdStdId").value.toString(),
                                 mark.child("skillName").value.toString(),
                                 mark.child("skillPhoto").value.toString(),
-                                mark.child("highestScore").value.toString()
+                                mark.child("highestScore").value.toString(),
+                                mark.child("stdName").value.toString(),
+                                mark.child("stdProfile").value.toString(),
                             )
                             val dateInStr = mark.child("date").value.toString()
                             val data = reportMaps[dateInStr] ?: mutableListOf()
@@ -150,7 +160,7 @@ class ReportViewModel @Inject constructor() : ViewModel() {
         return Regex(regexPattern)
     }
 
-    fun getTotalPosMarks(marks: MutableMap<String, MutableList<Report>>) : Int{
+    fun getTotalPosMarks(marks: MutableMap<String, MutableList<Report>>): Int {
         var sum = 0
         var map = mutableMapOf<String, String>()
         marks.forEach { key ->
@@ -161,15 +171,15 @@ class ReportViewModel @Inject constructor() : ViewModel() {
             }
         }
 
-       return sum
+        return sum
     }
 
-    fun getTotalNegMarks(marks: MutableMap<String, MutableList<Report>>):Int {
+    fun getTotalNegMarks(marks: MutableMap<String, MutableList<Report>>): Int {
         Log.d("pp", "getTotalNegMarks: I m negative")
         var sum = 0
 
         var map = mutableMapOf<String, String>()
-        marks.forEach {key->
+        marks.forEach { key ->
             val list = marks[key.key]
             Log.d("_pro", "getTotalPosMarks: ${list}")
             if (list != null) {
@@ -182,44 +192,44 @@ class ReportViewModel @Inject constructor() : ViewModel() {
             }
         }
 
-       return sum
-
-
-    }
-
-    fun getTotalAchivedNegMarks(marks: MutableMap<String, MutableList<Report>>):Int{
-
-        var sum =0
-        var map = mutableMapOf<String, String>()
-        Log.d("_size", "getTotalAchivedNegMarks: ${marks.size}")
-        marks.forEach {key->
-            val list = marks[key.key]
-            Log.d("_pro", "getTotalPosMarks: ${list}")
-            if (list != null) {
-                Log.d("_abc", "getTotalAchivedNegMarks: ${sum}")
-                list.forEach {
-                    if(it.marks.toInt()<=0)
-                        sum += kotlin.math.abs(it.marks.toInt())
-                    }
-
-                }
-            }
         return sum
 
 
     }
 
-    fun getTotalAchivedPosMarks(marks: MutableMap<String, MutableList<Report>>):Int{
+    fun getTotalAchivedNegMarks(marks: MutableMap<String, MutableList<Report>>): Int {
 
-        var sum =0
+        var sum = 0
         var map = mutableMapOf<String, String>()
-        marks.forEach {key->
+        Log.d("_size", "getTotalAchivedNegMarks: ${marks.size}")
+        marks.forEach { key ->
+            val list = marks[key.key]
+            Log.d("_pro", "getTotalPosMarks: ${list}")
+            if (list != null) {
+                Log.d("_abc", "getTotalAchivedNegMarks: ${sum}")
+                list.forEach {
+                    if (it.marks.toInt() <= 0)
+                        sum += kotlin.math.abs(it.marks.toInt())
+                }
+
+            }
+        }
+        return sum
+
+
+    }
+
+    fun getTotalAchivedPosMarks(marks: MutableMap<String, MutableList<Report>>): Int {
+
+        var sum = 0
+        var map = mutableMapOf<String, String>()
+        marks.forEach { key ->
             val list = marks[key.key]
             Log.d("_pro", "getTotalPosMarks: ${list}")
             if (list != null) {
                 list.forEach {
                     Log.d("_pos", "getTotalAchivedPosMarks: ${sum}")
-                    if(it.marks.toInt()>0)
+                    if (it.marks.toInt() > 0)
                         sum += it.marks.toInt()
                 }
 
@@ -231,11 +241,11 @@ class ReportViewModel @Inject constructor() : ViewModel() {
     }
 
 
-    fun getProgress(totalPos:Int,achievedPos:Int):Int {
+    fun getProgress(totalPos: Int, achievedPos: Int): Int {
 
-        if (achievedPos!= null) {
-            if(achievedPos>0){
-                return ((achievedPos / (totalPos!!*1.0)*100)).toInt()
+        if (achievedPos != null) {
+            if (achievedPos > 0) {
+                return ((achievedPos / (totalPos!! * 1.0) * 100)).toInt()
             }
         }
         return 0
@@ -265,5 +275,7 @@ data class Report(
     var skillIdStdId: String,
     var skillName: String,
     var skillPhoto: String,
-    var highestScore: String
+    var highestScore: String,
+    var stdName: String,
+    var stdProfile: String
 )

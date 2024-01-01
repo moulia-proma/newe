@@ -7,16 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.example.classwave.R
 import com.example.classwave.databinding.DialogSkillsBinding
 import com.example.classwave.presentation.page.teacher.TeacherViewModel
 import com.example.classwave.presentation.page.teacher.ViewPagerAdapter
 import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 
 class SkillDialog(val classId: String, val stdId: String,val stdName:String,val stdProfile:String) : DialogFragment() {
@@ -50,7 +45,7 @@ class SkillDialog(val classId: String, val stdId: String,val stdName:String,val 
         super.onViewCreated(view, savedInstanceState)
 
 
-        val adapter = ViewPagerAdapter(childFragmentManager, lifecycle,classId,stdId)
+        val adapter = ViewPagerAdapter(childFragmentManager, lifecycle,classId,stdId,stdName,stdProfile)
         binding.viewPager.adapter = adapter
 
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
