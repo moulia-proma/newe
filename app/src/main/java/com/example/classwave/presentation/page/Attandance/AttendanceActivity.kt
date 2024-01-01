@@ -31,8 +31,8 @@ class AttendanceActivity : AppCompatActivity() {
     private var currentDate = LocalDate.now()
     var stdList = listOf<Student>()
     var clsId = ""
-    private var name = mutableMapOf<String,String>()
-    private var profile = mutableMapOf<String,String>()
+    private var name = mutableMapOf<String, String>()
+    private var profile = mutableMapOf<String, String>()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,9 +47,7 @@ class AttendanceActivity : AppCompatActivity() {
 
         attendanceAdapter.setListener(listener = object : AttendanceAdapter.Listener {
             override fun onStudentClicked(value: Boolean, studentId: String) {
-                Log.d("_r", "onStudentClicked: rrr")
                 attendance[studentId] = value
-                Log.d("_atten", "onStudentClicked: ${studentId} ${value}")
             }
         })
 
@@ -62,47 +60,63 @@ class AttendanceActivity : AppCompatActivity() {
             Log.d("_save", "onCreate: save button clicked ${attendance}")
 
             attendance.forEach {
-                if (clsId != null) {
-                    viewModel.addMarks(
-                        it.key,
-                        "attendance123",
-                        attendance[it.key].toString(),
-                        "Attendance",
-                        R.drawable.cls_alculating.toString(),
-                        "1",
-                        clsId,
-                        "",
-                        ""
-                    )
-                }
+                viewModel.addMarks(
+                    it.key,
+                    "attendance123",
+                    attendance[it.key].toString(),
+                    "Attendance",
+                    R.drawable.cls_alculating.toString(),
+                    "1",
+                    clsId,
+                    "",
+                    ""
+                )
+
             }
         }
+
+
         binding.textReportDate.text = "Today"
         Log.d("_xyz", "onCreate: $stdList")
         Log.d("_xyz", "onCreate: ${clsId}")
         registerListener()
-
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun registerListener() {
+
         binding.btnNext.setOnClickListener {
+            if (currentDate == LocalDate.now()) {
+                binding.btnNext.isClickable = false
+                binding.btnNext.setImageResource(R.drawable.ic_arrow_front_grey)
+            }
+
             if (selectedFilterType == FilterType.Day) {
 
                 Log.d("_xyz", "registerListener: jj")
+
                 currentDate = currentDate.plusDays(1)
+                if (currentDate == LocalDate.now()) {
+                    binding.buttonSave.visibility=View.VISIBLE
+                    binding.btnNext.isClickable = false
+                    binding.btnNext.setImageResource(R.drawable.ic_arrow_front_grey)
+                }else{
+                    binding.buttonSave.visibility=View.INVISIBLE
+                }
                 if (currentDate == LocalDate.now()) {
                     binding.textReportDate.text = "Today"
                 } else {
-                    binding.textReportDate.text = currentDate.toString()
+                    binding.textReportDate.text =
+                        currentDate.toString()
                 }
-
+                binding.textReportDate.text = currentDate.toString()
                 viewModel.fetchAttendance(
                     clsId,
                     stdList,
                     currentDate.dayOfMonth,
                     currentDate.monthValue,
-                    currentDate.year
+                    currentDate.year,
+                    currentDate
                 )
             }
 
@@ -112,7 +126,11 @@ class AttendanceActivity : AppCompatActivity() {
 
                 currentDate = currentDate.plusMonths(1)
                 if (currentDate == LocalDate.now()) {
-                    binding.textReportDate.text = "Today"
+                    binding.btnNext.isClickable = false
+                    binding.btnNext.setImageResource(R.drawable.ic_arrow_front_grey)
+                }
+                if (currentDate == LocalDate.now()) {
+                    binding.textReportDate.text = "Current month"
                 } else {
                     binding.textReportDate.text =
                         currentDate.month.toString() + " " + currentDate.year.toString()
@@ -124,7 +142,8 @@ class AttendanceActivity : AppCompatActivity() {
                     stdList,
                     null,
                     currentDate.monthValue,
-                    currentDate.year
+                    currentDate.year,
+                    currentDate
                 )
 
             }
@@ -132,22 +151,42 @@ class AttendanceActivity : AppCompatActivity() {
                 binding.buttonSave.visibility = View.INVISIBLE
                 currentDate = currentDate.plusYears(1)
                 if (currentDate == LocalDate.now()) {
-                    binding.textReportDate.text = "Today"
+                    binding.btnNext.isClickable = false
+                    binding.btnNext.setImageResource(R.drawable.ic_arrow_front_grey)
+                }
+                if (currentDate == LocalDate.now()) {
+                    binding.textReportDate.text = "Current Year"
                 } else {
                     binding.textReportDate.text = currentDate.year.toString()
                 }
 
-                viewModel.fetchAttendance(clsId, stdList, null, null, currentDate.year)
+                viewModel.fetchAttendance(clsId, stdList, null, null, currentDate.year, currentDate)
             }
         }
 
 
         binding.btnPrev.setOnClickListener {
 
-
+            binding.btnNext.isClickable = true
+            binding.btnNext.setImageResource(R.drawable.ic_arrow_front)
             if (selectedFilterType == FilterType.Day) {
+
                 Log.d("_xyz", "registerListener: jj")
                 currentDate = currentDate.minusDays(1)
+
+                if (currentDate == LocalDate.now()) {
+                    binding.btnNext.isClickable = false
+                    binding.btnNext.setImageResource(R.drawable.ic_arrow_front_grey)
+                }
+                if (currentDate == LocalDate.now()) {
+                    binding.buttonSave.visibility=View.VISIBLE
+                    binding.textReportDate.text = "Today"
+                } else {
+                    binding.buttonSave.visibility=View.INVISIBLE
+                    binding.textReportDate.text =
+                        currentDate.toString()
+                }
+
                 binding.textReportDate.text = currentDate.toString()
                 clsId?.let { it1 ->
                     viewModel.fetchAttendance(
@@ -155,7 +194,8 @@ class AttendanceActivity : AppCompatActivity() {
                         stdList,
                         currentDate.dayOfMonth,
                         null,
-                        currentDate.year
+                        currentDate.year,
+                        currentDate
                     )
                 }
             }
@@ -163,23 +203,49 @@ class AttendanceActivity : AppCompatActivity() {
             if (selectedFilterType == FilterType.Month) {
 
                 currentDate = currentDate.minusMonths(1)
-                binding.textReportDate.text =
-                    currentDate.month.toString() + " " + currentDate.year.toString()
+                if (currentDate == LocalDate.now()) {
+                    binding.btnNext.isClickable = false
+                    binding.btnNext.setImageResource(R.drawable.ic_arrow_front_grey)
+                }
                 clsId?.let { it1 ->
                     viewModel.fetchAttendance(
                         clsId,
                         stdList,
                         null,
                         currentDate.monthValue,
-                        currentDate.year
+                        currentDate.year,
+                        currentDate
                     )
+                }
+                if (currentDate == LocalDate.now()) {
+                    binding.textReportDate.text = "This month"
+                } else {
+                    binding.textReportDate.text =
+                        currentDate.month.toString() + " " + currentDate.year.toString()
                 }
             }
             if (selectedFilterType == FilterType.Year) {
                 currentDate = currentDate.minusYears(1)
-                binding.textReportDate.text = currentDate.year.toString()
+                if (currentDate == LocalDate.now()) {
+                    binding.btnNext.isClickable = false
+                    binding.btnNext.setImageResource(R.drawable.ic_arrow_front_grey)
+                }
+                if (currentDate == LocalDate.now()) {
+                    binding.textReportDate.text = "Current year"
+                } else {
+
+                    binding.textReportDate.text = currentDate.year.toString()
+                }
+
                 clsId?.let { it1 ->
-                    viewModel.fetchAttendance(clsId, stdList, null, null, currentDate.year)
+                    viewModel.fetchAttendance(
+                        clsId,
+                        stdList,
+                        null,
+                        null,
+                        currentDate.year,
+                        currentDate
+                    )
                 }
             }
         }
@@ -195,7 +261,8 @@ class AttendanceActivity : AppCompatActivity() {
                     stdList,
                     currentDate.dayOfMonth,
                     currentDate.monthValue,
-                    currentDate.year
+                    currentDate.year,
+                    currentDate
                 )
             }
         }
@@ -210,7 +277,8 @@ class AttendanceActivity : AppCompatActivity() {
                 stdList,
                 null,
                 currentDate.monthValue,
-                currentDate.year
+                currentDate.year,
+                currentDate
             )
         }
         binding.cardYearReport.setOnClickListener {
@@ -219,7 +287,7 @@ class AttendanceActivity : AppCompatActivity() {
             binding.textReportDate.text = currentDate.year.toString()
             selectedFilterType = FilterType.Year
             clsId?.let { it1 ->
-                viewModel.fetchAttendance(clsId, stdList, null, null, currentDate.year)
+                viewModel.fetchAttendance(clsId, stdList, null, null, currentDate.year, currentDate)
             }
         }
 
@@ -265,11 +333,11 @@ class AttendanceActivity : AppCompatActivity() {
                             is Resource.Error -> {}
                             is Resource.Loading -> {}
                             is Resource.Success -> {
-                                it.data?.forEach {st->
-                                    name[st.studentId]=st.studentName
-                                    profile[st.studentId]=st.img
+                                it.data?.forEach { st ->
+                                    name[st.studentId] = st.studentName
+                                    profile[st.studentId] = st.img
                                 }
-                                attendanceAdapter.setData(name,profile)
+                                attendanceAdapter.setData(name, profile)
                                 Log.d("_xyz", "initialFlowCollectors:x  ${name}")
                                 callAttendance(it.data, clsId)
                                 Log.d("_xyz", "initialFlowCollectors: $stdList")
@@ -302,10 +370,21 @@ class AttendanceActivity : AppCompatActivity() {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun callAttendance(resource: List<Student>?, clsId: String) {
-
         if (resource != null) {
-            viewModel.fetchAttendance(clsId, resource, 1, 1, 2024)
+            stdList = resource
+        }
+        if (resource != null) {
+            val date = currentDate
+            viewModel.fetchAttendance(
+                clsId,
+                resource,
+                LocalDate.now().dayOfMonth,
+                LocalDate.now().monthValue,
+                LocalDate.now().year,
+                date
+            )
         }
 
 

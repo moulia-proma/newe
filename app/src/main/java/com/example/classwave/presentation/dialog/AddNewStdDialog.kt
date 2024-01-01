@@ -1,9 +1,11 @@
 package com.example.classwave.presentation.dialog
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import com.example.classwave.R
@@ -28,12 +30,14 @@ class AddNewStdDialog(val clsId: String) : DialogFragment() {
         _binding = DialogAddNewStdBinding.inflate(inflater, container, false)
         return binding.root
     }
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         super.onViewCreated(view, savedInstanceState)
 
         registerListener()
     }
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun registerListener() {
     /*    binding.imgCancel.setOnClickListener {
             dismiss()

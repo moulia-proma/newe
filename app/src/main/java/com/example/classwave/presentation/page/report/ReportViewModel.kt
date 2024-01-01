@@ -265,8 +265,6 @@ enum class ReportPercentage {
     AchievedPositive,
     AchievedNegative
 }
-
-
 data class Report(
     var skillId: String,
     var stdId: String,

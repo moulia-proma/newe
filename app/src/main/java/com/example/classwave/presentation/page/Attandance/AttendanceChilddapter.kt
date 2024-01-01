@@ -81,15 +81,12 @@ class AttendanceChilddapter : RecyclerView.Adapter<AttendanceChilddapter.ViewHol
                     )
                 }
             }
-
             attendance[report.stdId]?.let { it1 ->
                 Log.d("_atten", "bindData: not null")
                 mListener?.onStudentClicked(
                     it1, report.stdId
                 )
             }
-
-
         }
     }
 

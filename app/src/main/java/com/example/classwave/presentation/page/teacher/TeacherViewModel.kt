@@ -389,7 +389,8 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
         var profile = stdImage.random().toString()
         val student = Student(clsId ?: "", stdId ?: "", name, profile)
 
-
+        val st = ("attendance123" + "_" + stdId)
+        Log.d("tag", "addMarks: ${st}")
         val stdAttendance =
             stdId?.let {
                 Marks(
@@ -398,7 +399,7 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
                     stdId,
                     "0",
                     LocalDate.now().toString(),
-                    "",
+                    st,
                     name,
                     "",
                     "1",

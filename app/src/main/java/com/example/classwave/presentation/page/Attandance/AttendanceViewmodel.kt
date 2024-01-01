@@ -39,7 +39,14 @@ class AttendanceViewModel @Inject constructor() : ViewModel() {
         MutableStateFlow<MutableMap<String, MutableList<Report>>>(mutableMapOf())
     val attendance = _attendance.asStateFlow()
 
-    fun fetchAttendance(clsId: String, stdList: List<Student>, day: Int?, month: Int?, year: Int?) {
+    fun fetchAttendance(
+        clsId: String,
+        stdList: List<Student>,
+        day: Int?,
+        month: Int?,
+        year: Int?,
+        date: LocalDate
+    ) {
         val regex = createRegex(year, month, day)
         viewModelScope.launch(Dispatchers.IO) {
             dbMarksRef.addListenerForSingleValueEvent(
@@ -79,15 +86,14 @@ class AttendanceViewModel @Inject constructor() : ViewModel() {
                                 mark.child("stdName").value.toString(),
                                 mark.child("stdProfile").value.toString(),
 
-                            )
+                                )
                             val dateInStr = mark.child("date").value.toString()
                             val data = reportAttendance[dateInStr] ?: mutableListOf()
                             data.add(atten)
                             Log.d("_xyz", "onDataChange: $data")
                             reportAttendance[dateInStr] = data
                         }
-                        val d = LocalDate.now().toString()
-
+                        Log.d("TAG", "onDataChange: $reportAttendance  $stdList")
                         if (reportAttendance.isEmpty()) {
                             Log.d("mikasa", "onDataChange: $stdList")
                             stdList.forEach {
@@ -96,22 +102,21 @@ class AttendanceViewModel @Inject constructor() : ViewModel() {
                                     "attendance123",
                                     it.studentId,
                                     "0",
-                                    d,
+                                    date.toString(),
                                     "",
                                     "Attendance",
                                     "",
                                     "1",
-                                     "",
+                                    "",
                                     ""
 
 
                                 )
-                                Log.d("mikasa", "onDataChange: uu $atten")
 
-                                val data = reportAttendance[d] ?: mutableListOf()
+                                val data = reportAttendance[date.toString()] ?: mutableListOf()
                                 data.add(atten)
-                                Log.d("_xyz", "onDataChange: $data")
-                                reportAttendance[d] = data
+
+                                reportAttendance[date.toString()] = data
                             }
                         }
 
@@ -189,12 +194,10 @@ class AttendanceViewModel @Inject constructor() : ViewModel() {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
 
                         dataSnapshot.children.forEach { mark ->
-                            Log.d(
-                                "xyz",
-                                "onDataChange: ${mark.child("stdId").value.toString()}  ${stdId}"
-                            )
-                            Log.d("man", "${mark.child("skillIdStdId").value.toString()} ${st}")
-                            if (mark.child("skillIdStdId").value.toString() == st) {
+
+                            if (mark.child("skillIdStdId").value.toString() == st && mark.child("date").value == LocalDate.now()
+                                    .toString()
+                            ) {
                                 val k = mark.key
                                 FirebaseDatabase.getInstance().getReference("Marks")
                                     .child(k.toString()).removeValue()
