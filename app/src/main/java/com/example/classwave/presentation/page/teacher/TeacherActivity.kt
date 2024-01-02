@@ -60,7 +60,7 @@ class TeacherActivity : AppCompatActivity() {
             }
 
             override fun onEditClassClicked(cls: Class) {
-                var dialog = CreateClassDialog(cls.classId,cls.teacherId,cls.name,cls.img,cls.grade)
+                var dialog = CreateClassDialog(cls.classId,cls.teacherId,cls.name,cls.img,cls.grade,"update")
                 dialog.show(supportFragmentManager, "CreateClassDialog")
             }
         })
@@ -71,7 +71,7 @@ class TeacherActivity : AppCompatActivity() {
 
 
     private fun showCreateClassDialog() {
-        val dialog = CreateClassDialog("","","","","")
+        val dialog = CreateClassDialog("","","","","","create")
         dialog.show(supportFragmentManager, "CreateStdDialog")
     }
 

@@ -2,6 +2,7 @@ package com.example.classwave.presentation.dialog
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,11 +26,12 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class CreateClassDialog(
-    classId: String,
-    teacherId: String,
-    name: String,
-    img: String,
-    grade: String
+    val classId: String,
+    val teacherId: String,
+    val name: String,
+    val img: String,
+    val section: String,
+    private val type: String
 ) : DialogFragment() {
 
     private var _binding: CreateClassDialogBinding? = null
@@ -57,7 +59,13 @@ class CreateClassDialog(
         val grade = resources.getStringArray(R.array.label_grades)
         val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, grade)
         binding.autoCompleteTextViewDropdownItems.setAdapter(arrayAdapter)
-        registerListener()
+        Log.d("_xyz", "onViewCreated: ${type}")
+        if (type =="update"){
+            binding.btnDeleteClass.visibility=View.VISIBLE
+            binding.btnCreateClass.text="Update"
+            binding.editTxtClassName.setText(name)
+        }
+            registerListener()
     }
 
     private fun registerListener() {
@@ -100,13 +108,15 @@ class CreateClassDialog(
 
         SnackbarUtil.show(requireContext(), message, binding.btnCreateClass)
     }
-    private fun showSuccessView() {
-           val intent = Intent(requireContext(), TeacherActivity::class.java)
-         /*  intent.putExtra("class_id",binding.editTxtClassName.text.toString())*/
 
-           startActivity(intent)
-           dismiss()
+    private fun showSuccessView() {
+        val intent = Intent(requireContext(), TeacherActivity::class.java)
+        /*  intent.putExtra("class_id",binding.editTxtClassName.text.toString())*/
+
+        startActivity(intent)
+        dismiss()
     }
+
     companion object {
         const val TAG = "CreateClassDialog"
     }
