@@ -38,155 +38,173 @@
     </com.google.android.material.appbar.AppBarLayout>
 
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card_year_report"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_weight="2"
-        app:cardCornerRadius="16dp"
-        app:layout_constraintBottom_toTopOf="@id/barrier_date"
-        app:layout_constraintStart_toEndOf="@id/card_month_report"
-        app:layout_constraintTop_toBottomOf="@id/app_bar">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="8dp"
-            android:text="Year"
-            android:textColor="@color/cyan_600"
-            android:textStyle="bold" />
-
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card_month_report"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_weight="2"
-        app:cardCornerRadius="16dp"
-        app:layout_constraintBottom_toTopOf="@id/barrier_date"
-        app:layout_constraintStart_toEndOf="@id/card_day_report"
-        app:layout_constraintTop_toBottomOf="@id/app_bar">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="8dp"
-            android:text="Month"
-            android:textColor="@color/cyan_600"
-            android:textStyle="bold" />
-
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card_day_report"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_weight="2"
-        app:cardCornerRadius="16dp"
-
-
-        app:layout_constraintBottom_toTopOf="@id/barrier_date"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/app_bar">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="8dp"
-            android:text="Day"
-            android:textColor="@color/cyan_600"
-            android:textStyle="bold" />
-
-    </com.google.android.material.card.MaterialCardView>
-
-
-    <ImageButton
-        android:id="@+id/btn_prev"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginVertical="8dp"
-        android:layout_marginStart="16dp"
-        android:background="@color/transparent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/text_report_date"
-        app:layout_constraintTop_toBottomOf="@id/barrier_date"
-        app:srcCompat="@drawable/ic_arrow_back"
-        app:tint="@color/cyan_500" />
-
-    <TextView
-        android:id="@+id/text_report_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="date"
-        android:textColor="@color/cyan_500"
-        android:textAppearance="@style/TextAppearance.AppCompat.Title"
-
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/barrier_date" />
-
-    <ImageButton
-        android:id="@+id/btn_next"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginEnd="16dp"
-        android:background="@color/transparent"
-
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/text_report_date"
-        app:layout_constraintTop_toBottomOf="@id/barrier_date"
-        app:srcCompat="@drawable/ic_arrow_front"
-        app:tint="@color/cyan_500" />
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="btn_next,btn_prev,text_report_date" />
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier_recycler_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="btn_next,btn_prev,text_report_date" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nested_scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toTopOf="@id/button_save"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/barrier_recycler_view"
-
-        />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/button_save"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:backgroundTint="@color/cyan_500"
-        android:text="Save"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/recycler_view" />
+        app:layout_constraintTop_toBottomOf="@id/app_bar">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_year_report"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_weight="2"
+                app:cardCornerRadius="16dp"
+                app:layout_constraintBottom_toTopOf="@id/barrier_date"
+                app:layout_constraintStart_toEndOf="@id/card_month_report"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="8dp"
+                    android:text="Year"
+                    android:textColor="@color/cyan_600"
+                    android:textStyle="bold" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_month_report"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_weight="2"
+                app:cardCornerRadius="16dp"
+                app:layout_constraintBottom_toTopOf="@id/barrier_date"
+                app:layout_constraintStart_toEndOf="@id/card_day_report"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="8dp"
+                    android:text="Month"
+                    android:textColor="@color/cyan_600"
+                    android:textStyle="bold" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_day_report"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_weight="2"
+                app:cardCornerRadius="16dp"
+
+
+                app:layout_constraintBottom_toTopOf="@id/barrier_date"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="8dp"
+                    android:text="Day"
+                    android:textColor="@color/cyan_600"
+                    android:textStyle="bold" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <ImageButton
+                android:id="@+id/btn_prev"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginVertical="8dp"
+                android:layout_marginStart="16dp"
+                android:background="@color/transparent"
+                app:layout_constraintEnd_toStartOf="@id/text_report_date"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/barrier_date"
+                app:srcCompat="@drawable/ic_arrow_back"
+                app:tint="@color/cyan_500" />
+
+            <TextView
+                android:id="@+id/text_report_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="date"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:textColor="@color/cyan_500"
+
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/barrier_date" />
+
+            <ImageButton
+                android:id="@+id/btn_next"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="16dp"
+                android:background="@color/transparent"
+
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/text_report_date"
+                app:layout_constraintTop_toBottomOf="@id/barrier_date"
+                app:srcCompat="@drawable/ic_arrow_front_grey" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="btn_next,btn_prev,text_report_date" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier_recycler_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="btn_next,btn_prev,text_report_date" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                tools:listitem="@layout/item_std_report_in_details_with_date"
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toTopOf="@id/button_save"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/barrier_recycler_view"
+
+                />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/cyan_500"
+                android:text="Save"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/recycler_view" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

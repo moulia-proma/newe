@@ -24,7 +24,13 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class CreateClassDialog : DialogFragment() {
+class CreateClassDialog(
+    classId: String,
+    teacherId: String,
+    name: String,
+    img: String,
+    grade: String
+) : DialogFragment() {
 
     private var _binding: CreateClassDialogBinding? = null
     private val binding get() = _binding!!
@@ -100,6 +106,9 @@ class CreateClassDialog : DialogFragment() {
 
            startActivity(intent)
            dismiss()
+    }
+    companion object {
+        const val TAG = "CreateClassDialog"
     }
 
 

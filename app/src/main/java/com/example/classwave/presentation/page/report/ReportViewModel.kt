@@ -35,6 +35,7 @@ class ReportViewModel @Inject constructor() : ViewModel() {
     var reportClassList: StateFlow<Resource<MutableMap<String, MutableList<Report>>>> =
         _reportClassList.asStateFlow()
 
+
     fun fetchReport(stdId: String, day: Int?, month: Int?, year: Int?) {
 
         val regex = createRegex(year, month, day)
@@ -50,7 +51,7 @@ class ReportViewModel @Inject constructor() : ViewModel() {
                             it.child("stdId").value.toString() == stdId &&
                                     it.child(
                                         "date"
-                                    ).value.toString().matches(regex)
+                                    ).value.toString().matches(regex) && it.child("skillId").value.toString() != "attendance123"
                         }.forEach { mark ->
 
                             val report = Report(
@@ -97,17 +98,11 @@ class ReportViewModel @Inject constructor() : ViewModel() {
                         val reportMaps: MutableMap<String, MutableList<Report>> = mutableMapOf()
 
                         dataSnapshot.children.filter {
-                            Log.d("IT", "onDataChange: ${it}")
-                            Log.d(
-                                "_debug",
-                                "onDataChange: ${it.child("classId").value.toString()} ${clsId}  ${
-                                    it.child("date").value.toString().matches(regex)
-                                }"
-                            )
+
                             it.child("classId").value.toString() == clsId &&
                                     it.child(
                                         "date"
-                                    ).value.toString().matches(regex)
+                                    ).value.toString().matches(regex) && it.child("skillId").value.toString() != "attendance123"
                         }.forEach { mark ->
 
                             val report = Report(
@@ -130,10 +125,6 @@ class ReportViewModel @Inject constructor() : ViewModel() {
                         Log.d("pik", "onDataChange: ${reportMaps}")
 
                         _reportClassList.value = Resource.Success(reportMaps)
-                        /* getTotalPosMarks(reportMaps)
-                         getTotalNegMarks(reportMaps)
-                         getTotalAchivedNegMarks(reportMaps)
-                         getTotalAchivedPosMarks(reportMaps)*/
                     }
 
                     override fun onCancelled(databaseError: DatabaseError) {
@@ -208,8 +199,11 @@ class ReportViewModel @Inject constructor() : ViewModel() {
             if (list != null) {
                 Log.d("_abc", "getTotalAchivedNegMarks: ${sum}")
                 list.forEach {
-                    if (it.marks.toInt() <= 0)
-                        sum += kotlin.math.abs(it.marks.toInt())
+                    if (it.skillId != "attendance123") {
+                        if (it.marks.toInt() <= 0)
+                            sum += kotlin.math.abs(it.marks.toInt())
+                    }
+
                 }
 
             }
@@ -229,8 +223,11 @@ class ReportViewModel @Inject constructor() : ViewModel() {
             if (list != null) {
                 list.forEach {
                     Log.d("_pos", "getTotalAchivedPosMarks: ${sum}")
-                    if (it.marks.toInt() > 0)
-                        sum += it.marks.toInt()
+                    if (it.skillId != "attendance123") {
+                        if (it.marks.toInt() > 0)
+                            sum += it.marks.toInt()
+                    }
+
                 }
 
             }
@@ -250,6 +247,8 @@ class ReportViewModel @Inject constructor() : ViewModel() {
         }
         return 0
     }
+
+
 }
 
 enum class FilterType {
@@ -265,6 +264,7 @@ enum class ReportPercentage {
     AchievedPositive,
     AchievedNegative
 }
+
 data class Report(
     var skillId: String,
     var stdId: String,

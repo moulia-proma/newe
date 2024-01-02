@@ -17,6 +17,9 @@ import com.example.classwave.presentation.dialog.AddNewStdDialog
 import com.example.classwave.presentation.dialog.SkillDialog
 import com.example.classwave.presentation.page.Attandance.AttendanceActivity
 import com.example.classwave.presentation.page.report.ClassReportActivity
+import com.example.classwave.presentation.page.report.ReportChildAdapter
+import com.example.classwave.presentation.page.report.SkillReportActivity
+import com.example.classwave.presentation.page.report.skillWiseReportAdapter
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
@@ -29,8 +32,11 @@ class TeacherHomeFragment : Fragment() {
     private val viewModel: TeacherViewModel by activityViewModels()
 
     private var _binding: FragmentTeacherHomeBinding? = null
+
     private val binding get() = _binding!!
     private var addStudentAdapter = AddStudentAdapter()
+    private var skillWiseReportAdapter = skillWiseReportAdapter()
+
 
     private lateinit var student: List<Student>
     var clsId = ""
@@ -73,16 +79,21 @@ class TeacherHomeFragment : Fragment() {
                 studentName: String,
                 img: String,
 
-            ) {
+                ) {
                 // viewModel.fetchStudentReport(stdId)
                 val dialog = SkillDialog(clsId, stdId, studentName, img)
                 dialog.show(parentFragmentManager, "ProvideMarksdialog")
             }
-
-
         })
 
-
+        skillWiseReportAdapter.setListener(object : skillWiseReportAdapter.Listener {
+            override fun onSkillSelected(skillId: String) {
+                val intent = Intent(context, SkillReportActivity::class.java)
+                intent.putExtra("skillId", skillId)
+                startActivity(intent)
+            }
+        })
+        binding.recyclerViewCardSkill.adapter = skillWiseReportAdapter
 
         initializeFlowCollectors()
         registerListener()
@@ -119,8 +130,6 @@ class TeacherHomeFragment : Fragment() {
                 }
             }
         }
-
-
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.studentList.collectLatest { std ->
@@ -145,6 +154,25 @@ class TeacherHomeFragment : Fragment() {
                 }
             }
         }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.posSkillList.collectLatest {
+                    it?.let {
+                        when (it) {
+                            is Resource.Error -> {}
+                            is Resource.Loading -> {}
+                            is Resource.Success -> {
+                                if (it.data != null) {
+                                    skillWiseReportAdapter.setClasses(it.data)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+
     }
 
 

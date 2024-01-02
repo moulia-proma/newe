@@ -1,7 +1,6 @@
 package com.example.classwave.presentation.page.teacher
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -37,13 +36,15 @@ class TeacherActivity : AppCompatActivity() {
         binding = ActivityTeacherBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
         val navController = navHostFragment.navController
         val navView: BottomNavigationView = findViewById(R.id.bottom_navigation_view)
         navView.setupWithNavController(navController)
 
 
-        headerBinding = NavDrawerBinding.inflate(layoutInflater, binding.navigationViewDrawer, false)
+        headerBinding =
+            NavDrawerBinding.inflate(layoutInflater, binding.navigationViewDrawer, false)
         binding.navigationViewDrawer.addHeaderView(headerBinding.root)
         binding.drawerLayout.openDrawer(GravityCompat.START)
 
@@ -52,9 +53,15 @@ class TeacherActivity : AppCompatActivity() {
             override fun onAddNewClassClicked() {
                 showCreateClassDialog()
             }
+
             override fun onClassSelected(cls: Class) {
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
                 viewModel.updateClass(cls = cls)
+            }
+
+            override fun onEditClassClicked(cls: Class) {
+                var dialog = CreateClassDialog(cls.classId,cls.teacherId,cls.name,cls.img,cls.grade)
+                dialog.show(supportFragmentManager, "CreateClassDialog")
             }
         })
 
@@ -64,7 +71,7 @@ class TeacherActivity : AppCompatActivity() {
 
 
     private fun showCreateClassDialog() {
-        val dialog = CreateClassDialog()
+        val dialog = CreateClassDialog("","","","","")
         dialog.show(supportFragmentManager, "CreateStdDialog")
     }
 

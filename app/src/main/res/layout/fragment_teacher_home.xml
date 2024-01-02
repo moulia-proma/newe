@@ -24,29 +24,32 @@
             android:elevation="16dp"
             app:title="Class Name"
             app:titleCentered="true"
-            app:titleTextColor="@color/white"
-            >
+            app:titleTextColor="@color/white">
+
             <ImageView
                 android:id="@+id/img_view_more"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_more_vert_24px"
                 android:layout_gravity="end"
-                android:layout_marginEnd="16dp"
-                />
+                android:layout_marginEnd="16dp" />
 
         </com.google.android.material.appbar.MaterialToolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
+
     <HorizontalScrollView
         android:id="@+id/scroll"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/app_bar"
         android:layout_width="wrap_content"
+        android:scrollbars="none"
         android:layout_height="wrap_content">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
+
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_attendance"
                 android:layout_width="wrap_content"
@@ -71,6 +74,7 @@
                     android:textStyle="bold" />
 
             </com.google.android.material.card.MaterialCardView>
+
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_class_report"
                 android:layout_width="wrap_content"
@@ -94,23 +98,31 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-          <androidx.recyclerview.widget.RecyclerView
-              android:layout_marginTop="16dp"
-              android:orientation="horizontal"
-              app:layout_constraintStart_toEndOf="@id/card_class_report"
-               app:layout_constraintTop_toTopOf="parent"
-              app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-              android:layout_width="wrap_content"
-              tools:listitem="@layout/item_skill_report"
-              android:layout_height="wrap_content"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view_card_skill"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toEndOf="@id/card_class_report"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:layout_width="wrap_content"
+                tools:listitem="@layout/item_skill_report"
+                android:layout_height="wrap_content" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view_card_neg_skill"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toEndOf="@id/card_class_report"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:layout_width="wrap_content"
+                tools:listitem="@layout/item_skill_report"
+                android:layout_height="wrap_content" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
-
     </HorizontalScrollView>
-
 
 
     <ProgressBar
@@ -122,8 +134,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.flexbox.FlexboxLayout
         android:layout_width="match_parent"

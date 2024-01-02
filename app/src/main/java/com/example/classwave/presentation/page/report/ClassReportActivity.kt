@@ -77,11 +77,9 @@ class ClassReportActivity : AppCompatActivity() {
                         is Resource.Loading -> {}
                         is Resource.Success -> {
 
-                            Log.d("_xyz", "initializeFlowCollectors: called ${data.data}")
+
                             data.data?.let {
-                                Log.d("oo", "initializeFlowCollectors: ${it}")
                                 reportParentAdapter.setReports(it)
-                                Log.d("_check", "initializeFlowCollectors: ${it}")
                                 viewModel.getTotalPosMarks(it)
                                 viewModel.getTotalNegMarks(it)
                                 viewModel.getTotalAchivedNegMarks(it)

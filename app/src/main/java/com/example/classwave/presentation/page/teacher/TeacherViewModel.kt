@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.classwave.R
 import com.example.classwave.domain.model.Resource
+import com.example.classwave.presentation.page.report.Report
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -30,6 +31,10 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
     private var dbSkillRef = FirebaseDatabase.getInstance().getReference("Skills")
     private var dbMarksRef = FirebaseDatabase.getInstance().getReference("Marks")
     private val uid = Firebase.auth.currentUser?.uid
+
+
+    private val _skillReportList = MutableStateFlow<Resource<MutableList<Report>>?>(null)
+    var skillReportList = _skillReportList.asStateFlow()
 
     private val _classList = MutableStateFlow<Resource<List<Class>>?>(null)
     var classList = _classList.asStateFlow()
@@ -516,6 +521,44 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
 
                     override fun onCancelled(databaseError: DatabaseError) {
                         _markList.value = Resource.Error("Data Retrieve unsuccessful")
+                    }
+                })
+        }
+
+    }
+    fun getReportSkillSpecific(skillId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            dbMarksRef.orderByChild("marks").addListenerForSingleValueEvent(
+                object : ValueEventListener {
+                    @RequiresApi(Build.VERSION_CODES.O)
+                    var list = ArrayList<Report>()
+
+                    @RequiresApi(Build.VERSION_CODES.O)
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        dataSnapshot.children.forEach{
+                            Log.d("_xyz", "onDataChange: p ${skillId} r ${it.child("skillId").value}")
+                            if (it.child("skillId").value == skillId) {
+                                var mark = Report(
+                                    it.child("skillId").value.toString(),
+                                    it.child("stdId").value.toString(),
+                                    it.child("marks").value.toString(),
+                                    it.child("date").value.toString(),
+                                    it.child("skillIdStdId").value.toString(),
+                                    it.child("skillName").value.toString(),
+                                    it.child("skillPhoto").value.toString(),
+                                    it.child("highestScore").value.toString(),
+                                    it.child("stdName").value.toString(),
+                                    it.child("stdProfile").value.toString(),
+
+                                    )
+                                list.add(mark)
+                            }
+                        }
+                        _skillReportList.value = Resource.Success(list)
+                    }
+
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        _skillReportList.value = Resource.Error("Data Retrieve unsuccessful")
                     }
                 })
         }

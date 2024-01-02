@@ -19,6 +19,8 @@ class AddClassAdapter : RecyclerView.Adapter<AddClassAdapter.ViewHolder>() {
     interface Listener {
         fun onAddNewClassClicked()
         fun onClassSelected(cls: Class)
+
+        fun onEditClassClicked(cls:Class)
     }
 
 
@@ -66,6 +68,9 @@ class AddClassAdapter : RecyclerView.Adapter<AddClassAdapter.ViewHolder>() {
             binding.cardAddClass.setOnClickListener {
                 mListener?.onClassSelected(cls = cls)
             }
+            binding.imageViewEditClass.setOnClickListener {
+                mListener?.onEditClassClicked(cls = cls)
+            }
         }
 
         fun setAddClass() {
@@ -76,6 +81,7 @@ class AddClassAdapter : RecyclerView.Adapter<AddClassAdapter.ViewHolder>() {
             binding.cardAddClass.setOnClickListener {
                 mListener?.onAddNewClassClicked()
             }
+
         }
     }
 

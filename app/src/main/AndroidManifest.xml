@@ -16,6 +16,9 @@
         android:theme="@style/Theme.ClassWave"
         tools:targetApi="31">
         <activity
+            android:name=".presentation.page.report.SkillReportActivity"
+            android:exported="false" />
+        <activity
             android:name=".presentation.page.Attandance.AttendanceActivity"
             android:exported="false" />
         <activity
