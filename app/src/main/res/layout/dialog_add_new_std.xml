@@ -16,7 +16,6 @@
     app:layout_constraintBottom_toTopOf="@id/edit_text_add_std_name"
     app:layout_constraintTop_toTopOf="parent"
     app:srcCompat="@drawable/user"
-
     />
 <EditText
     android:layout_marginTop="8dp"
@@ -28,9 +27,8 @@
     android:background="@drawable/edit_text_style"
     android:hint="Enter Student Name"
     android:padding="16dp"
-
-
     />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_add_std"
         android:layout_marginTop="8dp"
@@ -41,8 +39,19 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/colorPrimary"
         android:text="Add"
-        android:textColor="@color/white"
-        />
+        android:textColor="@color/white" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar_delete_loading"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:indeterminateTint="@color/white"
+        android:progressTint="@color/white"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/btn_add_std"
+        app:layout_constraintEnd_toEndOf="@id/btn_add_std"
+        app:layout_constraintStart_toStartOf="@id/btn_add_std"
+        app:layout_constraintTop_toTopOf="@id/btn_add_std" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -138,8 +138,8 @@
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/group_picker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="3dp"
+        android:layout_height="2dp"
         android:visibility="invisible"
         app:constraint_referenced_ids="card_parent, card_student, card_teacher" />
 

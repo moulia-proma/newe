@@ -91,6 +91,18 @@
         android:textColor="@color/white"
         android:textSize="24sp"
         app:layout_constraintTop_toBottomOf="@id/edit_txt_grade" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar_sign_in_loading"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:indeterminateTint="@color/white"
+        android:progressTint="@color/white"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/btn_create_class"
+        app:layout_constraintEnd_toEndOf="@id/btn_create_class"
+        app:layout_constraintStart_toStartOf="@id/btn_create_class"
+        app:layout_constraintTop_toTopOf="@id/btn_create_class" />
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_delete_class"
         android:layout_width="match_parent"
@@ -102,6 +114,17 @@
         android:textSize="24sp"
         android:visibility="invisible"
         app:layout_constraintTop_toBottomOf="@id/btn_create_class" />
+    <ProgressBar
+        android:id="@+id/progress_bar_delete_loading"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:indeterminateTint="@color/white"
+        android:progressTint="@color/white"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/btn_delete_class"
+        app:layout_constraintEnd_toEndOf="@id/btn_delete_class"
+        app:layout_constraintStart_toStartOf="@id/btn_delete_class"
+        app:layout_constraintTop_toTopOf="@id/btn_delete_class" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

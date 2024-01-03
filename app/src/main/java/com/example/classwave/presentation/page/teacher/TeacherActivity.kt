@@ -1,6 +1,7 @@
 package com.example.classwave.presentation.page.teacher
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -60,8 +61,12 @@ class TeacherActivity : AppCompatActivity() {
             }
 
             override fun onEditClassClicked(cls: Class) {
+          /*      Log.d("_xyz", "onEditClassClicked: ${cls.grade}")
+                supportFragmentManager.findFragmentByTag(CreateClassDialog.TAG)?.let {
+                    supportFragmentManager.beginTransaction().remove(it).commit()
+                }*/
                 var dialog = CreateClassDialog(cls.classId,cls.teacherId,cls.name,cls.img,cls.grade,"update")
-                dialog.show(supportFragmentManager, "CreateClassDialog")
+                dialog.show(supportFragmentManager, CreateClassDialog.TAG)
             }
         })
 
@@ -71,12 +76,17 @@ class TeacherActivity : AppCompatActivity() {
 
 
     private fun showCreateClassDialog() {
+     /*   supportFragmentManager.findFragmentByTag(CreateClassDialog.TAG)?.let {
+            supportFragmentManager.beginTransaction().remove(it).commit()
+        }*/
         val dialog = CreateClassDialog("","","","","","create")
-        dialog.show(supportFragmentManager, "CreateStdDialog")
+        dialog.show(supportFragmentManager, CreateClassDialog.TAG)
     }
 
 
     private fun initializeFlowCollectors() {
+
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.classList.collectLatest {
@@ -90,6 +100,7 @@ class TeacherActivity : AppCompatActivity() {
                 }
             }
         }
+
     }
 
     private fun showSuccessView(classList: List<Class>?) {
@@ -97,6 +108,9 @@ class TeacherActivity : AppCompatActivity() {
         if (!classList.isNullOrEmpty()) {
             viewModel.updateClass(classList[0])
             addClassAdapter.setClasses(classList)
+        }else{
+            viewModel.updateClass(null)
+            addClassAdapter.setClasses(listOf())
         }
     }
 
@@ -107,6 +121,7 @@ class TeacherActivity : AppCompatActivity() {
     }
 
     private fun showLoadingView() {
+           headerBinding.progressBarClassLoading.visibility = View.VISIBLE
 
     }
 

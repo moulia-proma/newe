@@ -17,7 +17,6 @@ import com.example.classwave.presentation.dialog.AddNewStdDialog
 import com.example.classwave.presentation.dialog.SkillDialog
 import com.example.classwave.presentation.page.Attandance.AttendanceActivity
 import com.example.classwave.presentation.page.report.ClassReportActivity
-import com.example.classwave.presentation.page.report.ReportChildAdapter
 import com.example.classwave.presentation.page.report.SkillReportActivity
 import com.example.classwave.presentation.page.report.skillWiseReportAdapter
 import com.google.android.flexbox.FlexDirection
@@ -132,15 +131,36 @@ class TeacherHomeFragment : Fragment() {
         }
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.studentList.collectLatest { std ->
-                    if (std != null) {
-                        binding.progressBarStudentLoading.visibility = View.INVISIBLE
-                        std.data?.let { addStudentAdapter.setStudents(it) }
+                viewModel.studentList.collectLatest {
+
+                    it?.let {
+                        when (it) {
+                            is Resource.Error -> {}
+                            is Resource.Loading -> {
+                                binding.progressBarStudentLoading.visibility = View.VISIBLE
+                                binding.recyclerViewStdInfo.visibility = View.INVISIBLE
+                            }
+
+                            is Resource.Success -> {
+                                if (it.data != null) {
+                                    binding.recyclerViewStdInfo.visibility = View.VISIBLE
+                                    binding.progressBarStudentLoading.visibility = View.INVISIBLE
+                                    it.data?.let { addStudentAdapter.setStudents(it) }
+
+                                }
+
+                                binding.progressBarStudentLoading.visibility = View.INVISIBLE
+
+                            }
+                        }
 
                     }
                 }
             }
+
+
         }
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.createStudent.collectLatest {

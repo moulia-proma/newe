@@ -2,6 +2,7 @@ package com.example.classwave.presentation.page.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -53,7 +54,9 @@ class MainActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.isAuthenticated.collectLatest { isAuthenticated ->
                     if (isAuthenticated == null) return@collectLatest
+                    Log.d("_xyz", "initializeFlowCollectors: ${isAuthenticated}")
                     if (isAuthenticated) {
+
                         val intent = Intent(this@MainActivity, TeacherActivity::class.java)
                         startActivity(intent)
                         finish()

@@ -3,6 +3,7 @@ package com.example.classwave.presentation.page.teacher
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -39,6 +40,7 @@ class AddClassAdapter : RecyclerView.Adapter<AddClassAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if (position == mClassList.size) {
+            Log.d("_xyz", "onBindViewHolder: ok")
             holder.setAddClass()
         } else {
             holder.setClass(mClassList[position])
@@ -71,12 +73,15 @@ class AddClassAdapter : RecyclerView.Adapter<AddClassAdapter.ViewHolder>() {
             binding.imageViewEditClass.setOnClickListener {
                 mListener?.onEditClassClicked(cls = cls)
             }
+            binding.imageViewEditClass.visibility = View.VISIBLE
         }
 
         fun setAddClass() {
+            binding.imageViewEditClass.visibility = View.INVISIBLE
             binding.imageClsProfile.setImageResource(
                 R.drawable.ic_add
             )
+            binding.txtClsName.text = "New Class"
 
             binding.cardAddClass.setOnClickListener {
                 mListener?.onAddNewClassClicked()

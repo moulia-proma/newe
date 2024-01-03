@@ -1,6 +1,5 @@
 package com.example.classwave.presentation.dialog
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
@@ -17,7 +17,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.example.classwave.R
 import com.example.classwave.databinding.CreateClassDialogBinding
 import com.example.classwave.domain.model.Resource
-import com.example.classwave.presentation.page.teacher.TeacherActivity
 import com.example.classwave.presentation.page.teacher.TeacherViewModel
 import com.example.classwave.presentation.util.SnackbarUtil
 import dagger.hilt.android.AndroidEntryPoint
@@ -60,40 +59,83 @@ class CreateClassDialog(
         val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, grade)
         binding.autoCompleteTextViewDropdownItems.setAdapter(arrayAdapter)
         Log.d("_xyz", "onViewCreated: ${type}")
-        if (type =="update"){
-            binding.btnDeleteClass.visibility=View.VISIBLE
-            binding.btnCreateClass.text="Update"
+        if (type == "update") {
+            binding.btnDeleteClass.visibility = View.VISIBLE
+            binding.btnCreateClass.text = "Update"
             binding.editTxtClassName.setText(name)
+            Log.d("_xyz", "onViewCreated: ${section}")
+            binding.autoCompleteTextViewDropdownItems.setText(section, false)
+
         }
-            registerListener()
+        registerListener()
     }
 
     private fun registerListener() {
+        binding.btnDeleteClass.setOnClickListener {
+            viewModel.deleteClass(classId)
+
+        }
+
         binding.imgCancel.setOnClickListener {
-            dismiss()
+            //dismiss()
+            showSuccessView()
         }
         binding.editTxtClassName.addTextChangedListener {
             binding.btnCreateClass.isClickable = true
             binding.btnCreateClass.setBackgroundColor(getResources().getColor(R.color.colorPrimary))
         }
+
         binding.btnCreateClass.setOnClickListener {
             val className = binding.editTxtClassName.text.toString()
             val grade = binding.autoCompleteTextViewDropdownItems.text.toString()
-            viewModel.createClass(className, grade)
-            dismiss()
+            viewModel.createClass(className, grade, classId, teacherId, img, type)
         }
+        initializeFlowCollectors()
     }
-
 
     private fun initializeFlowCollectors() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.createClass.collectLatest {
+                    Log.d("_xyz", "create classState : ${it}")
+                    it?.let {
+                        when (it) {
+
+                            is Resource.Error -> showErrorMessage(message = it.message ?: "")
+                            is Resource.Loading -> {
+                                showLoadingView()
+                            }
+
+                            is Resource.Success -> {
+                                showSuccessView()
+                                Toast.makeText(requireContext(), "Success", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+                        }
+
+                    }
+
+
+                }
+            }
+        }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.deleteClass.collectLatest {
+                    //  Log.d("hhh", "initializeFlowCollectorss: ${it}")
                     it?.let {
                         when (it) {
                             is Resource.Error -> showErrorMessage(message = it.message ?: "")
-                            is Resource.Loading -> {}
-                            is Resource.Success -> showSuccessView()
+                            is Resource.Loading -> {
+                                binding.progressBarDeleteLoading.visibility = View.VISIBLE
+                                binding.btnDeleteClass.text = ""
+                            }
+
+                            is Resource.Success -> {
+                                showSuccessView()
+                                Toast.makeText(requireContext(), "Successsss", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
                         }
 
                     }
@@ -110,11 +152,16 @@ class CreateClassDialog(
     }
 
     private fun showSuccessView() {
-        val intent = Intent(requireContext(), TeacherActivity::class.java)
-        /*  intent.putExtra("class_id",binding.editTxtClassName.text.toString())*/
-
-        startActivity(intent)
+        //   viewModel.setCreateClassNull()
+        Log.d("_xyzz", "showSuccessView: my name")
+        binding.progressBarSignInLoading.visibility = View.INVISIBLE
+        viewModel.setNull()
         dismiss()
+    }
+
+    private fun showLoadingView() {
+        binding.btnCreateClass.text = ""
+        binding.progressBarSignInLoading.visibility = View.VISIBLE
     }
 
     companion object {

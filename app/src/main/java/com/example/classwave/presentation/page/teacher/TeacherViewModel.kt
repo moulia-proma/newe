@@ -51,11 +51,11 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
     private val _negSkillList = MutableStateFlow<Resource<List<Skill>>?>(null)
     var negSkillList = _negSkillList.asStateFlow()
 
-    private val _createClass = MutableStateFlow<Resource<Class>?>(null)
-    val createClass = _createClass.asStateFlow()
+    private var _createClass = MutableStateFlow<Resource<Class>?>(null)
+    var createClass = _createClass.asStateFlow()
 
-    private val _createStudent = MutableStateFlow<Resource<Student>?>(null)
-    val createStudent = _createStudent.asStateFlow()
+    private var _createStudent = MutableStateFlow<Resource<Student>?>(null)
+    var createStudent = _createStudent.asStateFlow()
 
     private val _createSkill = MutableStateFlow<Resource<Skill>?>(null)
     val createSkill = _createSkill.asStateFlow()
@@ -66,8 +66,20 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
     private val _addMarks = MutableStateFlow<Resource<Marks>?>(null)
     val addMarks = _addMarks.asStateFlow()
 
+    private var _deleteClass = MutableStateFlow<Resource<String>?>(null)
+    var deleteClass = _deleteClass.asStateFlow()
+
     private val _uniqueDays = MutableStateFlow<String>("")
     val marksByDay = _uniqueDays.asStateFlow()
+
+    fun setNull(){
+        _createClass = MutableStateFlow<Resource<Class>?>(null)
+         createClass = _createClass.asStateFlow()
+        _deleteClass = MutableStateFlow<Resource<String>?>(null)
+         deleteClass = _deleteClass.asStateFlow()
+        _createStudent = MutableStateFlow<Resource<Student>?>(null)
+         createStudent = _createStudent.asStateFlow()
+    }
 
     private val clsImage = arrayListOf<Int>(
         R.drawable.cls_chemistry,
@@ -105,11 +117,17 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
         fetchClassList()
     }
 
-    fun updateClass(cls: Class) {
+    fun updateClass(cls: Class?) {
         _selectedClass.value = cls
-        fetchStudentByClassId(classId = cls.classId)
-        fetchSkillByClassId(classId = cls.classId)
-        fetchSkillByClassId(classId = cls.classId)
+        if (cls != null) {
+            fetchStudentByClassId(classId = cls.classId)
+        }
+        if (cls != null) {
+            fetchSkillByClassId(classId = cls.classId)
+        }
+        if (cls != null) {
+            fetchSkillByClassId(classId = cls.classId)
+        }
     }
 
     fun getMarksDropdownList(highestScore: String, type: String): ArrayList<Int> {
@@ -139,8 +157,7 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
         var sum = 0
         var i = 0
         while (i < marks.size) {
-            if (marks[i].highestScore.toInt() > 0)
-                sum += marks[i].highestScore.toInt()
+            if (marks[i].highestScore.toInt() > 0) sum += marks[i].highestScore.toInt()
             i++
         }
         return sum
@@ -170,8 +187,7 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
         var sum = 0
         var i = 0
         while (i < marks.size) {
-            if (marks[i].marks.toInt() <= 0)
-                sum += kotlin.math.abs(marks[i].marks.toInt())
+            if (marks[i].marks.toInt() <= 0) sum += kotlin.math.abs(marks[i].marks.toInt())
             i++
         }
         return sum
@@ -183,8 +199,7 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
         var sum = 0
         var i = 0
         while (i < marks.size) {
-            if (marks[i].marks.toInt() > 0)
-                sum += marks[i].marks.toInt()
+            if (marks[i].marks.toInt() > 0) sum += marks[i].marks.toInt()
             i++
         }
         return sum
@@ -205,71 +220,72 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun fetchClassList() {
+        _classList.value = Resource.Loading()
         val uid = Firebase.auth.currentUser?.uid
         viewModelScope.launch(Dispatchers.IO) {
-            dbRef.addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val classList = arrayListOf<Class>()
-                        dataSnapshot.children.forEach { classRoom ->
-                            if (classRoom.child("teacherId").value.toString() == uid.toString()) {
-                                classList.add(
-                                    Class(
-                                        classRoom.child("classId").value.toString(),
-                                        classRoom.child("grade").value.toString(),
-                                        classRoom.child("name").value.toString(),
-                                        classRoom.child("teacherId").value.toString(),
-                                        classRoom.child("img").value.toString()
+            dbRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val classList = arrayListOf<Class>()
+                    dataSnapshot.children.forEach { classRoom ->
+                        if (classRoom.child("teacherId").value.toString() == uid.toString()) {
+                            classList.add(
+                                Class(
+                                    classRoom.child("classId").value.toString(),
+                                    classRoom.child("teacherId").value.toString(),
+                                    classRoom.child("name").value.toString(),
+                                    classRoom.child("grade").value.toString(),
+                                    classRoom.child("img").value.toString(),
+
 
                                     )
-                                )
-                            }
-
+                            )
                         }
-                        _classList.value = Resource.Success(classList)
-                    }
 
-                    override fun onCancelled(databaseError: DatabaseError) {
-                        _createClass.value = Resource.Error("Data Retrieve unsuccessful")
                     }
-                })
+                    Log.d("_xyz", "onDataChange: ${classList}")
+                    _classList.value = Resource.Success(classList)
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    _classList.value = Resource.Error("Data Retrieve unsuccessful")
+                }
+            })
         }
     }
 
     fun fetchStudentByClassId(classId: String) {
         _studentList.value = Resource.Loading()
         viewModelScope.launch(Dispatchers.IO) {
-            dbStdRef.addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        Log.d("TAG", "onDataChange dataSnapshot: ${dataSnapshot}")
-                        val studentList = arrayListOf<Student>()
-                        dataSnapshot.children.forEach { student ->
+            dbStdRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    Log.d("TAG", "onDataChange dataSnapshot: ${dataSnapshot}")
+                    val studentList = arrayListOf<Student>()
+                    dataSnapshot.children.forEach { student ->
 
-                            if (student.child("classId").value.toString() == classId) {
-                                Log.d(
-                                    "TAG",
-                                    "onDataChange name: ${student.child("StudentName").value.toString()}"
+                        if (student.child("classId").value.toString() == classId) {
+                            Log.d(
+                                "TAG",
+                                "onDataChange name: ${student.child("StudentName").value.toString()}"
+                            )
+                            studentList.add(
+                                Student(
+                                    student.child("classId").value.toString(),
+                                    student.child("studentId").value.toString(),
+                                    student.child("studentName").value.toString(),
+                                    student.child("img").value.toString(),
                                 )
-                                studentList.add(
-                                    Student(
-                                        student.child("classId").value.toString(),
-                                        student.child("studentId").value.toString(),
-                                        student.child("studentName").value.toString(),
-                                        student.child("img").value.toString(),
-                                    )
-                                )
-
-                            }
+                            )
 
                         }
-                        _studentList.value = Resource.Success(studentList)
-                    }
 
-                    override fun onCancelled(databaseError: DatabaseError) {
-                        _createClass.value = Resource.Error("Data Retrieve unsuccessful")
                     }
-                })
+                    _studentList.value = Resource.Success(studentList)
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    _studentList.value = Resource.Error("Data Retrieve unsuccessful")
+                }
+            })
         }
 
 
@@ -277,34 +293,33 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
 
     private fun fetchSkillByClassId(classId: String) {
         Log.d(
-            "TAG",
-            "onDataChange name:rrrrrr "
+            "TAG", "onDataChange name:rrrrrr "
         )
         _posSkillList.value = Resource.Loading()
         _negSkillList.value = Resource.Loading()
         viewModelScope.launch(Dispatchers.IO) {
-            dbSkillRef.addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+            dbSkillRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
 
-                        Log.d("TAG", "onDataChange dataSnapshot: ${dataSnapshot}")
-                        val posSkillList = arrayListOf<Skill>()
-                        val negSkillList = arrayListOf<Skill>()
-                        dataSnapshot.children.forEach { skill ->
-                            if (skill.child("classId").value.toString() == classId) {
-                                if (skill.child("type").value.toString() == "pos") {
-                                    posSkillList.add(
-                                        Skill(
-                                            skill.child("classId").value.toString(),
-                                            skill.child("skillId").value.toString(),
-                                            skill.child("name").value.toString(),
-                                            skill.child("highestScore").value.toString(),
-                                            skill.child("img").value.toString(),
-                                            skill.child("type").value.toString()
-                                        )
+                    Log.d("TAG", "onDataChange dataSnapshot: ${dataSnapshot}")
+                    val posSkillList = arrayListOf<Skill>()
+                    val negSkillList = arrayListOf<Skill>()
+                    dataSnapshot.children.forEach { skill ->
+                        if (skill.child("classId").value.toString() == classId) {
+                            if (skill.child("type").value.toString() == "pos" && skill.child("skillId").value != "attendance123") {
+                                posSkillList.add(
+                                    Skill(
+                                        skill.child("classId").value.toString(),
+                                        skill.child("skillId").value.toString(),
+                                        skill.child("name").value.toString(),
+                                        skill.child("highestScore").value.toString(),
+                                        skill.child("img").value.toString(),
+                                        skill.child("type").value.toString()
                                     )
+                                )
 
-                                } else {
+                            } else {
+                                if (skill.child("skillId").value != "attendance123") {
                                     negSkillList.add(
                                         Skill(
                                             skill.child("classId").value.toString(),
@@ -315,34 +330,39 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
                                             skill.child("type").value.toString()
                                         )
                                     )
-
-
                                 }
 
 
                             }
 
+
                         }
 
-                        _posSkillList.value = Resource.Success(posSkillList)
-
-                        _negSkillList.value = Resource.Success(negSkillList)
-
-
                     }
 
-                    override fun onCancelled(databaseError: DatabaseError) {
-                        _posSkillList.value = Resource.Error("Data Retrieve unsuccessful")
-                        _negSkillList.value = Resource.Error("Data Retrieve unsuccessful")
-                    }
-                })
+                    _posSkillList.value = Resource.Success(posSkillList)
+
+                    _negSkillList.value = Resource.Success(negSkillList)
+
+
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    _posSkillList.value = Resource.Error("Data Retrieve unsuccessful")
+                    _negSkillList.value = Resource.Error("Data Retrieve unsuccessful")
+                }
+            })
         }
 
 
     }
 
-    fun createClass(name: String, grade: String) {
+    fun createClass(
+        name: String, grade: String, classId: String, tcrId: String, clsImg: String, type: String
+    ) {
+        Log.d("_xyz", "createClass: clicked")
         _createClass.value = Resource.Loading()
+
         if (name.isEmpty()) {
             _createClass.value = Resource.Error("Class name can't be empty")
             return
@@ -351,33 +371,76 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
             _createClass.value = Resource.Error("You have to select at least one grade")
             return
         }
+        var clsId = ""
+        var teacherId = ""
+        var img = ""
+        if (type == "create") {
+            clsId = dbRef.push().key.toString()
+            if (uid != null) {
+                teacherId = uid
+            }
+            img = clsImage.random().toString()
 
-        val clsId = dbRef.push().key
-        val clsRoom = Class(clsId ?: "", uid ?: "", name, grade, clsImage.random().toString())
 
-
-        val attendanceSkill = clsId?.let {
-            Skill(
-                it,
-                "attendance123",
-                "Attendance",
-                "1",
-                (R.drawable.cls_alculating).toString(),
-                "pos"
-            )
+        } else {
+            clsId = classId
+            teacherId = tcrId
+            img = clsImg
         }
 
-        dbRef.push().setValue(clsRoom)
-            .addOnCompleteListener {
-                _createClass.value = Resource.Success(clsRoom)
-                dbSkillRef.push().setValue(attendanceSkill)
-            }
-            .addOnFailureListener {
-                _createClass.value = Resource.Error("User creation Failed")
-                Log.d("TAG", "createClass: cls created")
-            }
+        viewModelScope.launch(Dispatchers.IO) {
+            dbRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
 
-        fetchClassList()
+                    dataSnapshot.children.forEach { cls ->
+                        if (cls.child("classId").value.toString() == classId) {
+                            val k = cls.key
+                            dbRef.child(k.toString()).removeValue()
+                        }
+
+                    }
+
+
+                    val clsRoom = Class(clsId ?: "", teacherId ?: "", name, grade, img)
+
+
+                    val attendanceSkill = clsId?.let {
+                        Skill(
+                            it,
+                            "attendance123",
+                            "Attendance",
+                            "1",
+                            (R.drawable.cls_alculating).toString(),
+                            "pos"
+                        )
+                    }
+
+                    dbRef.push().setValue(clsRoom).addOnCompleteListener {
+                            _createClass.value = Resource.Success(clsRoom)
+                            if (type == "create") {
+                                dbSkillRef.push().setValue(attendanceSkill)
+
+                            }
+
+                            fetchClassList()
+                        }.addOnFailureListener {
+
+
+                        }
+
+
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    _createClass.value = Resource.Error("Failed")
+                }
+
+
+            })
+
+
+        }
+
 
     }
 
@@ -396,34 +459,32 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
 
         val st = ("attendance123" + "_" + stdId)
         Log.d("tag", "addMarks: ${st}")
-        val stdAttendance =
-            stdId?.let {
-                Marks(
-                    clsId,
-                    "attendance123",
-                    stdId,
-                    "0",
-                    LocalDate.now().toString(),
-                    st,
-                    name,
-                    "",
-                    "1",
-                    name,
-                    profile
+        val stdAttendance = stdId?.let {
+            Marks(
+                clsId,
+                "attendance123",
+                stdId,
+                "0",
+                LocalDate.now().toString(),
+                st,
+                name,
+                "",
+                "1",
+                name,
+                profile
 
-                )
-            }
+            )
+        }
 
 
-        dbStdRef.push().setValue(student)
-            .addOnCompleteListener {
+        dbStdRef.push().setValue(student).addOnCompleteListener {
                 _createStudent.value = Resource.Success(student)
                 dbMarksRef.push().setValue(stdAttendance)
-            }
-            .addOnFailureListener {
+            }.addOnFailureListener {
                 _createStudent.value = Resource.Error("User creation Failed")
                 Log.d("TAG", "createClass: cls created")
             }
+
         fetchStudentByClassId(clsId)
     }
 
@@ -437,19 +498,12 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
 
         val skillId = dbSkillRef.push().key
         val skill = Skill(
-            clsId ?: "",
-            skillId ?: "",
-            name,
-            hScore,
-            skillImage.random().toString(),
-            typeofSkill
+            clsId ?: "", skillId ?: "", name, hScore, skillImage.random().toString(), typeofSkill
         )
 
-        dbSkillRef.push().setValue(skill)
-            .addOnCompleteListener {
+        dbSkillRef.push().setValue(skill).addOnCompleteListener {
                 _createSkill.value = Resource.Success(skill)
-            }
-            .addOnFailureListener {
+            }.addOnFailureListener {
                 _createSkill.value = Resource.Error("Skill creation Failed")
                 Log.d("TAG", "createSkill: skill created")
             }
@@ -474,70 +528,67 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
 
 
         viewModelScope.launch(Dispatchers.IO) {
-            dbMarksRef.addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+            dbMarksRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
 
-                        dataSnapshot.children.forEach { mark ->
-                            Log.d(
-                                "xyz",
-                                "onDataChange: ${mark.child("stdId").value.toString()}  ${stdId}"
-                            )
-                            Log.d("man", "${mark.child("skillIdStdId").value.toString()} ${st}")
-                            if (mark.child("skillIdStdId").value.toString() == st) {
-                                val k = mark.key
-                                FirebaseDatabase.getInstance().getReference("Marks")
-                                    .child(k.toString()).removeValue()
-                            }
-
-                        }
-                        _addMarks.value = Resource.Loading()
-
-                        val currentDate = LocalDate.now()
-                        val mark = Marks(
-                            clsId,
-                            skillId,
-                            stdId,
-                            score,
-                            currentDate.toString(),
-                            st,
-                            name,
-                            img,
-                            highestScore,
-                            stdName,
-                            stdProfile
+                    dataSnapshot.children.forEach { mark ->
+                        Log.d(
+                            "xyz", "onDataChange: ${mark.child("stdId").value.toString()}  ${stdId}"
                         )
-
-                        dbMarksRef.push().setValue(mark)
-                            .addOnCompleteListener {
-                                _addMarks.value = Resource.Success(mark)
-                            }
-                            .addOnFailureListener {
-                                _createSkill.value = Resource.Error("Skill creation Failed")
-                                Log.d("TAG", "createSkill: skill created")
-                            }
+                        Log.d("man", "${mark.child("skillIdStdId").value.toString()} ${st}")
+                        if (mark.child("skillIdStdId").value.toString() == st) {
+                            val k = mark.key
+                            FirebaseDatabase.getInstance().getReference("Marks").child(k.toString())
+                                .removeValue()
+                        }
 
                     }
+                    _addMarks.value = Resource.Loading()
 
-                    override fun onCancelled(databaseError: DatabaseError) {
-                        _markList.value = Resource.Error("Data Retrieve unsuccessful")
-                    }
-                })
+                    val currentDate = LocalDate.now()
+                    val mark = Marks(
+                        clsId,
+                        skillId,
+                        stdId,
+                        score,
+                        currentDate.toString(),
+                        st,
+                        name,
+                        img,
+                        highestScore,
+                        stdName,
+                        stdProfile
+                    )
+
+                    dbMarksRef.push().setValue(mark).addOnCompleteListener {
+                            _addMarks.value = Resource.Success(mark)
+                        }.addOnFailureListener {
+                            _createSkill.value = Resource.Error("Skill creation Failed")
+                            Log.d("TAG", "createSkill: skill created")
+                        }
+
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    _markList.value = Resource.Error("Data Retrieve unsuccessful")
+                }
+            })
         }
 
     }
+
     fun getReportSkillSpecific(skillId: String) {
+        _skillReportList.value = Resource.Loading()
         viewModelScope.launch(Dispatchers.IO) {
-            dbMarksRef.orderByChild("marks").addListenerForSingleValueEvent(
-                object : ValueEventListener {
+            dbMarksRef.orderByChild("marks")
+                .addListenerForSingleValueEvent(object : ValueEventListener {
                     @RequiresApi(Build.VERSION_CODES.O)
                     var list = ArrayList<Report>()
 
                     @RequiresApi(Build.VERSION_CODES.O)
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        dataSnapshot.children.forEach{
-                            Log.d("_xyz", "onDataChange: p ${skillId} r ${it.child("skillId").value}")
-                            if (it.child("skillId").value == skillId) {
+                        dataSnapshot.children.forEach {
+                            if (it.child("skillId").value == skillId && skillId != "attendance123") {
                                 var mark = Report(
                                     it.child("skillId").value.toString(),
                                     it.child("stdId").value.toString(),
@@ -554,6 +605,9 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
                                 list.add(mark)
                             }
                         }
+
+
+
                         _skillReportList.value = Resource.Success(list)
                     }
 
@@ -564,7 +618,37 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
         }
 
     }
-    /*    fun fetchStudentReport(stdId: String) {
+
+    fun deleteClass(classId: String) {
+        _deleteClass.value = Resource.Loading()
+        viewModelScope.launch(Dispatchers.IO) {
+            dbRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                    dataSnapshot.children.forEach { cls ->
+                        if (cls.child("classId").value.toString() == classId) {
+                            val k = cls.key
+                            dbRef.child(k.toString()).removeValue().addOnCompleteListener {
+                                Log.d("_xyz", "onDataChange: successfully deleted")
+                                _deleteClass.value = Resource.Success(classId)
+                                fetchClassList()
+                            }.addOnFailureListener {
+                                _deleteClass.value = Resource.Error("delete failed")
+                                Log.d("_xyz", "onDataChange: failed")
+                            }
+                        }
+
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+
+                }
+
+
+            })
+        }
+    }/*    fun fetchStudentReport(stdId: String) {
             viewModelScope.launch(Dispatchers.IO) {
                 dbMarksRef.addListenerForSingleValueEvent(
                     object : ValueEventListener {
@@ -605,11 +689,7 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
 
 
 data class Class(
-    var classId: String,
-    var teacherId: String,
-    var name: String,
-    var grade: String,
-    var img: String
+    var classId: String, var teacherId: String, var name: String, var grade: String, var img: String
 )
 
 data class Skill(

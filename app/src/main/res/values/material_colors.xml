@@ -136,7 +136,7 @@
     <color name="cyan_200">#80DEEA</color>
     <color name="cyan_300">#4DD0E1</color>
     <color name="cyan_400">#26C6DA</color>
-    <color name="cyan_500">#00BCD4</color>
+    <color name="cyan_500"> #6C63FF</color>
     <color name="cyan_600">#00ACC1</color>
     <color name="cyan_700">#0097A7</color>
     <color name="cyan_800">#00838F</color>
@@ -145,6 +145,7 @@
     <color name="cyan_A200">#18FFFF</color>
     <color name="cyan_A400">#00E5FF</color>
     <color name="cyan_A700">#00B8D4</color>
+
 
     <color name="light_green_50">#F1F8E9</color>
     <color name="light_green_100">#DCEDC8</color>
