@@ -6,9 +6,9 @@
     android:layout_width="100dp"
     android:layout_height="100dp"
     android:layout_margin="4dp"
-    app:cardCornerRadius="8dp"
     android:padding="12dp"
-    >
+    app:cardCornerRadius="8dp"
+    app:contentPadding="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/card_add_std"
@@ -16,11 +16,12 @@
         android:layout_height="match_parent">
 
         <com.google.android.material.card.MaterialCardView
-            android:layout_marginTop="4dp"
+
             android:id="@+id/card_add_new_std"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_gravity="center"
+            android:layout_marginTop="4dp"
             app:cardCornerRadius="30dp"
             app:layout_constraintBottom_toTopOf="@id/txt_std_name"
             app:layout_constraintEnd_toEndOf="parent"
@@ -37,12 +38,16 @@
                 app:srcCompat="@drawable/ic_add" />
 
         </com.google.android.material.card.MaterialCardView>
+
         <TextView
             android:id="@+id/txt_std_name"
-            android:layout_width="120dp"
+            style="@style/autoscroll"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
             android:layout_marginTop="8dp"
-            android:text="Student Name"
+            android:ems="8"
+            android:text="Student Nameeeeeeeeeeee"
             android:textAlignment="center"
             android:textColor="@color/colorPrimary"
             android:textStyle="bold"

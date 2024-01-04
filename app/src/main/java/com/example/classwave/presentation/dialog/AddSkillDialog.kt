@@ -6,9 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.classwave.R
 import com.example.classwave.databinding.DialogAddSkillBinding
+import com.example.classwave.domain.model.Resource
 import com.example.classwave.presentation.page.teacher.TeacherViewModel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 
 class AddSkillDialog(private val clsId: String, private val typeofSkill: String) :
@@ -35,22 +41,37 @@ class AddSkillDialog(private val clsId: String, private val typeofSkill: String)
         super.onViewCreated(view, savedInstanceState)
 
         registerListener()
+        initialFlowCollectors()
     }
 
     private fun registerListener() {
-        /*    binding.imgCancel.setOnClickListener {
-                dismiss()
-            }
-            binding.editTxtClassName.addTextChangedListener {
-                binding.btnCreateClass.isClickable = true
-                binding.btnCreateClass.setBackgroundColor(getResources().getColor(R.color.colorPrimary))
-            }*/
         binding.btnAddSkill.setOnClickListener {
             val skillName = binding.editTextAddSkillName.text.toString()
             val hScore = binding.editTextAddSkillHighScoreName.text.toString()
             viewModel.createSkill(clsId, skillName, hScore, typeofSkill)
-            dismiss()
-
+        }
+    }
+    private fun initialFlowCollectors(){
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED){
+                viewModel.createSkill.collectLatest {
+                    it.let {
+                        when(it){
+                            is Resource.Error -> {}
+                            is Resource.Loading -> {
+                                binding.btnAddSkill.text=""
+                                binding.progressBarDeleteLoading.visibility= View.VISIBLE
+                            }
+                            is Resource.Success -> {
+                            binding.progressBarDeleteLoading.visibility=View.INVISIBLE
+                                viewModel.setNull()
+                                dismiss()
+                            }
+                            null -> {}
+                        }
+                    }
+                }
+            }
         }
     }
 

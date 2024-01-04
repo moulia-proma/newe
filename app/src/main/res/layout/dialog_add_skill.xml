@@ -41,6 +41,11 @@
         android:background="@drawable/edit_text_style"
 
         />
+
+
+
+
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_add_skill"
         android:layout_marginTop="8dp"
@@ -53,6 +58,17 @@
         android:text="Add"
         android:textColor="@color/white"
         />
+    <ProgressBar
+        android:id="@+id/progress_bar_delete_loading"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:indeterminateTint="@color/white"
+        android:progressTint="@color/white"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/btn_add_skill"
+        app:layout_constraintEnd_toEndOf="@id/btn_add_skill"
+        app:layout_constraintStart_toStartOf="@id/btn_add_skill"
+        app:layout_constraintTop_toTopOf="@id/btn_add_skill" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

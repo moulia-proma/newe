@@ -57,8 +57,8 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
     private var _createStudent = MutableStateFlow<Resource<Student>?>(null)
     var createStudent = _createStudent.asStateFlow()
 
-    private val _createSkill = MutableStateFlow<Resource<Skill>?>(null)
-    val createSkill = _createSkill.asStateFlow()
+    private var _createSkill = MutableStateFlow<Resource<Skill>?>(null)
+    var createSkill = _createSkill.asStateFlow()
 
     private val _selectedClass = MutableStateFlow<Class?>(null)
     val selectedClass = _selectedClass.asStateFlow()
@@ -79,6 +79,8 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
          deleteClass = _deleteClass.asStateFlow()
         _createStudent = MutableStateFlow<Resource<Student>?>(null)
          createStudent = _createStudent.asStateFlow()
+        _createSkill = MutableStateFlow<Resource<Skill>?>(null)
+         createSkill = _createSkill.asStateFlow()
     }
 
     private val clsImage = arrayListOf<Int>(
