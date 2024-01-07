@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
-class positiveFragment(
+class PositiveFragment(
     val classId: String,
     val stdId: String,
     val stdName: String,

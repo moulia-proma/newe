@@ -10,7 +10,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.classwave.databinding.ActivitySignUpBinding
 import com.example.classwave.domain.model.Resource
+import com.example.classwave.presentation.page.parent.ParentActivity
 import com.example.classwave.presentation.page.signin.SignInActivity
+import com.example.classwave.presentation.page.student.StudentActivity
 import com.example.classwave.presentation.page.teacher.TeacherActivity
 import com.example.classwave.presentation.util.SnackbarUtil
 import dagger.hilt.android.AndroidEntryPoint
@@ -81,6 +83,12 @@ class SignUpActivity : AppCompatActivity() {
 
         if (userType == "teacher") {
             val intent = Intent(this@SignUpActivity, TeacherActivity::class.java)
+            startActivity(intent)
+        } else if (userType == "student") {
+            val intent = Intent(this@SignUpActivity, StudentActivity::class.java)
+            startActivity(intent)
+        }else if(userType == "parent"){
+            val intent = Intent(this@SignUpActivity, ParentActivity::class.java)
             startActivity(intent)
         }
     }

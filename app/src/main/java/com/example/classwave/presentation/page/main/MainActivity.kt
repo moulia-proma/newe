@@ -10,8 +10,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.classwave.databinding.ActivityMainBinding
+import com.example.classwave.presentation.page.parent.ParentActivity
 import com.example.classwave.presentation.page.signin.SignInActivity
+import com.example.classwave.presentation.page.student.StudentActivity
 import com.example.classwave.presentation.page.teacher.TeacherActivity
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -36,9 +40,21 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun registerListener() {
-        binding.cardParent.setOnClickListener { }
+        binding.cardParent.setOnClickListener {
+            val intent = Intent(this, SignInActivity::class.java)
+            intent.putExtra("user_type", "parent")
+            startActivity(intent)
+            finish()
+        }
 
-        binding.cardStudent.setOnClickListener { }
+        binding.cardStudent.setOnClickListener {
+            val intent = Intent(this, SignInActivity::class.java)
+            intent.putExtra("user_type", "student")
+            startActivity(intent)
+            finish()
+
+
+        }
 
         binding.cardTeacher.setOnClickListener {
             val intent = Intent(this, SignInActivity::class.java)
@@ -54,12 +70,10 @@ class MainActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.isAuthenticated.collectLatest { isAuthenticated ->
                     if (isAuthenticated == null) return@collectLatest
-                    Log.d("_xyz", "initializeFlowCollectors: ${isAuthenticated}")
                     if (isAuthenticated) {
+                        Firebase.auth.uid?.let { viewModel.findUserType(it) }
+                        Log.d("_pt", "initializeFlowCollectors: mm $isAuthenticated ")
 
-                        val intent = Intent(this@MainActivity, TeacherActivity::class.java)
-                        startActivity(intent)
-                        finish()
                     } else {
                         binding.groupPicker.visibility = View.VISIBLE
                         binding.progressCircular.visibility = View.INVISIBLE
@@ -67,6 +81,30 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.userType.collectLatest {
+                    Log.d("_pt", "initializeFlowCollectors: ${it}")
+                    if(it=="teacher"){
+                        val intent = Intent(this@MainActivity,TeacherActivity::class.java)
+                        startActivity(intent)
+                    }else if(it == "parent"){
+                        val intent = Intent(this@MainActivity,ParentActivity::class.java)
+                        startActivity(intent)
+
+                    }else if(it=="student"){
+                        val intent = Intent(this@MainActivity,StudentActivity::class.java)
+                        startActivity(intent)
+
+                    }
+
+                }
+            }
+        }
+
+
+
+
     }
 
 }

@@ -23,9 +23,9 @@ class ViewPagerAdapter(
     override fun createFragment(position: Int): Fragment {
 
         when (position) {
-            0 -> return positiveFragment(classId,stdId,stdName,stdProfile)
+            0 -> return PositiveFragment(classId,stdId,stdName,stdProfile)
             1 -> return NeedsWorkFragment(classId,stdId,stdName,stdProfile)
         }
-        return positiveFragment(classId, stdId, stdName, stdProfile)
+        return PositiveFragment(classId, stdId, stdName, stdProfile)
     }
 }

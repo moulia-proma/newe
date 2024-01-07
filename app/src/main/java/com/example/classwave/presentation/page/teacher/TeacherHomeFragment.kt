@@ -3,9 +3,12 @@ package com.example.classwave.presentation.page.teacher
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -93,6 +96,18 @@ class TeacherHomeFragment : Fragment() {
             }
         })
         binding.recyclerViewCardSkill.adapter = skillWiseReportAdapter
+
+
+        val popup = binding.imgViewMore
+        val showPopup = PopupMenu(requireContext(), popup)
+        showPopup.menu.add(Menu.NONE, 0, 0, "Share class")
+        showPopup.menu.add(Menu.NONE, 1, 1, "Sign out")
+        showPopup.gravity = Gravity.END
+        popup.setOnClickListener { showPopup.show() }
+
+
+
+
 
         initializeFlowCollectors()
         registerListener()

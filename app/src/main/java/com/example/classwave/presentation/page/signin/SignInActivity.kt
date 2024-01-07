@@ -44,10 +44,9 @@ class SignInActivity : AppCompatActivity() {
     private fun registerListener() {
         binding.txtSignUp.setOnClickListener {
             val intent = Intent(this, SignUpActivity::class.java)
-            intent.putExtra("user_type" , userType)
+            intent.putExtra("user_type", userType)
             startActivity(intent)
         }
-
         binding.btnSignIn.setOnClickListener {
             val email = binding.editTextSignInEmail.text.toString()
             val password = binding.editTextSignInPassword.text.toString()
@@ -82,9 +81,11 @@ class SignInActivity : AppCompatActivity() {
             "teacher" -> {
                 Intent(this@SignInActivity, TeacherActivity::class.java)
             }
+
             "student" -> {
                 Intent(this@SignInActivity, StudentActivity::class.java)
             }
+
             else -> {
                 Intent(this@SignInActivity, ParentActivity::class.java)
             }
