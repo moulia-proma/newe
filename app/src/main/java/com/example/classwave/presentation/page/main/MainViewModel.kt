@@ -25,9 +25,12 @@ class MainViewModel @Inject constructor() : ViewModel() {
 
     private var _isAuthenticated = MutableStateFlow<Boolean?>(null)
     var isAuthenticated = _isAuthenticated.asStateFlow()
-    private var _userType = MutableStateFlow<String>("")
+    private var _userType = MutableStateFlow<ArrayList<String>>(arrayListOf())
     var userType = _userType.asStateFlow()
-
+    private var _userName = MutableStateFlow<String>("")
+    var userName = _userName.asStateFlow()
+    private var _userEmail = MutableStateFlow<String>("")
+    var userEmail = _userEmail.asStateFlow()
     fun checkIsAuthenticated() {
         viewModelScope.launch(Dispatchers.IO) {
             delay(2000)
@@ -42,8 +45,11 @@ class MainViewModel @Inject constructor() : ViewModel() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     snapshot.children.forEach { user ->
                         if (user.child("uid").value.toString() == uId) {
-                            _userType.value = user.child("type").value.toString()
-
+                            val arr = arrayListOf<String>()
+                            arr.add(user.child("type").value.toString())
+                            arr.add(user.child("name").value.toString())
+                            arr.add(user.child("email").value.toString())
+                            _userType.value = arr
                         }
                     }
                 }

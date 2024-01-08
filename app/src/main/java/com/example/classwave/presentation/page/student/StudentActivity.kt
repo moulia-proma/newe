@@ -1,25 +1,39 @@
 package com.example.classwave.presentation.page.student
 
 import android.os.Bundle
+import android.util.Log
+import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.classwave.R
-import com.example.classwave.databinding.ActivityTeacherBinding
+import com.example.classwave.databinding.ActivityStudentBinding
 import com.example.classwave.databinding.NavDrawerBinding
+import com.example.classwave.domain.model.Resource
 import com.example.classwave.presentation.dialog.EnterClassCodeDialog
-import com.example.classwave.presentation.page.teacher.AddClassAdapter
 import com.example.classwave.presentation.page.teacher.Class
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class StudentActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityTeacherBinding
+    private val viewModel: StudentViewModel by viewModels()
+    private lateinit var binding: ActivityStudentBinding
     private lateinit var headerBinding: NavDrawerBinding
     private var joinClassAdapter = JoinClassAdapter()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
+      val uName = intent.getStringExtra("name").toString()
+         var uEmail = intent.getStringExtra("email").toString()
+
         super.onCreate(savedInstanceState)
-        binding = ActivityTeacherBinding.inflate(layoutInflater)
+        binding = ActivityStudentBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val navHostFragment =
@@ -27,7 +41,6 @@ class StudentActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
         val navView: BottomNavigationView = findViewById(R.id.bottom_navigation_view)
         navView.setupWithNavController(navController)
-
 
         headerBinding =
             NavDrawerBinding.inflate(layoutInflater, binding.navigationViewDrawer, false)
@@ -37,7 +50,8 @@ class StudentActivity : AppCompatActivity() {
         headerBinding.recyclerView.adapter = joinClassAdapter
         joinClassAdapter.setListener(listener = object : JoinClassAdapter.Listener {
             override fun onAddNewClassClicked() {
-                val dialog = EnterClassCodeDialog("","","","","","create")
+                Log.d("pro", "onAddNewClassClicked: $uName")
+                val dialog = EnterClassCodeDialog("","","","","","create",uName)
                 dialog.show(supportFragmentManager,EnterClassCodeDialog.TAG)
             }
 
@@ -53,11 +67,42 @@ class StudentActivity : AppCompatActivity() {
                     cls.name,
                     cls.img,
                     cls.grade,
-                    "update"
+                    "update",
+                    uName
                 )
                 dialog.show(supportFragmentManager, EnterClassCodeDialog.TAG)
             }
         })
 
+    }
+    private fun initializeFlowCollectors() {
+
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+               viewModel.classList.collectLatest {
+                    it?.let {
+                        when (it) {
+                            is Resource.Error -> {}
+                            is Resource.Loading -> {}
+                            is Resource.Success -> {
+                                showSuccessView(it.data)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+    private fun showSuccessView(classList: List<Class>?) {
+        headerBinding.progressBarClassLoading.visibility = View.INVISIBLE
+        if (!classList.isNullOrEmpty()) {
+            viewModel.updateClass(classList[0])
+            //addClassAdapter.setClasses(classList)
+        }else {
+            viewModel.updateClass(null)
+           // addClassAdapter.setClasses(listOf())
+        }
     }
 }

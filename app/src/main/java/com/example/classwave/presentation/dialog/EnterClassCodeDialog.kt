@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
@@ -15,8 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.classwave.R
 import com.example.classwave.databinding.DialogAddNewStdBinding
-import com.example.classwave.domain.model.Resource
-import com.example.classwave.presentation.page.teacher.TeacherViewModel
+import com.example.classwave.presentation.page.student.StudentViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -27,11 +25,13 @@ class EnterClassCodeDialog(
     name: String,
     img: String,
     grade: String,
-    type: String
+    type: String,
+    private val uName: String?
 ) : DialogFragment() {
-    private val viewModel: TeacherViewModel by activityViewModels()
+    private val viewModel: StudentViewModel by activityViewModels()
     private var _binding: DialogAddNewStdBinding? = null
     private val binding get() = _binding!!
+    private var uType = arrayListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,57 +52,50 @@ class EnterClassCodeDialog(
         super.onViewCreated(view, savedInstanceState)
         binding.editTextAddStdName.hint = "Enter class code,if you don't have ask to ur teacher"
         binding.btnAddStd.text = "Join"
+        Log.d("_pr", "onViewCreated:  classId = $clsId")
+        binding.btnAddStd.setOnClickListener {
+           // Log.d("pro", "onViewCreated: $uName")
+            if (uName?.isNotEmpty() == true) {
+                viewModel.createStudent(binding.editTextAddStdName.text.toString(), uName)
+            }
+        }
+
         initialFlowCollectors()
-        registerListener()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun registerListener() {
-        binding.btnAddStd.setOnClickListener {
-            val studentName = binding.editTextAddStdName.text.toString()
-            viewModel.createStudent(clsId, studentName)
-
-
-        }
-    }
+    /*    private fun registerListener() {
+            binding.btnAddStd.setOnClickListener {
+                val studentName = binding.editTextAddStdName.text.toString()
+                viewModel.createStudent(clsId, studentName)
+            }
+        }*/
 
 
     private fun initialFlowCollectors() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.createStudent.collectLatest {
-                    it?.let {
-                        when (it) {
-
-                            is Resource.Error -> {}
-                            is Resource.Loading -> {
-                                Log.d("_xyzz", "initialFlowCollectors: hhhh")
-                                binding.progressBarDeleteLoading.visibility = View.VISIBLE
-                                binding.btnAddStd.text = ""
-                            }
-
-                            is Resource.Success -> {
-                                showSuccessView()
-                                Toast.makeText(requireContext(), "Success", Toast.LENGTH_SHORT)
-                                    .show()
-                            }
+                viewModel.userType.collectLatest {
+                    if (it.isNotEmpty()) {
+                        if (it[0] == "student") {
+                            uType = it
                         }
-
                     }
 
 
                 }
             }
         }
+
     }
 
-    private fun showSuccessView() {
-        //   viewModel.setCreateClassNull()
-        Log.d("_xyzz", "showSuccessView: my name")
-        binding.progressBarDeleteLoading.visibility = View.INVISIBLE
-        viewModel.setNull()
-        dismiss()
-    }
+    /*    private fun showSuccessView() {
+            //   viewModel.setCreateClassNull()
+            Log.d("_xyzz", "showSuccessView: my name")
+            binding.progressBarDeleteLoading.visibility = View.INVISIBLE
+            viewModel.setNull()
+            dismiss()
+        }*/
 
 
     companion object {

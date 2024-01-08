@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/cyan_500"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:title="Class Invite"
+        app:titleTextColor="@color/white" />
+
+
+    <TextView
+        android:id="@+id/text_view_invite_instruction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="Use this code to invite parent and Students in your class"
+        android:textAlignment="center"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toTopOf="@id/card_view_class_link_bg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+
+        />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_view_class_link_bg"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="16dp"
+        app:cardBackgroundColor="@color/grey_100"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="0dp"
+        app:contentPadding="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_view_invite_instruction" />
+
+    <ImageView
+        android:id="@+id/image_copy_icon"
+        android:layout_width="38dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_copy"
+        app:layout_constraintBottom_toBottomOf="@id/card_view_class_link_bg"
+        app:layout_constraintEnd_toStartOf="@id/text_view_cls_code"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="@id/card_view_class_link_bg"
+
+        app:layout_constraintTop_toTopOf="@id/card_view_class_link_bg" />
+
+
+    <TextView
+        android:id="@+id/text_view_cls_code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="abcdefghijBHHHH"
+        android:textColor="@color/blue_700"
+        app:layout_constraintBottom_toBottomOf="@id/card_view_class_link_bg"
+        app:layout_constraintEnd_toEndOf="@id/card_view_class_link_bg"
+        app:layout_constraintStart_toEndOf="@id/image_copy_icon"
+        app:layout_constraintTop_toTopOf="@id/card_view_class_link_bg" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_share_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@color/cyan_500"
+        android:text="Share Code"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card_view_class_link_bg"
+
+        />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

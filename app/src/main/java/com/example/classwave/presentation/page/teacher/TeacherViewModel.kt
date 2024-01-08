@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.classwave.R
 import com.example.classwave.domain.model.Resource
 import com.example.classwave.presentation.page.report.Report
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -38,6 +39,9 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
 
     private val _classList = MutableStateFlow<Resource<List<Class>>?>(null)
     var classList = _classList.asStateFlow()
+
+    private var _signOut = MutableStateFlow<Boolean?>(null)
+    var signOut = _signOut.asStateFlow()
 
     private val _markList = MutableStateFlow<Resource<List<Marks>>?>(null)
     var markList = _markList.asStateFlow()
@@ -650,44 +654,21 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
 
             })
         }
-    }/*    fun fetchStudentReport(stdId: String) {
-            viewModelScope.launch(Dispatchers.IO) {
-                dbMarksRef.addListenerForSingleValueEvent(
-                    object : ValueEventListener {
-                        override fun onDataChange(dataSnapshot: DataSnapshot) {
-                            val markList = arrayListOf<Marks>()
-                            dataSnapshot.children.forEach { mark ->
-                                Log.d("xyz", "onDataChange: ${mark.child("stdId").value.toString()}  ${stdId}")
-                                Log.d("TAG", "onDataChange:${mark.child("stdId").value.toString()}  ${stdId}")
-                                if (mark.child("stdId").value.toString() == stdId) {
-                                    markList.add(
-                                        Marks(
-                                            mark.child("skillId").value.toString(),
-                                            mark.child("stdId").value.toString(),
-                                            mark.child("marks").value.toString(),
-                                            mark.child("date").value.toString(),
-                                            mark.child("skillIdStdId").value.toString(),
-                                            mark.child("skillName").value.toString(),
-                                            mark.child("skillPhoto").value.toString(),
-                                            mark.child("highestScore").value.toString()
-                                        )
-                                    )
-                                }
+    }
+    fun signOut(){
+      Firebase.auth.signOut()
 
-                            }
-                            _markList.value = Resource.Success(markList)
-                        }
 
-                        override fun onCancelled(databaseError: DatabaseError) {
-                            _markList.value = Resource.Error("Data Retrieve unsuccessful")
-                        }
-                    })
-            }
+    }
 
-        }*/
+
+
+ ;
+
 
 
 }
+
 
 
 data class Class(

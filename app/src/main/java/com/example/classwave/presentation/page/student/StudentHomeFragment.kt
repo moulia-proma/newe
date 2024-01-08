@@ -1,4 +1,4 @@
-package com.example.classwave.presentation.page.teacher
+package com.example.classwave.presentation.page.student
 
 import android.content.Intent
 import android.os.Bundle
@@ -30,22 +30,22 @@ import com.google.android.flexbox.JustifyContent
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class TeacherHomeFragment : Fragment() {
+class StudentHomeFragment : Fragment() {
 
 
-    private val viewModel: TeacherViewModel by activityViewModels()
+    private val viewModel: StudentViewModel by activityViewModels()
 
     private var _binding: FragmentTeacherHomeBinding? = null
 
     private val binding get() = _binding!!
-    private var addStudentAdapter = AddStudentAdapter()
-    private var skillWiseReportAdapter = skillWiseReportAdapter()
+    //private var addStudentAdapter = AddStudentAdapter()
+   // private var skillWiseReportAdapter = skillWiseReportAdapter()
 
-
+/*
     private lateinit var student: List<Student>
     var clsId = ""
     var stdId = ""
-    private lateinit var clas: Class
+    private lateinit var clas: Class*/
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -61,15 +61,15 @@ class TeacherHomeFragment : Fragment() {
 
         binding.cardAttendance.setOnClickListener {}
 
-        val layoutManager = FlexboxLayoutManager(context)
+     /*   val layoutManager = FlexboxLayoutManager(context)
         layoutManager.flexDirection = FlexDirection.ROW
         layoutManager.justifyContent = JustifyContent.FLEX_START
 
         binding.recyclerViewStdInfo.layoutManager = layoutManager
         binding.recyclerViewStdInfo.adapter = addStudentAdapter
 
-        /*   val modal = ModalBottomSheetDialog()
-           supportFragmentManager.let { modal.show(it, ModalBottomSheetDialog.TAG) }*/
+        *//*   val modal = ModalBottomSheetDialog()
+           supportFragmentManager.let { modal.show(it, ModalBottomSheetDialog.TAG) }*//*
         addStudentAdapter.setListener(listener = object : AddStudentAdapter.Listener {
 
             override fun onAddNewStudentClicked(clsId: String) {
@@ -126,9 +126,9 @@ class TeacherHomeFragment : Fragment() {
 
 
         initializeFlowCollectors()
-        registerListener()
+        registerListener()*/
     }
-
+/*
     fun registerListener() {
         binding.cardClassReport.setOnClickListener {
             val intent = Intent(requireContext(), ClassReportActivity::class.java)
@@ -231,7 +231,7 @@ class TeacherHomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
+    }*/
 
 }
 

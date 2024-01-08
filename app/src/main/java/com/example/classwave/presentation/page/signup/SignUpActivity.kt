@@ -85,6 +85,8 @@ class SignUpActivity : AppCompatActivity() {
             val intent = Intent(this@SignUpActivity, TeacherActivity::class.java)
             startActivity(intent)
         } else if (userType == "student") {
+
+
             val intent = Intent(this@SignUpActivity, StudentActivity::class.java)
             startActivity(intent)
         }else if(userType == "parent"){
