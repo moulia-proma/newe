@@ -33,9 +33,8 @@ class SignInViewModel @Inject constructor() : ViewModel() {
     private val _loginState = MutableStateFlow<Resource<loginResponse>?>(null)
     val loginState = _loginState.asStateFlow()
 
-    private var _userType = MutableStateFlow<ArrayList<String>>(arrayListOf())
+    private var _userType = MutableStateFlow<Resource<ArrayList<String?>>>(Resource.Success(arrayListOf()))
     var userType = _userType.asStateFlow()
-
 
     fun signIn(email: String, password: String) {
         _loginState.value = Resource.Loading()
@@ -52,6 +51,7 @@ class SignInViewModel @Inject constructor() : ViewModel() {
         Firebase.auth.signInWithEmailAndPassword(email, password).addOnCompleteListener {
             if (it.isSuccessful) {
                 _loginState.value = Resource.Success(loginResponse(email, password))
+                findUserType(firebaseAuth.uid.toString())
             } else {
                 _loginState.value = Resource.Error(it.exception.toString())
             }
@@ -67,22 +67,23 @@ class SignInViewModel @Inject constructor() : ViewModel() {
         return email.matches(emailRegex.toRegex())
     }
     fun findUserType(uId: String) {
-
+        _userType.value = Resource.Loading()
         viewModelScope.launch(Dispatchers.IO) {
             dbRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     snapshot.children.forEach { user ->
                         if (user.child("uid").value.toString() == uId) {
-                            val arr = arrayListOf<String>()
+                            val arr = arrayListOf<String?>()
                             arr.add(user.child("type").value.toString())
                             arr.add(user.child("name").value.toString())
                             arr.add(user.child("email").value.toString())
-                            _userType.value = arr
+                            _userType.value = Resource.Success(arr)
                         }
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
+                    _userType.value = Resource.Error("error")
                 }
 
             })

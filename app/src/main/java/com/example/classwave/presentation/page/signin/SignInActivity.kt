@@ -2,13 +2,13 @@ package com.example.classwave.presentation.page.signin
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.example.classwave.data.datasource.remote.model.loginResponse
 import com.example.classwave.databinding.ActivitySignInBinding
 import com.example.classwave.domain.model.Resource
 import com.example.classwave.presentation.page.parent.ParentActivity
@@ -57,43 +57,39 @@ class SignInActivity : AppCompatActivity() {
 
 
     private fun initializeFlowCollectors() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.loginState.collectLatest {
-                    it?.let {
-                        when (it) {
-                            is Resource.Error -> showErrorMessage(it.message ?: "")
-                            is Resource.Loading -> showLoadingView()
-                            is Resource.Success -> showSuccessView(it.data)
-                        }
-                    }
-
-                }
-            }
-        }
 
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.userType.collectLatest {
-                    //  Log.d("_pt", "initializeFlowCollectors: ${it}")
-                    if (it.isNotEmpty()) {
-                        if (it[0] == "teacher") {
-                            val intent = Intent(this@SignInActivity, TeacherActivity::class.java)
-                            startActivity(intent)
-                        } else if (it[0] == "parent") {
-                            val intent = Intent(this@SignInActivity, ParentActivity::class.java)
-                            startActivity(intent)
 
-                        } else if (it[0] == "student") {
+     when(it){
+         is Resource.Error -> TODO()
+         is Resource.Loading -> TODO()
+         is Resource.Success -> {
+             if (it.data?.isNotEmpty() == true) {
+                 if (it.data[0] == "teacher") {
+                     val intent = Intent(this@SignInActivity, TeacherActivity::class.java)
+                     startActivity(intent)
+                 } else if (it.data[0] == "parent") {
+                     val intent = Intent(this@SignInActivity, ParentActivity::class.java)
+                     startActivity(intent)
 
-                            val intent = Intent(this@SignInActivity, StudentActivity::class.java)
-                            intent.putExtra("name", it[1])
-                            intent.putExtra("email", it[2])
-                            startActivity(intent)
+                 } else if (it.data[0] == "student") {
 
-                        }
-                    }
+                     val intent = Intent(this@SignInActivity, StudentActivity::class.java)
+                     intent.putExtra("name", it.data[1])
+                     intent.putExtra("email", it.data[2])
+                     startActivity(intent)
+
+                 }
+             }
+
+
+
+         }
+     }
+
                 }
             }
         }
@@ -101,27 +97,30 @@ class SignInActivity : AppCompatActivity() {
 
     }
 
-    private fun showSuccessView(data: loginResponse?) {
-        binding.txtSignIn.visibility = View.VISIBLE
-        binding.progressBarSignInLoading.visibility = View.INVISIBLE
+    /*   private fun showSuccessView(data: loginResponse?) {
+           binding.txtSignIn.visibility = View.VISIBLE
+           binding.progressBarSignInLoading.visibility = View.INVISIBLE
+         if(userType.isNotEmpty()){
+             val intent = when (userType) {
+                 "teacher" -> {
+                     Intent(this@SignInActivity, TeacherActivity::class.java)
+                 }
 
-        val intent = when (userType) {
-            "teacher" -> {
-                Intent(this@SignInActivity, TeacherActivity::class.java)
-            }
+                 "student" -> {
 
-            "student" -> {
+                     Intent(this@SignInActivity, StudentActivity::class.java)
+                 }
 
-                Intent(this@SignInActivity, StudentActivity::class.java)
-            }
+                 else -> {
+                     Intent(this@SignInActivity, ParentActivity::class.java)
+                 }
+             }
+             intent.putExtra("name",userType[0])
+             startActivity(intent)
+             finish()
+         }
 
-            else -> {
-                Intent(this@SignInActivity, ParentActivity::class.java)
-            }
-        }
-        startActivity(intent)
-        finish()
-    }
+       }*/
 
     private fun showErrorMessage(message: String) {
         binding.progressBarSignInLoading.visibility = View.INVISIBLE
