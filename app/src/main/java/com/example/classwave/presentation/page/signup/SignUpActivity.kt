@@ -2,6 +2,7 @@ package com.example.classwave.presentation.page.signup
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -61,39 +62,77 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun initializeFlowCollectors() {
+        /*       lifecycleScope.launch {
+                   repeatOnLifecycle(Lifecycle.State.CREATED) {
+                       viewModel.authUiState.collectLatest {
+                           it?.let {
+                               when (it) {
+                                   is Resource.Error -> showErrorMessage(message = it.message ?: "")
+                                   is Resource.Loading -> showLoadingView()
+                                   is Resource.Success -> showSuccessView()
+                               }
+                           }
+                       }
+                   }
+               }*/
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.authUiState.collectLatest {
-                    it?.let {
-                        when (it) {
-                            is Resource.Error -> showErrorMessage(message = it.message ?: "")
-                            is Resource.Loading -> showLoadingView()
-                            is Resource.Success -> showSuccessView()
+                viewModel.userType.collectLatest {
+                    Log.d("_abd", "initializeFlowCollectors: ${it.data}")
+                    when (it) {
+                        is Resource.Error -> {}
+                        is Resource.Loading -> {}
+                        is Resource.Success -> {
+                            if (it.data?.isNotEmpty() == true) {
+                                if (it.data[0] == "teacher") {
+                                    val intent =
+                                        Intent(this@SignUpActivity, TeacherActivity::class.java)
+                                    startActivity(intent)
+                                } else if (it.data[0] == "parent") {
+                                    val intent =
+                                        Intent(this@SignUpActivity, ParentActivity::class.java)
+                                    startActivity(intent)
+
+                                } else if (it.data[0] == "student") {
+
+                                    val intent =
+                                        Intent(this@SignUpActivity, StudentActivity::class.java)
+                                    intent.putExtra("name", it.data[1])
+                                    intent.putExtra("email", it.data[2])
+                                    startActivity(intent)
+
+                                }
+                            }
+
+
                         }
                     }
+
                 }
             }
         }
+
+
     }
 
 
-    private fun showSuccessView() {
-        binding.txtSignup.visibility = View.VISIBLE
-        binding.progressBarSignUpLoading.visibility = View.INVISIBLE
+    /*    private fun showSuccessView() {
+            binding.txtSignup.visibility = View.VISIBLE
+            binding.progressBarSignUpLoading.visibility = View.INVISIBLE
 
-        if (userType == "teacher") {
-            val intent = Intent(this@SignUpActivity, TeacherActivity::class.java)
-            startActivity(intent)
-        } else if (userType == "student") {
+            if (userType == "teacher") {
+                val intent = Intent(this@SignUpActivity, TeacherActivity::class.java)
+                startActivity(intent)
+            } else if (userType == "student") {
 
 
-            val intent = Intent(this@SignUpActivity, StudentActivity::class.java)
-            startActivity(intent)
-        }else if(userType == "parent"){
-            val intent = Intent(this@SignUpActivity, ParentActivity::class.java)
-            startActivity(intent)
-        }
-    }
+                val intent = Intent(this@SignUpActivity, StudentActivity::class.java)
+                startActivity(intent)
+            } else if (userType == "parent") {
+                val intent = Intent(this@SignUpActivity, ParentActivity::class.java)
+                startActivity(intent)
+            }
+        }*/
 
     private fun showErrorMessage(message: String) {
         binding.progressBarSignUpLoading.visibility = View.INVISIBLE

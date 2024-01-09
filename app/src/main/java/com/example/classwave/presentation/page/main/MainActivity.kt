@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.userType.collectLatest {
-                    //  Log.d("_pt", "initializeFlowCollectors: ${it}")
+                     Log.d("_pt", "initializeFlowCollectors: ${it}")
                     if (it.isNotEmpty()) {
                         if (it[0] == "teacher") {
                             val intent = Intent(this@MainActivity, TeacherActivity::class.java)

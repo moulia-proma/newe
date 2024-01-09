@@ -2,7 +2,6 @@ package com.example.classwave.presentation.page.signin
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -30,12 +29,10 @@ class SignInActivity : AppCompatActivity() {
     private var userType: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        userType = intent.getStringExtra("user_type").toString()
         super.onCreate(savedInstanceState)
         binding = ActivitySignInBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-
-
 
         registerListener()
         initializeFlowCollectors()
@@ -63,32 +60,34 @@ class SignInActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.userType.collectLatest {
 
-     when(it){
-         is Resource.Error -> {}
-         is Resource.Loading -> {}
-         is Resource.Success -> {
-             if (it.data?.isNotEmpty() == true) {
-                 if (it.data[0] == "teacher") {
-                     val intent = Intent(this@SignInActivity, TeacherActivity::class.java)
-                     startActivity(intent)
-                 } else if (it.data[0] == "parent") {
-                     val intent = Intent(this@SignInActivity, ParentActivity::class.java)
-                     startActivity(intent)
+                    when (it) {
+                        is Resource.Error -> {}
+                        is Resource.Loading -> {}
+                        is Resource.Success -> {
+                            if (it.data?.isNotEmpty() == true) {
+                                if (it.data[0] == "teacher") {
+                                    val intent =
+                                        Intent(this@SignInActivity, TeacherActivity::class.java)
+                                    startActivity(intent)
+                                } else if (it.data[0] == "parent") {
+                                    val intent =
+                                        Intent(this@SignInActivity, ParentActivity::class.java)
+                                    startActivity(intent)
 
-                 } else if (it.data[0] == "student") {
+                                } else if (it.data[0] == "student") {
 
-                     val intent = Intent(this@SignInActivity, StudentActivity::class.java)
-                     intent.putExtra("name", it.data[1])
-                     intent.putExtra("email", it.data[2])
-                     startActivity(intent)
+                                    val intent =
+                                        Intent(this@SignInActivity, StudentActivity::class.java)
+                                    intent.putExtra("name", it.data[1])
+                                    intent.putExtra("email", it.data[2])
+                                    startActivity(intent)
 
-                 }
-             }
+                                }
+                            }
 
 
-
-         }
-     }
+                        }
+                    }
 
                 }
             }
