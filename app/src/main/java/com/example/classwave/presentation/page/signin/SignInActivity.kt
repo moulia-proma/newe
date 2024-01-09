@@ -64,8 +64,8 @@ class SignInActivity : AppCompatActivity() {
                 viewModel.userType.collectLatest {
 
      when(it){
-         is Resource.Error -> TODO()
-         is Resource.Loading -> TODO()
+         is Resource.Error -> {}
+         is Resource.Loading -> {}
          is Resource.Success -> {
              if (it.data?.isNotEmpty() == true) {
                  if (it.data[0] == "teacher") {

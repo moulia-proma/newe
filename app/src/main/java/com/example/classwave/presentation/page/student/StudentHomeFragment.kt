@@ -14,19 +14,12 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.example.classwave.databinding.FragmentTeacherHomeBinding
-import com.example.classwave.domain.model.Resource
-import com.example.classwave.presentation.dialog.AddNewStdDialog
+import com.example.classwave.databinding.FragmentStudentHomeBinding
 import com.example.classwave.presentation.dialog.ClassInviteDialog
-import com.example.classwave.presentation.dialog.SkillDialog
-import com.example.classwave.presentation.page.Attandance.AttendanceActivity
 import com.example.classwave.presentation.page.main.MainActivity
-import com.example.classwave.presentation.page.report.ClassReportActivity
-import com.example.classwave.presentation.page.report.SkillReportActivity
-import com.example.classwave.presentation.page.report.skillWiseReportAdapter
-import com.google.android.flexbox.FlexDirection
-import com.google.android.flexbox.FlexboxLayoutManager
-import com.google.android.flexbox.JustifyContent
+import com.example.classwave.presentation.page.report.Repo0rtActivity
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -35,22 +28,23 @@ class StudentHomeFragment : Fragment() {
 
     private val viewModel: StudentViewModel by activityViewModels()
 
-    private var _binding: FragmentTeacherHomeBinding? = null
+    private var _binding: FragmentStudentHomeBinding? = null
+    private var classId = ""
 
     private val binding get() = _binding!!
     //private var addStudentAdapter = AddStudentAdapter()
-   // private var skillWiseReportAdapter = skillWiseReportAdapter()
+    // private var skillWiseReportAdapter = skillWiseReportAdapter()
 
-/*
-    private lateinit var student: List<Student>
-    var clsId = ""
-    var stdId = ""
-    private lateinit var clas: Class*/
+    /*
+        private lateinit var student: List<Student>
+        var clsId = ""
+        var stdId = ""
+        private lateinit var clas: Class*/
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentTeacherHomeBinding.inflate(inflater, container, false)
+        _binding = FragmentStudentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -58,46 +52,17 @@ class StudentHomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         super.onViewCreated(view, savedInstanceState)
+        binding.cardViewReportBg.setOnClickListener {
 
-        binding.cardAttendance.setOnClickListener {}
-
-     /*   val layoutManager = FlexboxLayoutManager(context)
-        layoutManager.flexDirection = FlexDirection.ROW
-        layoutManager.justifyContent = JustifyContent.FLEX_START
-
-        binding.recyclerViewStdInfo.layoutManager = layoutManager
-        binding.recyclerViewStdInfo.adapter = addStudentAdapter
-
-        *//*   val modal = ModalBottomSheetDialog()
-           supportFragmentManager.let { modal.show(it, ModalBottomSheetDialog.TAG) }*//*
-        addStudentAdapter.setListener(listener = object : AddStudentAdapter.Listener {
-
-            override fun onAddNewStudentClicked(clsId: String) {
-                val dialog = AddNewStdDialog(clsId)
-                dialog.show(parentFragmentManager, "CreateStdDialog")
-            }
-
-            override fun onClassSelected(
-                clsId: String,
-                stdId: String,
-                studentName: String,
-                img: String,
-
-                ) {
-                // viewModel.fetchStudentReport(stdId)
-                val dialog = SkillDialog(clsId, stdId, studentName, img)
-                dialog.show(parentFragmentManager, "ProvideMarksdialog")
-            }
-        })
-
-        skillWiseReportAdapter.setListener(object : skillWiseReportAdapter.Listener {
-            override fun onSkillSelected(skillId: String) {
-                val intent = Intent(context, SkillReportActivity::class.java)
-                intent.putExtra("skillId", skillId)
+            val intent = Intent(requireContext(), Repo0rtActivity::class.java)
+            if (classId.isNotEmpty()) {
+                intent.putExtra("classId", classId)
+                intent.putExtra("student_id", Firebase.auth.uid.toString())
                 startActivity(intent)
             }
-        })
-        binding.recyclerViewCardSkill.adapter = skillWiseReportAdapter
+
+        }
+        viewModel.findUserType(Firebase.auth.uid.toString())
 
 
         val popup = binding.imgViewMore
@@ -110,8 +75,7 @@ class StudentHomeFragment : Fragment() {
         showPopup.setOnMenuItemClickListener { menuItem ->
             val id = menuItem.itemId
             if (id == 0) {
-                  val dialog = ClassInviteDialog(clsId)
-                dialog.show(parentFragmentManager,ClassInviteDialog.TAG)
+
             } else if (id == 1) {
                 viewModel.signOut()
                 var intent = Intent(requireContext(), MainActivity::class.java)
@@ -121,109 +85,101 @@ class StudentHomeFragment : Fragment() {
             true
         }
 
-
-
-
-
         initializeFlowCollectors()
-        registerListener()*/
     }
-/*
-    fun registerListener() {
-        binding.cardClassReport.setOnClickListener {
-            val intent = Intent(requireContext(), ClassReportActivity::class.java)
-            intent.putExtra("clsId", clsId)
-            startActivity(intent)
 
-        }
-        binding.cardAttendance.setOnClickListener {
-            val intent = Intent(requireContext(), AttendanceActivity::class.java)
-            intent.putExtra("clsId", clsId)
-            intent.putExtra("stdId", stdId)
-            startActivity(intent)
-        }
-    }
 
     private fun initializeFlowCollectors() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.selectedClass.collectLatest { cls ->
+                    Log.d("TAG", "initializeFlowCollectors: i am cls")
                     if (cls != null) {
-                        binding.toolbar.title = cls.name
-                        Log.d("TAG", "initializeFlowCollectors: stdAdapter called ")
-                        addStudentAdapter.setId(cls.classId)
-                        clsId = cls.classId
-                        clas = cls
+
+                        classId = cls.classId
+                        //clas = cls
 
                     } else {
-                        binding.toolbar.title = "No Class"
+                        binding.textViewName.text = "No Class"
                     }
                 }
             }
         }
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.studentList.collectLatest {
-
-                    it?.let {
-                        when (it) {
-                            is Resource.Error -> {}
-                            is Resource.Loading -> {
-                                binding.progressBarStudentLoading.visibility = View.VISIBLE
-                                binding.recyclerViewStdInfo.visibility = View.INVISIBLE
-                            }
-
-                            is Resource.Success -> {
-                                if (it.data != null) {
-                                    binding.recyclerViewStdInfo.visibility = View.VISIBLE
-                                    binding.progressBarStudentLoading.visibility = View.INVISIBLE
-                                    it.data?.let { addStudentAdapter.setStudents(it) }
-
-                                }
-
-                                binding.progressBarStudentLoading.visibility = View.INVISIBLE
-
-                            }
-                        }
-
-                    }
-                }
-            }
-
-
-        }
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.createStudent.collectLatest {
-                    it?.let {
-                        when (it) {
-                            is Resource.Error -> {}
-                            is Resource.Loading -> {}
-                            is Resource.Success -> {}
-                        }
+                viewModel.userType.collectLatest { user ->
+                    Log.d("TAG", "initializeFlowCollectors: i am cls")
+                    if (user.isNotEmpty()) {
+                        binding.textViewName.text = "Welcome, ${user[1]}"
+                    } else {
+                        binding.textViewName.text = "No Class"
                     }
                 }
             }
         }
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.posSkillList.collectLatest {
-                    it?.let {
-                        when (it) {
-                            is Resource.Error -> {}
-                            is Resource.Loading -> {}
-                            is Resource.Success -> {
-                                if (it.data != null) {
-                                    skillWiseReportAdapter.setClasses(it.data)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+        /* lifecycleScope.launch {
+             repeatOnLifecycle(Lifecycle.State.CREATED) {
+                 viewModel.studentList.collectLatest {
 
-        }
+                     it?.let {
+                         when (it) {
+                             is Resource.Error -> {}
+                             is Resource.Loading -> {
+                                 binding.progressBarStudentLoading.visibility = View.VISIBLE
+                                 binding.recyclerViewStdInfo.visibility = View.INVISIBLE
+                             }
+
+                             is Resource.Success -> {
+                                 if (it.data != null) {
+                                     binding.recyclerViewStdInfo.visibility = View.VISIBLE
+                                     binding.progressBarStudentLoading.visibility = View.INVISIBLE
+                                     it.data?.let { addStudentAdapter.setStudents(it) }
+
+                                 }
+
+                                 binding.progressBarStudentLoading.visibility = View.INVISIBLE
+
+                             }
+                         }
+
+                     }
+                 }
+             }
+
+
+         }
+
+         lifecycleScope.launch {
+             repeatOnLifecycle(Lifecycle.State.CREATED) {
+                 viewModel.createStudent.collectLatest {
+                     it?.let {
+                         when (it) {
+                             is Resource.Error -> {}
+                             is Resource.Loading -> {}
+                             is Resource.Success -> {}
+                         }
+                     }
+                 }
+             }
+         }
+         lifecycleScope.launch {
+             repeatOnLifecycle(Lifecycle.State.CREATED) {
+                 viewModel.posSkillList.collectLatest {
+                     it?.let {
+                         when (it) {
+                             is Resource.Error -> {}
+                             is Resource.Loading -> {}
+                             is Resource.Success -> {
+                                 if (it.data != null) {
+                                     skillWiseReportAdapter.setClasses(it.data)
+                                 }
+                             }
+                         }
+                     }
+                 }
+             }
+
+         }*/
 
     }
 
@@ -231,7 +187,7 @@ class StudentHomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }*/
+    }
 
 }
 

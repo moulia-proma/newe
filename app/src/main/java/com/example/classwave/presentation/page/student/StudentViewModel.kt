@@ -33,8 +33,12 @@ class StudentViewModel : ViewModel() {
     var isClassExists = _isClassExists.asStateFlow()
     private var _createStudent = MutableStateFlow<Resource<Student>?>(null)
     var createStudent = _createStudent.asStateFlow()
-    private val _classList = MutableStateFlow<Resource<List<Class>>?>(null)
+    private val _classList = MutableStateFlow<Resource<List<String>>?>(null)
     var classList = _classList.asStateFlow()
+
+    private val _newClassList = MutableStateFlow<Resource<List<Class>>?>(null)
+    var newClassList = _newClassList.asStateFlow()
+
     private val _selectedClass = MutableStateFlow<Class?>(null)
     val selectedClass = _selectedClass.asStateFlow()
     private var _userType = MutableStateFlow<ArrayList<String>>(arrayListOf())
@@ -76,9 +80,15 @@ class StudentViewModel : ViewModel() {
         }
 
     }
+
     fun updateClass(cls: Class?) {
         _selectedClass.value = cls
     }
+
+
+
+
+
     @RequiresApi(Build.VERSION_CODES.O)
     fun createStudent(clsId: String, name: String) {
         _createStudent.value = Resource.Loading()
@@ -121,25 +131,18 @@ class StudentViewModel : ViewModel() {
 
         //fetchStudentByClassId(clsId)
     }
-    private fun fetchClassList() {
+
+    fun fetchClassList(stdId: String) {
         _classList.value = Resource.Loading()
         val uid = Firebase.auth.currentUser?.uid
         viewModelScope.launch(Dispatchers.IO) {
-            dbClassREf.addListenerForSingleValueEvent(object : ValueEventListener {
+            dbStdRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    val classList = arrayListOf<Class>()
+                    val classList = arrayListOf<String>()
                     dataSnapshot.children.forEach { classRoom ->
-                        if (classRoom.child("teacherId").value.toString() == uid.toString()) {
+                        if (classRoom.child("studentId").value.toString() == stdId) {
                             classList.add(
-                                Class(
-                                    classRoom.child("classId").value.toString(),
-                                    classRoom.child("teacherId").value.toString(),
-                                    classRoom.child("name").value.toString(),
-                                    classRoom.child("grade").value.toString(),
-                                    classRoom.child("img").value.toString(),
-
-
-                                    )
+                                classRoom.child("classId").value.toString()
                             )
                         }
 
@@ -154,6 +157,7 @@ class StudentViewModel : ViewModel() {
             })
         }
     }
+
     fun findUserType(uId: String) {
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -176,7 +180,52 @@ class StudentViewModel : ViewModel() {
             })
         }
 
+
         Log.d("_pt", "findUserType: ${_userType.value} ")
+    }
+
+    fun showClasses(data: List<String>?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            dbClassREf.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val arr = mutableListOf<Class>()
+                    snapshot.children.forEach { cls ->
+                        data?.forEach { std ->
+                            Log.d("_pro" ,"onDataChange: ${cls.child("classId").value.toString()}       $std ")
+
+                            if (std == cls.child("classId").value.toString()) {
+                                Log.d("_pro", "onDataChange: milce")
+                                arr.add(
+                                    Class(
+                                        cls.child("classId").value.toString(),
+                                        cls.child("teacherId").value.toString(),
+                                        cls.child("name").value.toString(),
+                                        cls.child("grade").value.toString(),
+                                        cls.child("img").value.toString(),
+                                    )
+                                )
+                            }
+
+                        }
+                    }
+                    _newClassList.value = Resource.Success(arr)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+
+                }
+
+            })
+
+
+        }
+
+
+    }
+    fun signOut(){
+        Firebase.auth.signOut()
+
+
     }
 
 

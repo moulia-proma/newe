@@ -60,6 +60,7 @@ class PositiveFragment(
 
             override fun onViewReportClicked() {
                 val intent = Intent(requireContext(), Repo0rtActivity::class.java)
+                intent.putExtra("classId",classId)
                 intent.putExtra("student_id", stdId)
                 startActivity(intent)
             }

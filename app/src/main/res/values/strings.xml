@@ -7,6 +7,7 @@
     <string name="nav_open">open</string>
     <string name="nav_close">close</string>
     <string name="hint_select_grade">Select Grade</string>
+    <string name="click_to_view_your_class_report">Click to view your class report</string>
 
     <string-array name="label_grades">
         <item>1st Grade</item>

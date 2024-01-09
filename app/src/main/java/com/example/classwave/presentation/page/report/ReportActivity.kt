@@ -39,10 +39,12 @@ class Repo0rtActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     private var currentDate = LocalDate.now()
     private var stdId = ""
+    private var clsId = ""
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         stdId = intent.getStringExtra("student_id").toString()
+        clsId = intent.getStringExtra("classId").toString()
         super.onCreate(savedInstanceState)
 
         binding = ActivityReportBinding.inflate(layoutInflater)
@@ -62,6 +64,7 @@ class Repo0rtActivity : AppCompatActivity() {
                 day = selectedDay,
                 month = selectedMonth,
                 year = selectedYear,
+                clsId
             )
         }
 
@@ -131,7 +134,8 @@ class Repo0rtActivity : AppCompatActivity() {
                         it1,
                         currentDate.dayOfMonth,
                         currentDate.monthValue,
-                        currentDate.year
+                        currentDate.year,
+                        clsId
                     )
                 }
             }
@@ -143,7 +147,7 @@ class Repo0rtActivity : AppCompatActivity() {
                     currentDate.month.toString() + " " + currentDate.year.toString()
                 stdId?.let { it1 ->
                     viewModel.fetchReport(
-                        it1, null, currentDate.monthValue, currentDate.year
+                        it1, null, currentDate.monthValue, currentDate.year, clsId
                     )
                 }
             }
@@ -153,7 +157,7 @@ class Repo0rtActivity : AppCompatActivity() {
                 binding.textReportDate.text = currentDate.year.toString()
                 stdId?.let { it1 ->
                     viewModel.fetchReport(
-                        it1, null, null, currentDate.year
+                        it1, null, null, currentDate.year, clsId
                     )
                 }
             }
@@ -168,7 +172,7 @@ class Repo0rtActivity : AppCompatActivity() {
                 binding.textReportDate.text = currentDate.toString()
                 stdId?.let { it1 ->
                     viewModel.fetchReport(
-                        it1, currentDate.dayOfMonth, null, currentDate.year
+                        it1, currentDate.dayOfMonth, null, currentDate.year, clsId
                     )
                 }
             }
@@ -180,7 +184,7 @@ class Repo0rtActivity : AppCompatActivity() {
                     currentDate.month.toString() + " " + currentDate.year.toString()
                 stdId?.let { it1 ->
                     viewModel.fetchReport(
-                        it1, null, currentDate.monthValue, currentDate.year
+                        it1, null, currentDate.monthValue, currentDate.year, clsId
                     )
                 }
             }
@@ -189,7 +193,7 @@ class Repo0rtActivity : AppCompatActivity() {
                 binding.textReportDate.text = currentDate.year.toString()
                 stdId?.let { it1 ->
                     viewModel.fetchReport(
-                        it1, null, null, currentDate.year
+                        it1, null, null, currentDate.year, clsId
                     )
                 }
             }
@@ -204,7 +208,7 @@ class Repo0rtActivity : AppCompatActivity() {
                     it1,
                     currentDate.dayOfMonth,
                     currentDate.monthValue,
-                    currentDate.year
+                    currentDate.year, clsId
                 )
             }
 
@@ -218,7 +222,7 @@ class Repo0rtActivity : AppCompatActivity() {
                 currentDate.month.toString() + " " + currentDate.year.toString()
             stdId?.let { it1 ->
                 viewModel.fetchReport(
-                    it1, null, currentDate.monthValue, currentDate.year
+                    it1, null, currentDate.monthValue, currentDate.year, clsId
                 )
             }
         }
@@ -229,7 +233,7 @@ class Repo0rtActivity : AppCompatActivity() {
             selectedFilterType = FilterType.Year
             stdId?.let { it1 ->
                 viewModel.fetchReport(
-                    it1, null, null, currentDate.year
+                    it1, null, null, currentDate.year, clsId
                 )
             }
         }

@@ -18,6 +18,8 @@ import com.example.classwave.domain.model.Resource
 import com.example.classwave.presentation.dialog.EnterClassCodeDialog
 import com.example.classwave.presentation.page.teacher.Class
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -29,8 +31,8 @@ class StudentActivity : AppCompatActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-      val uName = intent.getStringExtra("name").toString()
-         var uEmail = intent.getStringExtra("email").toString()
+        val uName = intent.getStringExtra("name").toString()
+        var uEmail = intent.getStringExtra("email").toString()
 
         super.onCreate(savedInstanceState)
         binding = ActivityStudentBinding.inflate(layoutInflater)
@@ -51,13 +53,13 @@ class StudentActivity : AppCompatActivity() {
         joinClassAdapter.setListener(listener = object : JoinClassAdapter.Listener {
             override fun onAddNewClassClicked() {
                 Log.d("pro", "onAddNewClassClicked: $uName")
-                val dialog = EnterClassCodeDialog("","","","","","create",uName)
-                dialog.show(supportFragmentManager,EnterClassCodeDialog.TAG)
+                val dialog = EnterClassCodeDialog("", "", "", "", "", "create", uName)
+                dialog.show(supportFragmentManager, EnterClassCodeDialog.TAG)
             }
 
             override fun onClassSelected(cls: com.example.classwave.presentation.page.teacher.Class) {
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
-              //  viewModel.updateClass(cls = cls)
+                viewModel.updateClass(cls = cls)
             }
 
             override fun onEditClassClicked(cls: Class) {
@@ -74,18 +76,41 @@ class StudentActivity : AppCompatActivity() {
             }
         })
 
+        viewModel.fetchClassList(Firebase.auth.uid.toString())
+        initializeFlowCollectors()
+
     }
+
     private fun initializeFlowCollectors() {
-
-
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
-               viewModel.classList.collectLatest {
+                viewModel.classList.collectLatest {
                     it?.let {
                         when (it) {
                             is Resource.Error -> {}
                             is Resource.Loading -> {}
                             is Resource.Success -> {
+                                Log.d("_pro", "initializeFlowCollectors: ab ${it.data}")
+                                viewModel.showClasses(it.data)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.newClassList.collectLatest {
+
+
+                    it?.let {
+
+                        when (it) {
+                            is Resource.Error -> {}
+                            is Resource.Loading -> {}
+                            is Resource.Success -> {
+                                Log.d("_pro", "initializeFlowCollectors: c ${it.data}")
                                 showSuccessView(it.data)
                             }
                         }
@@ -94,15 +119,46 @@ class StudentActivity : AppCompatActivity() {
             }
         }
 
+
+        /*     lifecycleScope.launch {
+                 repeatOnLifecycle(Lifecycle.State.CREATED) {
+                     viewModel.classList.collectLatest {
+                         it?.let {
+                             when (it) {
+                                 is Resource.Error -> {}
+                                 is Resource.Loading -> {}
+                                 is Resource.Success -> {
+                                     showSuccessView(it.data)
+                                 }
+                             }
+                         }
+                     }
+                 }
+             }*/
+
     }
+
     private fun showSuccessView(classList: List<Class>?) {
         headerBinding.progressBarClassLoading.visibility = View.INVISIBLE
         if (!classList.isNullOrEmpty()) {
             viewModel.updateClass(classList[0])
-            //addClassAdapter.setClasses(classList)
-        }else {
+
+            joinClassAdapter.setClasses(classList)
+        } else {
             viewModel.updateClass(null)
-           // addClassAdapter.setClasses(listOf())
+            joinClassAdapter.setClasses(listOf())
+        }
+    }
+
+
+    private fun showSuccessViewClassList(classList: List<Class>?) {
+        headerBinding.progressBarClassLoading.visibility = View.INVISIBLE
+        if (!classList.isNullOrEmpty()) {
+            viewModel.updateClass(classList[0])
+            joinClassAdapter.setClasses(classList)
+        } else {
+            viewModel.updateClass(null)
+            joinClassAdapter.setClasses(listOf())
         }
     }
 }

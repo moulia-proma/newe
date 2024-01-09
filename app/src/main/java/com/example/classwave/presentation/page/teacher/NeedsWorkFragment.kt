@@ -56,6 +56,7 @@ class NeedsWorkFragment(val classId: String, val stdId: String,val  stdName: Str
             override fun onViewReportClicked() {
                 val intent = Intent(requireContext(), Repo0rtActivity::class.java)
                 intent.putExtra("student_id" , stdId)
+                intent.putExtra("classId",classId)
                 startActivity(intent)
             }
 

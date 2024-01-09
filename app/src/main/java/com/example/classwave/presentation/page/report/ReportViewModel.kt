@@ -36,7 +36,7 @@ class ReportViewModel @Inject constructor() : ViewModel() {
         _reportClassList.asStateFlow()
 
 
-    fun fetchReport(stdId: String, day: Int?, month: Int?, year: Int?) {
+    fun fetchReport(stdId: String, day: Int?, month: Int?, year: Int?, clsId: String) {
 
         val regex = createRegex(year, month, day)
 
@@ -48,10 +48,11 @@ class ReportViewModel @Inject constructor() : ViewModel() {
                         val reportMaps: MutableMap<String, MutableList<Report>> = mutableMapOf()
 
                         dataSnapshot.children.filter {
-                            it.child("stdId").value.toString() == stdId &&
+                            it.child("stdId").value.toString() == stdId && it.child("classId").value.toString() == clsId &&
                                     it.child(
                                         "date"
-                                    ).value.toString().matches(regex) && it.child("skillId").value.toString() != "attendance123"
+                                    ).value.toString()
+                                        .matches(regex) && it.child("skillId").value.toString() != "attendance123"
                         }.forEach { mark ->
 
                             val report = Report(
@@ -66,6 +67,7 @@ class ReportViewModel @Inject constructor() : ViewModel() {
                                 mark.child("stdName").value.toString(),
                                 mark.child("stdProfile").value.toString(),
                             )
+                            Log.d("TAG", "onDataChange:abc $stdId cc  $report ")
                             val dateInStr = mark.child("date").value.toString()
                             val data = reportMaps[dateInStr] ?: mutableListOf()
                             data.add(report)
@@ -102,7 +104,8 @@ class ReportViewModel @Inject constructor() : ViewModel() {
                             it.child("classId").value.toString() == clsId &&
                                     it.child(
                                         "date"
-                                    ).value.toString().matches(regex) && it.child("skillId").value.toString() != "attendance123"
+                                    ).value.toString()
+                                        .matches(regex) && it.child("skillId").value.toString() != "attendance123"
                         }.forEach { mark ->
 
                             val report = Report(
