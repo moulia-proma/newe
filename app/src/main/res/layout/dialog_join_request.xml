@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    >
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/cyan_500"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:title="Connect to your kid"
+        app:titleTextColor="@color/white" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_view_tcr_bg"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_margin="16dp"
+        android:backgroundTint="@color/grey_500"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="0dp"
+        app:contentPadding="2dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cardCornerRadius="16dp" />
+    </androidx.cardview.widget.CardView>
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/shapable_image_view_tcr_photo"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="start"
+        android:layout_margin="16dp"
+        android:background="@color/primaryColor"
+        android:src="@drawable/ic_student"
+        app:layout_constraintBottom_toBottomOf="@id/card_view_tcr_bg"
+        app:layout_constraintStart_toStartOf="@id/card_view_tcr_bg"
+        app:layout_constraintTop_toTopOf="@id/card_view_tcr_bg"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Image.25dp"
+        app:strokeColor="#9C1E49"
+        app:strokeWidth="1dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="Mr.Md Anisur Rahman Parvez"
+        app:layout_constraintBottom_toBottomOf="@id/card_view_tcr_bg"
+        app:layout_constraintStart_toEndOf="@id/shapable_image_view_tcr_photo"
+        app:layout_constraintTop_toTopOf="@id/card_view_tcr_bg" />
+
+    <EditText
+        android:id="@+id/edit_text_child_name"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_margin="16dp"
+        android:background="@drawable/edit_text_style"
+        android:hint="Enter your child full name"
+        android:padding="8dp"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card_view_tcr_bg" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_requst_connection"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_margin="16dp"
+        android:backgroundTint="@color/blue_900"
+        android:text="Request to connect"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_text_child_name" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="Once Mr. Parvez accepts your connection request, you'll get announcements and be able to message them"
+        android:textAlignment="center"
+        android:textColor="@color/grey_600"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_requst_connection" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

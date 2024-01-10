@@ -9,7 +9,7 @@
     <style name="ShapeAppearanceOverlay.MyApp.Image.25dp" parent="">
         <!-- Define the shape appearance properties here -->
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">25dp</item>
+        <item name="cornerSize">20dp</item>
     </style>
 
     <style name="ShapeAppearanceOverlay.MyApp.Image.20dp" parent="">

@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.classwave.databinding.FragmentStudentHomeBinding
 import com.example.classwave.presentation.dialog.ClassInviteDialog
+import com.example.classwave.presentation.dialog.ShareProfileDialog
 import com.example.classwave.presentation.page.main.MainActivity
 import com.example.classwave.presentation.page.report.Repo0rtActivity
 import com.google.firebase.auth.ktx.auth
@@ -75,7 +76,8 @@ class StudentHomeFragment : Fragment() {
         showPopup.setOnMenuItemClickListener { menuItem ->
             val id = menuItem.itemId
             if (id == 0) {
-
+                val dialog = ShareProfileDialog(Firebase.auth.uid.toString())
+                dialog.show(parentFragmentManager,ClassInviteDialog.TAG)
             } else if (id == 1) {
                 viewModel.signOut()
                 var intent = Intent(requireContext(), MainActivity::class.java)
