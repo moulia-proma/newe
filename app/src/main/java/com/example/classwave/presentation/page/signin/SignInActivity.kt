@@ -81,7 +81,6 @@ class SignInActivity : AppCompatActivity() {
                                     intent.putExtra("name", it.data[1])
                                     intent.putExtra("email", it.data[2])
                                     startActivity(intent)
-
                                 }
                             }
 
