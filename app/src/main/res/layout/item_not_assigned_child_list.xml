@@ -15,6 +15,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/shapable_image_view_std_photo"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_gravity="start"

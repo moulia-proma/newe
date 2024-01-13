@@ -4,6 +4,7 @@ data class UserItemResponse(
     val email: String,
     val name: String,
     val type: String,
-    val uid:String
+    val uid:String,
+    val uPhoto:String
 
 )

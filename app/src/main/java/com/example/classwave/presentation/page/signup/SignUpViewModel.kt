@@ -3,6 +3,7 @@ package com.example.classwave.presentation.page.signup
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.classwave.R
 import com.example.classwave.data.datasource.remote.model.UserItemResponse
 import com.example.classwave.domain.model.Resource
 import com.google.firebase.auth.FirebaseAuth
@@ -31,6 +32,15 @@ class SignUpViewModel @Inject constructor(): ViewModel() {
     private val emailRegex = "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}"
     private lateinit var auth: FirebaseAuth
     private lateinit var currentUser: FirebaseUser
+
+    private val uImage = arrayListOf<Int>(
+        R.drawable.st_boy,
+        R.drawable.st_bussiness_man,
+        R.drawable.st_profile,
+        R.drawable.st_profile_boy,
+        R.drawable.st_profile_man,
+        R.drawable.st_user
+    )
 
     private var _userType = MutableStateFlow<Resource<ArrayList<String?>>>(Resource.Success(arrayListOf()))
     var userType = _userType.asStateFlow()
@@ -71,11 +81,12 @@ class SignUpViewModel @Inject constructor(): ViewModel() {
                     auth = Firebase.auth
                     currentUser = auth.currentUser!!
                     val uid =currentUser.uid
-                    val user = UserItemResponse(email, name, type, uid)
-
+                    val user = UserItemResponse(email, name, type, uid,uImage.random().toString())
+                    Log.d("proma", "createUser: $user")
                     dbRef.push().setValue(user)
                         .addOnCompleteListener {
                             _authUiState.value = Resource.Success(user)
+                            Log.d("proma", "createUser: $user")
                         }
                         .addOnFailureListener {
                             _authUiState.value = Resource.Error("User creation Failed")

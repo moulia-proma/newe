@@ -1,5 +1,6 @@
 package com.example.classwave.presentation.dialog
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -14,8 +15,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.classwave.R
 import com.example.classwave.databinding.DialogAddNewStdBinding
+import com.example.classwave.domain.model.Resource
+import com.example.classwave.presentation.page.parent.ParentActivity
 import com.example.classwave.presentation.page.parent.ParentViewModel
-import com.example.classwave.presentation.page.student.StudentViewModel
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -23,11 +27,18 @@ import kotlinx.coroutines.launch
 class EnterChildCodeDialog(
     val clsId: String,
 
+
     ) : DialogFragment() {
     private val viewModel: ParentViewModel by activityViewModels()
     private var _binding: DialogAddNewStdBinding? = null
     private val binding get() = _binding!!
-    private var uType = arrayListOf<String>()
+    private var stdName = ""
+    private var stdImage = ""
+
+    private var parentName = ""
+    private var parentPhoto = ""
+
+    var stdId = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,8 +46,7 @@ class EnterChildCodeDialog(
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         _binding = DialogAddNewStdBinding.inflate(inflater, container, false)
         return binding.root
@@ -50,12 +60,15 @@ class EnterChildCodeDialog(
             "Enter your child connection code ,if you don't have ask to ur child"
         binding.btnAddStd.text = "Connect"
         Log.d("_pr", "onViewCreated:  classId = $clsId")
+
+
         binding.btnAddStd.setOnClickListener {
-       /*     val stdId = binding.editTextAddStdName.text.toString()
-            viewModel.isStudentExists(clsId)*/
+            stdId = binding.editTextAddStdName.text.toString()
+            viewModel.findUserType(Firebase.auth.uid.toString())
         }
 
-       // initialFlowCollectors()
+
+        initialFlowCollectors()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -67,22 +80,70 @@ class EnterChildCodeDialog(
         }*/
 
 
- /*   private fun initialFlowCollectors() {
+    private fun initialFlowCollectors() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.isStudentExists.collectLatest {
+                    if (it != null) {
+                        Log.d("_xyz", "initialFlowCollectors: std ${it.data}")
+                    }
+                    if (it != null) {
+                        stdName = it.data?.studentName ?: ""
+                        stdImage = it.data?.img ?: ""
+                        Log.d("pp", "onViewCreated:vv $stdName $stdImage")
+                        viewModel.addChild(
+                            stdName,
+                            stdImage,
+                            stdId,
+                            Firebase.auth.uid.toString(),
+                            parentName,
+                            parentPhoto,
+                            "notAssigned"
+                        )
+                    }
+                }
+            }
+        }
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.userType.collectLatest {
-                    if (it.isNotEmpty()) {
-                        if (it[0] == "student") {
-                            uType = it
-                        }
+                    Log.d("_xyz", "initialFlowCollectors utype: ${it.data.toString()}")
+                    if (it.data?.isNotEmpty() == true) {
+                        parentName = it.data[1].toString()
+                        parentPhoto = it.data[2].toString()
+                        viewModel.isStudentExists(stdId)
+                        Log.d("pp", "onViewCreated:oo $stdName $parentName")
                     }
+                }
+            }
+        }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.createChild.collectLatest {
+                   it?.let {
+                       when(it){
+                           is Resource.Error -> {}
+                           is Resource.Loading -> {
+                               binding.progressBarDeleteLoading.visibility = View.VISIBLE
+                               binding.btnAddStd.text = ""
+                           }
+                           is Resource.Success -> {
+                               binding.progressBarDeleteLoading.visibility = View.INVISIBLE
+                               val intent = Intent(requireContext(),ParentActivity::class.java)
+                               startActivity(intent)
+                               viewModel.setNull()
 
+
+                           }
+                       }
+                   }
 
                 }
             }
         }
 
-    }*/
+
+    }
 
     /*    private fun showSuccessView() {
             //   viewModel.setCreateClassNull()
