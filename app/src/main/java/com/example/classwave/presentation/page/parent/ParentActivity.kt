@@ -62,7 +62,7 @@ class ParentActivity : AppCompatActivity() {
 
         notAssignedAdapter.setListener(object : ChildNotAssignedAdapter.Listener {
             override fun onAssignClassClicked(child: Child) {
-                val dialog = SearchTeacherDialog()
+                val dialog = SearchTeacherDialog(child.stdId,child.parentId)
                 dialog.show(supportFragmentManager, SearchTeacherDialog.TAG)
             }
 

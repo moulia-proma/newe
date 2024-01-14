@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="Base.Theme.ClassWave" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/cyan_900</item>
@@ -7,7 +7,9 @@
         <item name="colorOnBackground">@color/green_500</item>
         <item name="colorSecondary">@color/pink_500</item>
         <item name="colorContainer">@color/grey_500</item>
+        <item name="android:statusBarColor" tools:targetApi="l">#308d46</item>
     </style>
+
 
     <style name="Theme.ClassWave" parent="Base.Theme.ClassWave" />
 </resources>

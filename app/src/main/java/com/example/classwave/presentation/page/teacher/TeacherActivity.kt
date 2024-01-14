@@ -1,6 +1,7 @@
 package com.example.classwave.presentation.page.teacher
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -35,6 +36,16 @@ class TeacherActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityTeacherBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        var badge = binding.bottomNavigationView.getOrCreateBadge(R.id.chat)
+        badge.isVisible = true
+        badge.number = 99
+
+/*        binding.bottomNavigationView.setOnItemSelectedListener {
+            Log.d("_xyz", "onCreate: $it")
+            true
+        }*/
+
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment

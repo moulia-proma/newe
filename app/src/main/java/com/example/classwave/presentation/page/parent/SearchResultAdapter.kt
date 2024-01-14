@@ -54,7 +54,7 @@ class SearchResultAdapter : RecyclerView.Adapter<SearchResultAdapter.ViewHolder>
         fun set(tcr: UserItemResponse) {
             Log.d("_xyz", "set: jj")
             binding.textViewName.setOnClickListener {
-                // mListener?.onTeacherClicked(tcr)
+                mListener?.onTeacherClicked(tcr)
 
             }
             binding.textViewName.text = tcr.name

@@ -12,6 +12,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.classwave.R
+import com.example.classwave.data.datasource.remote.model.UserItemResponse
 import com.example.classwave.databinding.DialogSearchTeacherBinding
 import com.example.classwave.domain.model.Resource
 import com.example.classwave.presentation.page.parent.ParentViewModel
@@ -20,7 +21,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
-class SearchTeacherDialog() : DialogFragment() {
+class SearchTeacherDialog(val stdId: String, val parentId: String) : DialogFragment() {
 
     private val viewModel: ParentViewModel by activityViewModels()
     private var _binding: DialogSearchTeacherBinding? = null
@@ -44,6 +45,13 @@ class SearchTeacherDialog() : DialogFragment() {
 
         super.onViewCreated(view, savedInstanceState)
         binding.recyclerViewSearchResult.adapter = searchAdapter
+        searchAdapter.setListener(object : SearchResultAdapter.Listener {
+            override fun onTeacherClicked(tcr: UserItemResponse) {
+                val dialog = ChooseClassDialog(tcr.uid, stdId, parentId)
+                dialog.show(parentFragmentManager, ChooseClassDialog.TAG)
+            }
+
+        })
         registerListener()
         initialFlowCollectors()
     }
@@ -52,9 +60,9 @@ class SearchTeacherDialog() : DialogFragment() {
     private fun registerListener() {
         binding.editTxtClassName.addTextChangedListener {
             val teacherName = binding.editTxtClassName.text.toString()
-            if(teacherName==""){
+            if (teacherName == "") {
                 searchAdapter.setChild(arrayListOf())
-            }else{
+            } else {
                 Log.d("_xyz", "registerListener: $teacherName")
                 viewModel.searchTeacher(teacherName)
             }
@@ -66,13 +74,13 @@ class SearchTeacherDialog() : DialogFragment() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.teacherList.collectLatest {
-                   // Log.d("_e", "initialFlowCollectors: ${it.data}")
+                    // Log.d("_e", "initialFlowCollectors: ${it.data}")
                     it?.let {
                         when (it) {
                             is Resource.Error -> {}
                             is Resource.Loading -> {}
                             is Resource.Success -> {
-                            //   Log.d("_xyz", "initialFlowCollectors: ${it.data}")
+                                //   Log.d("_xyz", "initialFlowCollectors: ${it.data}")
                                 it.data?.let { it1 -> searchAdapter.setChild(it1) }
 
                             }

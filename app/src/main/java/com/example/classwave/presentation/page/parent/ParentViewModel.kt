@@ -20,6 +20,8 @@ import kotlinx.coroutines.launch
 
 class ParentViewModel : ViewModel() {
     private var dbChildRef = FirebaseDatabase.getInstance().getReference("children")
+    private var dbRequestedStudentRef =
+        FirebaseDatabase.getInstance().getReference("requestedStudent")
     private var dbUserRef = FirebaseDatabase.getInstance().getReference("Users")
     private var dbClassREf = FirebaseDatabase.getInstance().getReference("ClassRoom")
     private var dbStdREf = FirebaseDatabase.getInstance().getReference("Students")
@@ -29,6 +31,9 @@ class ParentViewModel : ViewModel() {
 
     private var _createChild = MutableStateFlow<Resource<Child>?>(null)
     var createChild = _createChild.asStateFlow()
+
+    private val _classList = MutableStateFlow<Resource<ArrayList<Class>>?>(null)
+    var classList = _classList.asStateFlow()
 
 
     private var _userType =
@@ -246,34 +251,47 @@ class ParentViewModel : ViewModel() {
         Log.d("_e", "searchTeacher: $teacherName")
         _teacherList.value = Resource.Loading()
         viewModelScope.launch(Dispatchers.IO) {
-            dbUserRef.orderByChild("name").startAt(teacherName).addListenerForSingleValueEvent(object : ValueEventListener {
-
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    snapshot.children.forEach { user ->
-                       // Log.d("_xyz", "onDataChange: ${user.child("name").value.toString() }")
-                        if (user.child("type").value.toString() == "teacher") {
-                            val arr = arrayListOf<UserItemResponse>()
-                            arr.add(
-                                UserItemResponse(
-                                    user.child("email").value.toString(),
-                                    user.child("name").value.toString(),
-                                    user.child("type").value.toString(),
-                                    user.child("uid").value.toString(),
-                                    user.child("uphoto").value.toString()
-                                )
+            dbUserRef.orderByChild("name").startAt(teacherName)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        var flag = 0
+                        snapshot.children.forEach { user ->
+                            Log.d(
+                                "_x",
+                                "onDataChange:ddd  ${user.child("name").value.toString()}   $teacherName"
                             )
-                            Log.d("_e", "onDataChange:ok  $arr")
+                            val dbString = user.child("name").value.toString()
+                            Log.d("_x", "onDataChange: ${dbString.contains(teacherName, true)}")
+                            if (user.child("type").value.toString() == "teacher" && dbString.contains(
+                                    teacherName
+                                )
+                            ) {
+                                flag = 1
+                                val arr = arrayListOf<UserItemResponse>()
+                                arr.add(
+                                    UserItemResponse(
+                                        user.child("email").value.toString(),
+                                        user.child("name").value.toString(),
+                                        user.child("type").value.toString(),
+                                        user.child("uid").value.toString(),
+                                        user.child("uphoto").value.toString()
+                                    )
+                                )
+                                Log.d("_e", "onDataChange:ok  $arr")
 
-                            _teacherList.value = Resource.Success(arr)
+                                _teacherList.value = Resource.Success(arr)
+                            }
+                        }
+                        if (flag == 0) {
+                            _teacherList.value = Resource.Success(arrayListOf())
                         }
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    _teacherList.value = Resource.Error("error")
-                }
+                    override fun onCancelled(error: DatabaseError) {
+                        _teacherList.value = Resource.Error("error")
+                    }
 
-            })
+                })
         }
 
     }
@@ -312,8 +330,62 @@ class ParentViewModel : ViewModel() {
         }
     }
 
+    fun fetchClassList(tcrId: String) {
+        _classList.value = Resource.Loading()
+        val uid = Firebase.auth.currentUser?.uid
+        viewModelScope.launch(Dispatchers.IO) {
+            dbClassREf.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val classList = arrayListOf<Class>()
+                    dataSnapshot.children.forEach { classRoom ->
+                        if (classRoom.child("teacherId").value.toString() == tcrId) {
+                            classList.add(
+                                Class(
+                                    classRoom.child("classId").value.toString(),
+                                    classRoom.child("teacherId").value.toString(),
+                                    classRoom.child("name").value.toString(),
+                                    classRoom.child("grade").value.toString(),
+                                    classRoom.child("img").value.toString(),
+
+
+                                    )
+                            )
+                        }
+
+                    }
+                    Log.d("_xyz", "onDataChange: ${classList}")
+                    _classList.value = Resource.Success(classList)
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    _classList.value = Resource.Error("Data Retrieve unsuccessful")
+                }
+            })
+        }
+    }
+
+    fun requestTeacher(
+        tcrId: String, stdId: String, parentId: String, selectedClass: ArrayList<String>
+    ) {
+        var i = 0
+        while (i < selectedClass.size) {
+            val request = request(
+                parentId, tcrId, selectedClass[i], stdId
+            )
+            dbRequestedStudentRef.push().setValue(request)
+            i++
+
+        }
+
+
+    }
 
 }
+
+data class request(
+    val parentId: String, val teacherId: String, val clsId: String, val stdId: String
+
+)
 
 data class Parent(
     val uid: String, val name: String, val image: String,
