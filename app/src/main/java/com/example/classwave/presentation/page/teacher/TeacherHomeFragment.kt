@@ -29,6 +29,8 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.util.Timer
+import kotlin.concurrent.schedule
 
 class TeacherHomeFragment : Fragment() {
 
@@ -95,6 +97,7 @@ class TeacherHomeFragment : Fragment() {
                 val intent = Intent(context, SkillReportActivity::class.java)
                 intent.putExtra("skillId", skillId)
                 startActivity(intent)
+
             }
         })
         binding.recyclerViewCardSkill.adapter = skillWiseReportAdapter
@@ -110,8 +113,8 @@ class TeacherHomeFragment : Fragment() {
         showPopup.setOnMenuItemClickListener { menuItem ->
             val id = menuItem.itemId
             if (id == 0) {
-                  val dialog = ClassInviteDialog(clsId)
-                dialog.show(parentFragmentManager,ClassInviteDialog.TAG)
+                val dialog = ClassInviteDialog(clsId)
+                dialog.show(parentFragmentManager, ClassInviteDialog.TAG)
             } else if (id == 1) {
                 viewModel.signOut()
                 var intent = Intent(requireContext(), MainActivity::class.java)
@@ -149,6 +152,7 @@ class TeacherHomeFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.selectedClass.collectLatest { cls ->
                     if (cls != null) {
+                        Log.d("_xyz", "initializeFlowCollectors: ${cls.classId}")
                         binding.toolbar.title = cls.name
                         Log.d("TAG", "initializeFlowCollectors: stdAdapter called ")
                         addStudentAdapter.setId(cls.classId)

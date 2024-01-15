@@ -369,8 +369,8 @@ class ParentViewModel : ViewModel() {
     ) {
         var i = 0
         while (i < selectedClass.size) {
-            val request = request(
-                parentId, tcrId, selectedClass[i], stdId
+            val request = Request(
+                parentId, tcrId, selectedClass[i], stdId,"pending"
             )
             dbRequestedStudentRef.push().setValue(request)
             i++
@@ -382,8 +382,8 @@ class ParentViewModel : ViewModel() {
 
 }
 
-data class request(
-    val parentId: String, val teacherId: String, val clsId: String, val stdId: String
+data class Request(
+    val parentId: String, val teacherId: String, val clsId: String, val stdId: String, val state:String
 
 )
 

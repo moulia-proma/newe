@@ -13,6 +13,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.classwave.R
 import com.example.classwave.databinding.ActivityTeacherBinding
+import com.example.classwave.databinding.FragmentTeacherChatBinding
 import com.example.classwave.databinding.NavDrawerBinding
 import com.example.classwave.domain.model.Resource
 import com.example.classwave.presentation.dialog.CreateClassDialog
@@ -37,14 +38,7 @@ class TeacherActivity : AppCompatActivity() {
         binding = ActivityTeacherBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        var badge = binding.bottomNavigationView.getOrCreateBadge(R.id.chat)
-        badge.isVisible = true
-        badge.number = 99
 
-/*        binding.bottomNavigationView.setOnItemSelectedListener {
-            Log.d("_xyz", "onCreate: $it")
-            true
-        }*/
 
 
         val navHostFragment =
@@ -84,6 +78,9 @@ class TeacherActivity : AppCompatActivity() {
         })
 
 
+
+
+
         initializeFlowCollectors()
     }
 
@@ -98,8 +95,6 @@ class TeacherActivity : AppCompatActivity() {
 
 
     private fun initializeFlowCollectors() {
-
-
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.classList.collectLatest {
@@ -113,6 +108,31 @@ class TeacherActivity : AppCompatActivity() {
                 }
             }
         }
+        lifecycleScope.launch {
+            viewModel.newNotificationList.collectLatest {
+                it?.let {
+                    when (it) {
+                        is Resource.Error -> {}
+                        is Resource.Loading -> {}
+                        is Resource.Success -> {
+                            var badge = binding.bottomNavigationView.getOrCreateBadge(R.id.chat)
+
+                            if(it.data?.isNotEmpty() == true){
+                                badge.isVisible = true
+                                   badge.number = it.data.size
+                            }else{
+                                badge.isVisible = false
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+
 
     }
 
