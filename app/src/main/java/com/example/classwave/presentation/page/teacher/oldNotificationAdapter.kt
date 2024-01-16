@@ -37,7 +37,9 @@ class oldNotificationAdapter : RecyclerView.Adapter<oldNotificationAdapter.ViewH
 
 
     override fun getItemCount(): Int {
+        Log.d("_ok", "getItemCount: ${notificationList.size}")
         return notificationList.size
+
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

@@ -149,12 +149,13 @@ class TeacherHomeFragment : Fragment() {
 
     private fun initializeFlowCollectors() {
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.selectedClass.collectLatest { cls ->
                     if (cls != null) {
-                        Log.d("_xyz", "initializeFlowCollectors: ${cls.classId}")
                         binding.toolbar.title = cls.name
-                        Log.d("TAG", "initializeFlowCollectors: stdAdapter called ")
+                        viewModel.fetchStudentByClassId(cls.classId)
+
+                        // comment from prvz
                         addStudentAdapter.setId(cls.classId)
                         clsId = cls.classId
                         clas = cls
@@ -165,10 +166,15 @@ class TeacherHomeFragment : Fragment() {
                 }
             }
         }
+
+
+
+
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.studentList.collectLatest {
 
+                    Log.d(TAG, "initializeFlowCollectors: xxx ${it?.data}")
                     it?.let {
                         when (it) {
                             is Resource.Error -> {}
@@ -184,7 +190,6 @@ class TeacherHomeFragment : Fragment() {
                                     it.data?.let { addStudentAdapter.setStudents(it) }
 
                                 }
-
                                 binding.progressBarStudentLoading.visibility = View.INVISIBLE
 
                             }
@@ -235,6 +240,10 @@ class TeacherHomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+    
+    companion object {
+        private const val TAG = "TeacherHomeFragment"
     }
 
 }

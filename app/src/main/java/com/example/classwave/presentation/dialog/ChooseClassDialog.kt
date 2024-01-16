@@ -18,7 +18,17 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
-class ChooseClassDialog(val tcrId: String, val stdId: String, val parentId: String) :
+class ChooseClassDialog(
+    val tcrId: String,
+    val stdId: String,
+    val parentId: String,
+    val uPhoto: String,
+    val name: String,
+    val parentPhoto: String,
+    val parentName: String,
+    val stdImage: String,
+    val stdName: String
+) :
     DialogFragment() {
 
     private val viewModel: ParentViewModel by activityViewModels()
@@ -56,7 +66,7 @@ class ChooseClassDialog(val tcrId: String, val stdId: String, val parentId: Stri
         })
 
         binding.floatingActionButtonRequestTeacher.setOnClickListener {
-            viewModel.requestTeacher(tcrId, stdId, parentId, selectedClass)
+            viewModel.requestTeacher(tcrId, stdId, parentId, selectedClass,uPhoto,stdImage,parentPhoto,name,parentName,stdName)
             dismiss()
         }
 
@@ -77,19 +87,15 @@ class ChooseClassDialog(val tcrId: String, val stdId: String, val parentId: Stri
 
                 }
             }*/
-
-
     private fun initialFlowCollectors() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.classList.collectLatest {
-                    // Log.d("_e", "initialFlowCollectors: ${it.data}")
                     it?.let {
                         when (it) {
                             is Resource.Error -> {}
                             is Resource.Loading -> {}
                             is Resource.Success -> {
-                                //   Log.d("_xyz", "initialFlowCollectors: ${it.data}")
                                 it.data?.let { it1 -> clsListAdapter.setChild(it1) }
 
                             }

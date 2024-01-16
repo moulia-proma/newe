@@ -1,19 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/card_add_class"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginVertical="6dp"
-    app:cardCornerRadius="16dp"
-    app:contentPadding="16dp"
-    android:backgroundTint="@color/white"
-    >
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginHorizontal="8dp">
+
+<androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginHorizontal="8dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_add_new_cls"
@@ -25,7 +17,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:strokeColor="@color/colorPrimary"
             app:strokeWidth="2dp">
-
             <ImageView
                 android:id="@+id/image_cls_profile"
                 android:layout_width="match_parent"
@@ -65,8 +56,16 @@
             app:layout_constraintBottom_toBottomOf="parent"
             android:textStyle="bold" />
 
+    <View
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card_add_new_cls"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="@color/grey_500"/>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-</com.google.android.material.card.MaterialCardView>
+

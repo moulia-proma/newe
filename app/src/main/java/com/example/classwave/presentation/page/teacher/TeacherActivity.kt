@@ -1,7 +1,6 @@
 package com.example.classwave.presentation.page.teacher
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -13,7 +12,6 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.classwave.R
 import com.example.classwave.databinding.ActivityTeacherBinding
-import com.example.classwave.databinding.FragmentTeacherChatBinding
 import com.example.classwave.databinding.NavDrawerBinding
 import com.example.classwave.domain.model.Resource
 import com.example.classwave.presentation.dialog.CreateClassDialog
@@ -39,8 +37,6 @@ class TeacherActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
-
-
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
         val navController = navHostFragment.navController
@@ -52,8 +48,10 @@ class TeacherActivity : AppCompatActivity() {
             NavDrawerBinding.inflate(layoutInflater, binding.navigationViewDrawer, false)
         binding.navigationViewDrawer.addHeaderView(headerBinding.root)
         binding.drawerLayout.openDrawer(GravityCompat.START)
-
         headerBinding.recyclerView.adapter = addClassAdapter
+
+
+
         addClassAdapter.setListener(listener = object : AddClassAdapter.Listener {
             override fun onAddNewClassClicked() {
                 showCreateClassDialog()
@@ -61,11 +59,11 @@ class TeacherActivity : AppCompatActivity() {
 
             override fun onClassSelected(cls: Class) {
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
-                viewModel.updateClass(cls = cls)
+                viewModel.selectedClass(cls = cls)
             }
 
             override fun onEditClassClicked(cls: Class) {
-                var dialog = CreateClassDialog(
+                val dialog = CreateClassDialog(
                     cls.classId,
                     cls.teacherId,
                     cls.name,
@@ -76,10 +74,6 @@ class TeacherActivity : AppCompatActivity() {
                 dialog.show(supportFragmentManager, CreateClassDialog.TAG)
             }
         })
-
-
-
-
 
         initializeFlowCollectors()
     }
@@ -97,52 +91,54 @@ class TeacherActivity : AppCompatActivity() {
     private fun initializeFlowCollectors() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.classList.collectLatest {
-                    it?.let {
-                        when (it) {
-                            is Resource.Error -> showErrorMessage(it.message ?: "")
-                            is Resource.Loading -> showLoadingView()
-                            is Resource.Success -> showSuccessView(it.data)
-                        }
+                viewModel.classList.collectLatest { result ->
+                    when (result) {
+                        is Resource.Error -> showErrorMessage(result.message ?: "")
+                        is Resource.Loading -> showLoadingView()
+                        is Resource.Success -> showSuccessView(result.data)
                     }
                 }
             }
         }
+
+
         lifecycleScope.launch {
-            viewModel.newNotificationList.collectLatest {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+            viewModel.notificationList.collectLatest {
                 it?.let {
                     when (it) {
                         is Resource.Error -> {}
                         is Resource.Loading -> {}
                         is Resource.Success -> {
-                            var badge = binding.bottomNavigationView.getOrCreateBadge(R.id.chat)
-
-                            if(it.data?.isNotEmpty() == true){
-                                badge.isVisible = true
-                                   badge.number = it.data.size
-                            }else{
-                                badge.isVisible = false
+                            val notifications = it.data
+                            val count = notifications?.let { requests ->
+                                requests.count { request ->
+                                    request.state != "viewed"
+                                }
                             }
+                            val badge = binding.bottomNavigationView.getOrCreateBadge(R.id.chat)
 
+                            if (notifications.isNullOrEmpty() || count == null || count == 0) {
+                                badge.isVisible = false
+                            } else {
+                                badge.isVisible = true
+                                badge.number = count
+                            }
                         }
                     }
                 }
             }
+            }
         }
-
-
-
-
-
     }
 
     private fun showSuccessView(classList: List<Class>?) {
         headerBinding.progressBarClassLoading.visibility = View.INVISIBLE
         if (!classList.isNullOrEmpty()) {
-            viewModel.updateClass(classList[0])
+            viewModel.selectedClass(classList[0])
             addClassAdapter.setClasses(classList)
         } else {
-            viewModel.updateClass(null)
+            viewModel.selectedClass(null)
             addClassAdapter.setClasses(listOf())
         }
     }

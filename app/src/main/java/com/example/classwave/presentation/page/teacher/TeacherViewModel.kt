@@ -19,6 +19,7 @@ import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -40,8 +41,8 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
     private val _skillReportList = MutableStateFlow<Resource<MutableList<Report>>?>(null)
     var skillReportList = _skillReportList.asStateFlow()
 
-    private val _classList = MutableStateFlow<Resource<List<Class>>?>(null)
-    var classList = _classList.asStateFlow()
+    private val _classList = MutableStateFlow<Resource<List<Class>>>(Resource.Loading())
+    var classList: StateFlow<Resource<List<Class>>> = _classList.asStateFlow()
 
     private var _signOut = MutableStateFlow<Boolean?>(null)
     var signOut = _signOut.asStateFlow()
@@ -81,6 +82,13 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
 
     private val _newNotificationList = MutableStateFlow<Resource<ArrayList<Request>>?>(null)
     var newNotificationList = _newNotificationList.asStateFlow()
+
+    private val _oldNotificationList = MutableStateFlow<Resource<ArrayList<Request>>?>(null)
+    var oldNotificationList = _oldNotificationList.asStateFlow()
+
+
+    private val _notificationList = MutableStateFlow<Resource<ArrayList<Request>>?>(null)
+    var notificationList = _notificationList.asStateFlow()
 
 
     fun setNull() {
@@ -130,23 +138,20 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
         fetchClassList()
     }
 
-    fun updateClass(cls: Class?) {
-        _selectedClass.value = cls
-        if(cls != null){
-            notification(cls.classId)
-        }
+    fun selectedClass(cls: Class?) {
 
-        Log.d("_xyz", "updateClass: ikkkkkk")
+        Log.d("_xyz", "selectedClass: ${cls?.classId} | ${cls?.name}")
+        viewModelScope.launch {
+            _selectedClass.value = cls
+        }
+        if (cls == null) return
+        fetchNotification()
 
-        if (cls != null) {
-            fetchStudentByClassId(classId = cls.classId)
-        }
-        if (cls != null) {
-            fetchSkillByClassId(classId = cls.classId)
-        }
-        if (cls != null) {
-            fetchSkillByClassId(classId = cls.classId)
-        }
+//          comment from prvz
+//        notification()
+//        fetchStudentByClassId(classId = cls.classId)
+//        fetchSkillByClassId(classId = cls.classId)
+//        fetchSkillByClassId(classId = cls.classId)
     }
 
     fun getMarksDropdownList(highestScore: String, type: String): ArrayList<Int> {
@@ -190,13 +195,11 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
         var i = 0
         while (i < marks.size) {
             if (marks[i].highestScore.toInt() <= 0) {
-                Log.d("sum", "getTotalNegMarks: ${marks[i].highestScore.toInt()}")
                 sum += kotlin.math.abs(marks[i].highestScore.toInt())
             }
 
             i++
         }
-        Log.d("TAG", "getTotalNegMarks: ${sum}")
         return sum
 
     }
@@ -239,7 +242,6 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun fetchClassList() {
-        _classList.value = Resource.Loading()
         val uid = Firebase.auth.currentUser?.uid
         viewModelScope.launch(Dispatchers.IO) {
             dbRef.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -253,15 +255,11 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
                                     classRoom.child("teacherId").value.toString(),
                                     classRoom.child("name").value.toString(),
                                     classRoom.child("grade").value.toString(),
-                                    classRoom.child("img").value.toString(),
-
-
-                                    )
+                                    classRoom.child("img").value.toString()
+                                )
                             )
                         }
-
                     }
-                    Log.d("_xyz", "onDataChange: ${classList}")
                     _classList.value = Resource.Success(classList)
                 }
 
@@ -277,15 +275,9 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             dbStdRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    Log.d("TAG", "onDataChange dataSnapshot: ${dataSnapshot}")
                     val studentList = arrayListOf<Student>()
                     dataSnapshot.children.forEach { student ->
-
                         if (student.child("classId").value.toString() == classId) {
-                            Log.d(
-                                "TAG",
-                                "onDataChange name: ${student.child("StudentName").value.toString()}"
-                            )
                             studentList.add(
                                 Student(
                                     student.child("classId").value.toString(),
@@ -306,21 +298,14 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
                 }
             })
         }
-
-
     }
 
     private fun fetchSkillByClassId(classId: String) {
-        Log.d(
-            "TAG", "onDataChange name:rrrrrr "
-        )
         _posSkillList.value = Resource.Loading()
         _negSkillList.value = Resource.Loading()
         viewModelScope.launch(Dispatchers.IO) {
             dbSkillRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-
-                    Log.d("TAG", "onDataChange dataSnapshot: ${dataSnapshot}")
                     val posSkillList = arrayListOf<Skill>()
                     val negSkillList = arrayListOf<Skill>()
                     dataSnapshot.children.forEach { skill ->
@@ -336,7 +321,6 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
                                         skill.child("type").value.toString()
                                     )
                                 )
-
                             } else {
                                 if (skill.child("skillId").value != "attendance123") {
                                     negSkillList.add(
@@ -350,15 +334,9 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
                                         )
                                     )
                                 }
-
-
                             }
-
-
                         }
-
                     }
-
                     _posSkillList.value = Resource.Success(posSkillList)
 
                     _negSkillList.value = Resource.Success(negSkillList)
@@ -379,7 +357,6 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
     fun createClass(
         name: String, grade: String, classId: String, tcrId: String, clsImg: String, type: String
     ) {
-        Log.d("_xyz", "createClass: clicked")
         _createClass.value = Resource.Loading()
 
         if (name.isEmpty()) {
@@ -399,14 +376,11 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
                 teacherId = uid
             }
             img = clsImage.random().toString()
-
-
         } else {
             clsId = classId
             teacherId = tcrId
             img = clsImg
         }
-
         viewModelScope.launch(Dispatchers.IO) {
             dbRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -418,11 +392,7 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
                         }
 
                     }
-
-
                     val clsRoom = Class(clsId ?: "", teacherId ?: "", name, grade, img)
-
-
                     val attendanceSkill = clsId?.let {
                         Skill(
                             it,
@@ -433,36 +403,23 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
                             "pos"
                         )
                     }
-
                     dbRef.push().setValue(clsRoom).addOnCompleteListener {
                         _createClass.value = Resource.Success(clsRoom)
                         if (type == "create") {
                             dbSkillRef.push().setValue(attendanceSkill)
 
                         }
-
                         fetchClassList()
                     }.addOnFailureListener {
-
-
                     }
-
-
                 }
 
                 override fun onCancelled(error: DatabaseError) {
                     _createClass.value = Resource.Error("Failed")
                 }
-
-
             })
-
-
         }
-
-
     }
-
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun createStudent(clsId: String, name: String) {
@@ -471,13 +428,11 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
             _createStudent.value = Resource.Error("Class name can't be empty")
             return
         }
-
         val stdId = dbStdRef.push().key
         var profile = stdImage.random().toString()
         val student = Student(clsId ?: "", stdId ?: "", name, profile)
 
         val st = ("attendance123" + "_" + stdId)
-        Log.d("tag", "addMarks: ${st}")
         val stdAttendance = stdId?.let {
             Marks(
                 clsId,
@@ -494,16 +449,12 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
 
             )
         }
-
-
         dbStdRef.push().setValue(student).addOnCompleteListener {
             _createStudent.value = Resource.Success(student)
             dbMarksRef.push().setValue(stdAttendance)
         }.addOnFailureListener {
             _createStudent.value = Resource.Error("User creation Failed")
-            Log.d("TAG", "createClass: cls created")
         }
-
         fetchStudentByClassId(clsId)
     }
 
@@ -514,7 +465,6 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
             _createSkill.value = Resource.Error("add name of the skill")
             return
         }
-
         val skillId = dbSkillRef.push().key
         val skill = Skill(
             clsId ?: "", skillId ?: "", name, hScore, skillImage.random().toString(), typeofSkill
@@ -524,10 +474,8 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
             _createSkill.value = Resource.Success(skill)
         }.addOnFailureListener {
             _createSkill.value = Resource.Error("Skill creation Failed")
-            Log.d("TAG", "createSkill: skill created")
         }
         fetchSkillByClassId(clsId)
-
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -543,18 +491,10 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
         stdProfile: String
     ) {
         val st = (skillId + "_" + stdId)
-        Log.d("tag", "addMarks: ${st}")
-
-
         viewModelScope.launch(Dispatchers.IO) {
             dbMarksRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-
                     dataSnapshot.children.forEach { mark ->
-                        Log.d(
-                            "xyz", "onDataChange: ${mark.child("stdId").value.toString()}  ${stdId}"
-                        )
-                        Log.d("man", "${mark.child("skillIdStdId").value.toString()} ${st}")
                         if (mark.child("skillIdStdId").value.toString() == st) {
                             val k = mark.key
                             FirebaseDatabase.getInstance().getReference("Marks").child(k.toString())
@@ -578,14 +518,11 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
                         stdName,
                         stdProfile
                     )
-
                     dbMarksRef.push().setValue(mark).addOnCompleteListener {
                         _addMarks.value = Resource.Success(mark)
                     }.addOnFailureListener {
                         _createSkill.value = Resource.Error("Skill creation Failed")
-                        Log.d("TAG", "createSkill: skill created")
                     }
-
                 }
 
                 override fun onCancelled(databaseError: DatabaseError) {
@@ -593,7 +530,6 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
                 }
             })
         }
-
     }
 
     fun getReportSkillSpecific(skillId: String) {
@@ -624,9 +560,6 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
                                 list.add(mark)
                             }
                         }
-
-
-
                         _skillReportList.value = Resource.Success(list)
                     }
 
@@ -643,17 +576,14 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             dbRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-
                     dataSnapshot.children.forEach { cls ->
                         if (cls.child("classId").value.toString() == classId) {
                             val k = cls.key
                             dbRef.child(k.toString()).removeValue().addOnCompleteListener {
-                                Log.d("_xyz", "onDataChange: successfully deleted")
                                 _deleteClass.value = Resource.Success(classId)
                                 fetchClassList()
                             }.addOnFailureListener {
                                 _deleteClass.value = Resource.Error("delete failed")
-                                Log.d("_xyz", "onDataChange: failed")
                             }
                         }
 
@@ -661,29 +591,18 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-
                 }
-
-
             })
         }
     }
 
-
-    fun notification(classId: String) {
+    private fun fetchNotification() {
         viewModelScope.launch(Dispatchers.IO) {
             dbRequestedStudentRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val arr = arrayListOf<Request>()
                     snapshot.children.forEach { request ->
-                        Log.d(
-                            "_xyz",
-                            "onDataChange: okk ${request.child("clsId").value.toString()} i am clsid ${classId} ${
-                                request.child("state").value.toString()
-                            }"
-                        )
-                        if (request.child("clsId").value.toString() == classId && request.child("state").value.toString() == "pending") {
-                            Log.d("_xyz", "onDataChange: okk")
+                        if (request.child("clsId").value.toString() == _selectedClass.value?.classId.toString()) {
                             arr.add(
                                 Request(
                                     request.child("parentId").value.toString(),
@@ -691,83 +610,58 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
                                     request.child("clsId").value.toString(),
                                     request.child("stdId").value.toString(),
                                     request.child("state").value.toString(),
+                                    request.child("uPhoto").value.toString(),
+                                    request.child("stdImage").value.toString(),
+                                    request.child("parentPhoto").value.toString(),
+                                    request.child("name").value.toString(),
+                                    request.child("parentName").value.toString(),
+                                    request.child("stdName").value.toString(),
+                                    request.child("time").value.toString(),
                                 )
                             )
                         }
                     }
-                    Log.d("_xyz", "onDataChange: $arr")
-
-                    _newNotificationList.value = Resource.Success(arr)
-
+                    _notificationList.value = Resource.Success(arr)
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-
+                    _notificationList.value = null
                 }
-
-
             })
         }
 
     }
 
-/*    fun oldNotification(classId: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            dbRequestedStudentRef.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val arr = arrayListOf<Request>()
-                    snapshot.children.forEach { request ->
-                        Log.d(
-                            "_xyz",
-                            "onDataChange: okk ${request.child("clsId").value.toString()} i am clsid ${classId} ${
-                                request.child("state").value.toString()
-                            }"
-                        )
-                        if (request.child("clsId").value.toString() == classId && request.child("state").value.toString() == "viewed") {
-                            Log.d("_xyz", "onDataChange: okk")
-                            arr.add(
-                                Request(
-                                    request.child("parentId").value.toString(),
-                                    request.child("teacherId").value.toString(),
-                                    request.child("clsId").value.toString(),
-                                    request.child("stdId").value.toString(),
-                                    request.child("state").value.toString(),
-                                )
-                            )
-                        }
-                    }
-                    Log.d("_xyz", "onDataChange: $arr")
-
-                    _newNotificationList.value = Resource.Success(arr)
-
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-
-                }
-
-
-            })
-        }
-
-    }*/
-
-    fun updateNotificationState(classId: String) {
+    fun updateNotificationState() {
         viewModelScope.launch(Dispatchers.IO) {
             dbRequestedStudentRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     snapshot.children.forEach { request ->
-                        if (request.child("clsId").value.toString() == classId && request.child("state").value.toString() == "pending") {
+                        if (request.child("clsId").value.toString() == _selectedClass.value?.classId.toString() && request.child(
+                                "state"
+                            ).value.toString() == "pending"
+                        ) {
                             val k = request.key.toString()
-                             dbRequestedStudentRef.child(k).removeValue()
-                            notification(classId)
-
+                            val req = Request(
+                                request.child("parentId").value.toString(),
+                                request.child("teacherId").value.toString(),
+                                request.child("clsId").value.toString(),
+                                request.child("stdId").value.toString(),
+                                "viewed",
+                                request.child("uPhoto").value.toString(),
+                                request.child("stdImage").value.toString(),
+                                request.child("parentPhoto").value.toString(),
+                                request.child("name").value.toString(),
+                                request.child("parentName").value.toString(),
+                                request.child("stdName").value.toString(),
+                                request.child("time").value.toString(),
+                            )
+                            dbRequestedStudentRef.child(k).removeValue()
+                            dbRequestedStudentRef.push().setValue(req)
                         }
                     }
 
-
-
-
+                    fetchNotification()
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -782,16 +676,9 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
 
     fun signOut() {
         Firebase.auth.signOut()
-
-
     }
 
-
-    ;
-
-
 }
-
 
 data class Class(
     var classId: String, var teacherId: String, var name: String, var grade: String, var img: String

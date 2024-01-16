@@ -1,6 +1,8 @@
 package com.example.classwave.presentation.page.parent
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.classwave.data.datasource.remote.model.UserItemResponse
@@ -17,6 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 class ParentViewModel : ViewModel() {
     private var dbChildRef = FirebaseDatabase.getInstance().getReference("children")
@@ -25,9 +28,6 @@ class ParentViewModel : ViewModel() {
     private var dbUserRef = FirebaseDatabase.getInstance().getReference("Users")
     private var dbClassREf = FirebaseDatabase.getInstance().getReference("ClassRoom")
     private var dbStdREf = FirebaseDatabase.getInstance().getReference("Students")
-
-    /*    private val _selectedClass = MutableStateFlow<Class?>(null)
-        val selectedClass = _selectedClass.asStateFlow()*/
 
     private var _createChild = MutableStateFlow<Resource<Child>?>(null)
     var createChild = _createChild.asStateFlow()
@@ -62,49 +62,6 @@ class ParentViewModel : ViewModel() {
         createChild = _createChild.asStateFlow()
     }
 
-
-    /* fun createParent(clsId: String, name: String) {
-         _createParent.value = Resource.Loading()
-         if (name.isEmpty()) {
-             _createParent.value = Resource.Error("Class name can't be empty")
-             return
-         }
-
-         val stdId = Firebase.auth.uid.toString()
-         var profile = stdImage.random().toString()
-         val student = Student(clsId ?: "", stdId ?: "", name, profile)
-
-         val st = ("attendance123" + "_" + stdId)
-         Log.d("tag", "addMarks: ${st}")
-
-
-
-         dbParentRef.push().setValue(student).addOnCompleteListener {
-             //   _createParent.value = Resource.Success(student)
-             //  dbMarksRef.push().setValue(stdAttendance)
-         }.addOnFailureListener {
-             _createParent.value = Resource.Error("User creation Failed")
-             Log.d("TAG", "createClass: cls created")
-         }
-
-         //fetchStudentByClassId(clsId)
-     }*/
-
-
-    /*   fun findClass(clsId: String) {
-           viewModelScope.launch(Dispatchers.IO) {
-               dbParentRef.addListenerForSingleValueEvent(object : ValueEventListener {
-                   override fun onDataChange(snapshot: DataSnapshot) {
-
-                   }
-
-                   override fun onCancelled(error: DatabaseError) {
-
-                   }
-
-               })
-           }
-       }*/
     fun isClassExists(clsId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             dbClassREf.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -152,11 +109,11 @@ class ParentViewModel : ViewModel() {
                     var cnt = 0
 
                     snapshot.children.forEach { std ->
-                        //  Log.d("_xyz", "onDataChange: before match $clsId ${std.child("studentId").value.toString()}")
+
                         if (clsId == std.child("studentId").value.toString()) {
-                            //  Log.d("_xyz", "onDataChange: after match $clsId ${std.child("studentId").value.toString()}")
+
                             cnt = 1
-                            Log.d("_xyz", "onDataChange: okok")
+
                             _isStudentExists.value = Resource.Success(
                                 Student(
                                     std.child("classId").value.toString(),
@@ -173,7 +130,6 @@ class ParentViewModel : ViewModel() {
                     if (cnt == 0) {
                         _isStudentExists.value = Resource.Error("No class Exists")
                     }
-                    Log.d("_xyz", "onDataChange: ${_isStudentExists.value?.data.toString()}")
 
 
                 }
@@ -244,11 +200,9 @@ class ParentViewModel : ViewModel() {
             })
         }
 
-        Log.d("_pt", "findUserType: ${_userType.value} ")
     }
 
     fun searchTeacher(teacherName: String) {
-        Log.d("_e", "searchTeacher: $teacherName")
         _teacherList.value = Resource.Loading()
         viewModelScope.launch(Dispatchers.IO) {
             dbUserRef.orderByChild("name").startAt(teacherName)
@@ -256,12 +210,9 @@ class ParentViewModel : ViewModel() {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         var flag = 0
                         snapshot.children.forEach { user ->
-                            Log.d(
-                                "_x",
-                                "onDataChange:ddd  ${user.child("name").value.toString()}   $teacherName"
-                            )
+
                             val dbString = user.child("name").value.toString()
-                            Log.d("_x", "onDataChange: ${dbString.contains(teacherName, true)}")
+
                             if (user.child("type").value.toString() == "teacher" && dbString.contains(
                                     teacherName
                                 )
@@ -277,7 +228,6 @@ class ParentViewModel : ViewModel() {
                                         user.child("uphoto").value.toString()
                                     )
                                 )
-                                Log.d("_e", "onDataChange:ok  $arr")
 
                                 _teacherList.value = Resource.Success(arr)
                             }
@@ -302,7 +252,7 @@ class ParentViewModel : ViewModel() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val arr = arrayListOf<Child>()
                     snapshot.children.forEach {
-                        if (it.child("parentId").value.toString() == parentId && it.child("status").value.toString() == "notAssigned") {
+                        if (it.child("parentId").value.toString() == parentId) {
                             arr.add(
                                 Child(
                                     it.child("parentId").value.toString(),
@@ -312,7 +262,6 @@ class ParentViewModel : ViewModel() {
                                     it.child("stdImage").value.toString(),
                                     it.child("stdName").value.toString(),
                                     it.child("status").value.toString(),
-
                                     )
 
                             )
@@ -353,7 +302,7 @@ class ParentViewModel : ViewModel() {
                         }
 
                     }
-                    Log.d("_xyz", "onDataChange: ${classList}")
+
                     _classList.value = Resource.Success(classList)
                 }
 
@@ -364,26 +313,55 @@ class ParentViewModel : ViewModel() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun requestTeacher(
-        tcrId: String, stdId: String, parentId: String, selectedClass: ArrayList<String>
+        tcrId: String,
+        stdId: String,
+        parentId: String,
+        selectedClass: ArrayList<String>,
+        uPhoto: String,
+        stdImage: String,
+        parentPhoto: String,
+        name: String,
+        parentName: String,
+        stdName: String
     ) {
         var i = 0
         while (i < selectedClass.size) {
             val request = Request(
-                parentId, tcrId, selectedClass[i], stdId,"pending"
+                parentId,
+                tcrId,
+                selectedClass[i],
+                stdId,
+                "pending",
+                uPhoto,
+                stdImage,
+                parentPhoto,
+                name,
+                parentName,
+                stdName,
+                "${LocalDateTime.now().month} ${LocalDateTime.now().hour}  "
             )
             dbRequestedStudentRef.push().setValue(request)
             i++
-
         }
-
-
     }
 
 }
 
 data class Request(
-    val parentId: String, val teacherId: String, val clsId: String, val stdId: String, val state:String
+    val parentId: String,
+    val teacherId: String,
+    val clsId: String,
+    val stdId: String,
+    val state: String,
+    val uPhoto: String,
+    val stdImage: String,
+    val parentPhoto: String,
+    val name: String,
+    val parentName: String,
+    val stdName: String,
+    val time: String
 
 )
 

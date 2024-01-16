@@ -1,33 +1,33 @@
 package com.example.classwave.presentation.page.teacher
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.classwave.R
 import com.example.classwave.databinding.ItemNotificationBinding
 import com.example.classwave.presentation.page.parent.Request
-import java.util.logging.Handler
 
 class NewNotificationAdapter : RecyclerView.Adapter<NewNotificationAdapter.ViewHolder>() {
     private var notificationList = listOf<Request>()
-  /*  private var mListener: NewNotificationAdapter.Listener? = null*/
+
+    /*  private var mListener: NewNotificationAdapter.Listener? = null*/
     lateinit var classId: String
 
-/*    interface Listener {
-        fun onAddNewStudentClicked(clsId: String)
+    /*    interface Listener {
+            fun onAddNewStudentClicked(clsId: String)
 
-        fun onClassSelected(
-            clsId: String,
-            stdId: String,
-            studentName: String,
-            img: String,
+            fun onClassSelected(
+                clsId: String,
+                stdId: String,
+                studentName: String,
+                img: String,
 
-            )
+                )
 
-    }*/
+        }*/
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemNotificationBinding.inflate(
@@ -53,17 +53,35 @@ class NewNotificationAdapter : RecyclerView.Adapter<NewNotificationAdapter.ViewH
     }
 
 
-  /*  fun setListener(listener: NewNotificationAdapter.Listener) {
-        mListener = listener
-    }*/
+    /*  fun setListener(listener: NewNotificationAdapter.Listener) {
+          mListener = listener
+      }*/
 
     inner class ViewHolder(private val binding: ItemNotificationBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         @SuppressLint("SuspiciousIndentation", "ResourceAsColor")
         fun setStudent(student: Request) {
-            binding.txtNotificationMsg.text = student.parentId
-            binding.cardAddClass.setCardBackgroundColor(R.color.blue_grey_500)
+            binding.txtNotificationDate.text = student.time
+            if (student.state == "pending") {
+                binding.txtNotificationMsg.text =
+                    "${student.parentName}(Parent) Wants to join your Class"
+
+                binding.constraintLayout.background = ContextCompat.getDrawable(
+                    binding.constraintLayout.context, R.color.blue_100
+
+                )
+
+                // binding.constraintLayout.setBackgroundColor(R.color.blue_100)
+            } else {
+                binding.txtNotificationMsg.text =
+                    "${student.parentId}(Parent) Wants to join your Class"
+//               binding.constraintLayout.setBackgroundColor(R.color.white)
+                binding.constraintLayout.background = ContextCompat.getDrawable(
+                    binding.constraintLayout.context, R.color.white
+                )
+            }
+
 
             /*    binding.imageStdProfile.setImageResource(
                     student.img.toInt()

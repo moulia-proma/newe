@@ -17,8 +17,14 @@ class ChildNotAssignedAdapter : RecyclerView.Adapter<ChildNotAssignedAdapter.Vie
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         // Log.d("_xyz", "onBindViewHolder: ${childList[position]}")
-        holder.set(childList[position])
 
+        if (childList[position].status == "notAssigned") {
+            holder.notAssigned(childList[position])
+        } else if (childList[position].status == "pending") {
+            holder.pending(childList[position])
+        } else {
+            holder.assigned(childList[position])
+        }
     }
 
     fun setChild(childList: ArrayList<Child>) {
@@ -26,6 +32,7 @@ class ChildNotAssignedAdapter : RecyclerView.Adapter<ChildNotAssignedAdapter.Vie
         notifyDataSetChanged()
         //Log.d("_xyz", "setChild: ${childList.size}")
     }
+
     fun setListener(listener: ChildNotAssignedAdapter.Listener) {
         mListener = listener
     }
@@ -41,23 +48,27 @@ class ChildNotAssignedAdapter : RecyclerView.Adapter<ChildNotAssignedAdapter.Vie
     }
 
     override fun getItemCount(): Int {
-        // Log.d("_xyz", "getItemCount: ${childList.size}")
         return childList.size
-
     }
 
     inner class ViewHolder(private val binding: ItemNotAssignedChildListBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun set(child: Child) {
-            //  Log.d("_xyz", "set: $child")
+        fun notAssigned(child: Child) {
             binding.btnAssignClass.setOnClickListener {
                 mListener?.onAssignClassClicked(child)
-
             }
             binding.textViewName.text = child.stdName
             binding.shapableImageViewStdPhoto.setImageResource(child.stdImage.toInt())
         }
 
+        fun pending(child: Child) {
+
+
+        }
+
+        fun assigned(child: Child) {
+
+        }
 
     }
 

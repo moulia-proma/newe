@@ -21,7 +21,14 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
-class SearchTeacherDialog(val stdId: String, val parentId: String) : DialogFragment() {
+class SearchTeacherDialog(
+    val stdId: String,
+    val parentId: String,
+    val parentName: String,
+    val stdName: String,
+    val parentPhoto: String,
+    val stdImage: String
+) : DialogFragment() {
 
     private val viewModel: ParentViewModel by activityViewModels()
     private var _binding: DialogSearchTeacherBinding? = null
@@ -47,7 +54,7 @@ class SearchTeacherDialog(val stdId: String, val parentId: String) : DialogFragm
         binding.recyclerViewSearchResult.adapter = searchAdapter
         searchAdapter.setListener(object : SearchResultAdapter.Listener {
             override fun onTeacherClicked(tcr: UserItemResponse) {
-                val dialog = ChooseClassDialog(tcr.uid, stdId, parentId)
+                val dialog = ChooseClassDialog(tcr.uid, stdId, parentId,tcr.uPhoto,tcr.name,parentPhoto,parentName,stdImage,stdName)
                 dialog.show(parentFragmentManager, ChooseClassDialog.TAG)
             }
 
