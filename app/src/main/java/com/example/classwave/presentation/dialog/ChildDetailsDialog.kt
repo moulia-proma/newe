@@ -12,16 +12,19 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.classwave.R
+import com.example.classwave.databinding.DialogChildDetailsBinding
 import com.example.classwave.databinding.DialogChooseClassesFromSelectedTeacherBinding
 import com.example.classwave.domain.model.Resource
 import com.example.classwave.presentation.page.parent.ClassListAdapter
 import com.example.classwave.presentation.page.parent.ParentViewModel
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
-class ChooseClassDialog(
-    val tcrId: String,
+class ChildDetailsDialog(
+  /*  val tcrId: String,
     val stdId: String,
     val parentId: String,
     val uPhoto: String,
@@ -29,12 +32,18 @@ class ChooseClassDialog(
     val parentPhoto: String,
     val parentName: String,
     val stdImage: String,
-    val stdName: String
+    val stdName: String*/
+  val stdName:String,
+  val stdPhoto: String,
+  val stdParent:String,
+  val stdId: String,
+  val stdEmail:String,
+  val stdType: String,
 ) :
     DialogFragment() {
 
     private val viewModel: ParentViewModel by activityViewModels()
-    private var _binding: DialogChooseClassesFromSelectedTeacherBinding? = null
+    private var _binding: DialogChildDetailsBinding? = null
     private val binding get() = _binding!!
     private val clsListAdapter = ClassListAdapter()
     private var selectedClass = arrayListOf<String>()
@@ -46,7 +55,7 @@ class ChooseClassDialog(
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        _binding = DialogChooseClassesFromSelectedTeacherBinding.inflate(inflater, container, false)
+        _binding = DialogChildDetailsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -55,7 +64,7 @@ class ChooseClassDialog(
 
         super.onViewCreated(view, savedInstanceState)
         binding.recyclerViewClsList.adapter = clsListAdapter
-        viewModel.fetchClassList(tcrId)
+    /*    viewModel.fetchClassList(tcrId)*/
 
         clsListAdapter.setListener(object : ClassListAdapter.Listener {
             override fun onRequestClicked(clsId: String, type: String) {
@@ -69,12 +78,24 @@ class ChooseClassDialog(
         })
 
         binding.floatingActionButtonRequestTeacher.setOnClickListener {
+        /*    val dialog = SearchTeacherDialog(
+                stdId,Firebase.auth.uid.toString(),
+
+
+            )*/
+
+
+
+
+        }
+
+    /*    binding.floatingActionButtonRequestTeacher.setOnClickListener {
             viewModel.requestTeacher(tcrId, stdId, parentId, selectedClass,uPhoto,stdImage,parentPhoto,name,parentName,stdName)
 
 
 
             dismiss()
-        }
+        }*/
 
         //   registerListener()
         initialFlowCollectors()

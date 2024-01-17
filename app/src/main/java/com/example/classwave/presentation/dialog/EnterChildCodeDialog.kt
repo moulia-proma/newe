@@ -1,6 +1,5 @@
 package com.example.classwave.presentation.dialog
 
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -16,7 +15,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.example.classwave.R
 import com.example.classwave.databinding.DialogAddNewStdBinding
 import com.example.classwave.domain.model.Resource
-import com.example.classwave.presentation.page.parent.ParentActivity
 import com.example.classwave.presentation.page.parent.ParentViewModel
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -24,11 +22,9 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
-class EnterChildCodeDialog(
-    val clsId: String,
+class EnterChildCodeDialog(val clsId: String, ) : DialogFragment() {
 
 
-    ) : DialogFragment() {
     private val viewModel: ParentViewModel by activityViewModels()
     private var _binding: DialogAddNewStdBinding? = null
     private val binding get() = _binding!!
@@ -39,6 +35,17 @@ class EnterChildCodeDialog(
     private var parentPhoto = ""
 
     var stdId = ""
+
+    private var mListener : Listener? = null
+
+    interface Listener {
+        fun onDialogClosed(dialog: EnterChildCodeDialog)
+    }
+
+
+    fun setListener(listener: Listener) {
+        mListener = listener
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,15 +66,13 @@ class EnterChildCodeDialog(
         binding.editTextAddStdName.hint =
             "Enter your child connection code ,if you don't have ask to ur child"
         binding.btnAddStd.text = "Connect"
-        Log.d("_pr", "onViewCreated:  classId = $clsId")
 
 
         binding.btnAddStd.setOnClickListener {
+
             stdId = binding.editTextAddStdName.text.toString()
             viewModel.findUserType(Firebase.auth.uid.toString())
         }
-
-
         initialFlowCollectors()
     }
 
@@ -79,18 +84,15 @@ class EnterChildCodeDialog(
             }
         }*/
 
-
     private fun initialFlowCollectors() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.isStudentExists.collectLatest {
                     if (it != null) {
-                        Log.d("_xyz", "initialFlowCollectors: std ${it.data}")
-                    }
-                    if (it != null) {
-                        stdName = it.data?.studentName ?: ""
-                        stdImage = it.data?.img ?: ""
-                        Log.d("pp", "onViewCreated:vv $stdName $stdImage")
+                        stdName = it.data?.name ?: ""
+                        stdImage = it.data?.uPhoto ?: ""
+                        Log.d("_xyz", "initialFlowCollectors: i m 1  ${it.data}")
+
                         viewModel.addChild(
                             stdName,
                             stdImage,
@@ -100,6 +102,7 @@ class EnterChildCodeDialog(
                             parentPhoto,
                             "notAssigned"
                         )
+
                     }
                 }
             }
@@ -112,7 +115,6 @@ class EnterChildCodeDialog(
                         parentName = it.data[1].toString()
                         parentPhoto = it.data[2].toString()
                         viewModel.isStudentExists(stdId)
-                        Log.d("pp", "onViewCreated:oo $stdName $parentName")
                     }
                 }
             }
@@ -120,23 +122,24 @@ class EnterChildCodeDialog(
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.createChild.collectLatest {
-                   it?.let {
-                       when(it){
-                           is Resource.Error -> {}
-                           is Resource.Loading -> {
-                               binding.progressBarDeleteLoading.visibility = View.VISIBLE
-                               binding.btnAddStd.text = ""
-                           }
-                           is Resource.Success -> {
-                               binding.progressBarDeleteLoading.visibility = View.INVISIBLE
-                               val intent = Intent(requireContext(),ParentActivity::class.java)
-                               startActivity(intent)
-                               viewModel.setNull()
+                    it?.let {
+                        when (it) {
+                            is Resource.Error -> {}
+                            is Resource.Loading -> {
+                                binding.progressBarDeleteLoading.visibility = View.VISIBLE
+                                binding.btnAddStd.text = ""
+                            }
 
+                            is Resource.Success -> {
+                                binding.progressBarDeleteLoading.visibility = View.INVISIBLE
+                                mListener?.onDialogClosed(this@EnterChildCodeDialog)
 
-                           }
-                       }
-                   }
+//                                val intent = Intent(requireContext(), ParentActivity::class.java)
+//                                startActivity(intent)
+//                                viewModel.setNull()
+                            }
+                        }
+                    }
 
                 }
             }

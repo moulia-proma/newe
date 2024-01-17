@@ -40,6 +40,7 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         tools:itemCount="1"
         tools:listitem="@layout/item_not_assigned_child_list" />
+<!--
     <androidx.recyclerview.widget.RecyclerView
 
         android:id="@+id/recycler_view_pending_child_list"
@@ -67,6 +68,7 @@
 
 
         />
+-->
 
 
     <androidx.cardview.widget.CardView
@@ -80,7 +82,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/recycler_view_child_list" />
+        app:layout_constraintTop_toBottomOf="@id/recycler_view_not_assigned_child_list" />
 
     <TextView
         android:id="@+id/text_add_child"

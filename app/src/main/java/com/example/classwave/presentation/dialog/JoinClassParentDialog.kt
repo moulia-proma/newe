@@ -50,6 +50,7 @@ class JoinClassParentDialog : DialogFragment() {
             "Enter class code,if you don't have ask to ur child teacher"
         binding.btnAddStd.text = "Submit"
         // Log.d("_pr", "onViewCreated:  classId = $clsId")
+
         binding.btnAddStd.setOnClickListener {
             val clsId = binding.editTextAddStdName.text.toString()
             viewModel.isClassExists(clsId)

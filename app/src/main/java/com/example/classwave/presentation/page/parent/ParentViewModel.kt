@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.classwave.data.datasource.remote.model.UserItemResponse
 import com.example.classwave.domain.model.Resource
 import com.example.classwave.presentation.page.teacher.Class
-import com.example.classwave.presentation.page.teacher.Student
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -41,14 +40,13 @@ class ParentViewModel : ViewModel() {
     var userType = _userType.asStateFlow()
 
     private var _isClassExists =
-        MutableStateFlow<Resource<com.example.classwave.presentation.page.teacher.Class>?>(null)
+        MutableStateFlow<Resource<Class>?>(null)
     var isClassExists = _isClassExists.asStateFlow()
 
-    private var _isStudentExists =
-        MutableStateFlow<Resource<com.example.classwave.presentation.page.teacher.Student>?>(null)
+    private var _isStudentExists = MutableStateFlow<Resource<UserItemResponse>?>(null)
     var isStudentExists = _isStudentExists.asStateFlow()
 
-    private val _childList = MutableStateFlow<Resource<ArrayList<Child>>?>(null)
+    private val _childList = MutableStateFlow<Resource<ArrayList<UserItemResponse>>?>(null)
     var childList = _childList.asStateFlow()
 
     private val _teacherList = MutableStateFlow<Resource<ArrayList<UserItemResponse>>?>(null)
@@ -56,9 +54,9 @@ class ParentViewModel : ViewModel() {
 
     fun setNull() {
         _isClassExists =
-            MutableStateFlow<Resource<com.example.classwave.presentation.page.teacher.Class>?>(null)
+            MutableStateFlow(null)
         isClassExists = _isClassExists.asStateFlow()
-        _createChild = MutableStateFlow<Resource<Child>?>(null)
+        _createChild = MutableStateFlow(null)
         createChild = _createChild.asStateFlow()
     }
 
@@ -82,7 +80,6 @@ class ParentViewModel : ViewModel() {
                                 )
                             )
                         }
-
                     }
                     if (cnt == 0) {
                         _isClassExists.value = Resource.Error("No class Exists")
@@ -104,22 +101,27 @@ class ParentViewModel : ViewModel() {
 
     fun isStudentExists(clsId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            dbStdREf.addListenerForSingleValueEvent(object : ValueEventListener {
+            dbUserRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     var cnt = 0
 
                     snapshot.children.forEach { std ->
-
-                        if (clsId == std.child("studentId").value.toString()) {
-
+                        Log.d("_xyz", "onDataChange: $clsId ${std.child("uid").value.toString()}")
+                        if (clsId == std.child("uid").value.toString()) {
+                            Log.d(
+                                "_xyz",
+                                "onDataChange: okokok $clsId ${std.child("uid").value.toString()}"
+                            )
                             cnt = 1
 
                             _isStudentExists.value = Resource.Success(
-                                Student(
-                                    std.child("classId").value.toString(),
-                                    std.child("studentId").value.toString(),
-                                    std.child("studentName").value.toString(),
-                                    std.child("img").value.toString(),
+                                UserItemResponse(
+                                    std.child("email").value.toString(),
+                                    std.child("name").value.toString(),
+                                    std.child("type").value.toString(),
+                                    std.child("uid").value.toString(),
+                                    std.child("uphoto").value.toString(),
+                                    std.child("parent").value.toString(),
                                 )
                             )
 
@@ -154,27 +156,92 @@ class ParentViewModel : ViewModel() {
         parentImage: String,
         status: String
     ) {
-        _createChild.value = Resource.Loading()
         viewModelScope.launch(Dispatchers.IO) {
-            val child = Child(
-                parentId, parentImage, parentName, stdId, stdImage, stdName, status
-            )
+            dbChildRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    snapshot.children.forEach {
+                        Log.d(
+                            "_xyz",
+                            "onDataChange: ${parentId} ${stdId}    ${it.child("parentId").value.toString()} ${
+                                it.child("stdId").value.toString()
+                            }"
+                        )
+                        if (it.child("parentId").value.toString() == parentId && it.child("stdId").value.toString() == stdId) {
+                            val k = it.key
+                            dbChildRef.child(k.toString()).removeValue()
+                        }
+                    }
+                    _createChild.value = Resource.Loading()
+                    val child =
+                        Child(parentId, parentImage, parentName, stdId, stdImage, stdName, status)
 
-            dbChildRef.push().setValue(child).addOnCompleteListener {
-                _createChild.value = Resource.Success(child)
-            }.addOnFailureListener {
-                _createChild.value = Resource.Error("Failed")
-            }
+
+
+                    dbChildRef.push().setValue(child).addOnCompleteListener {
+
+                        addParent(child)
+                       // fatchChildList(Firebase.auth.uid.toString())
+                    }.addOnFailureListener {
+                        _createChild.value = Resource.Error("Failed")
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    _childList.value = Resource.Error("Failed")
+                }
+
+            })
+        }
+
+        //fatchChildList(Firebase.auth.uid.toString())
+    }
+
+    fun addParent(value: Child) {
+        viewModelScope.launch(Dispatchers.IO) {
+            dbUserRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    snapshot.children.forEach { user ->
+                        if (user.child("uid").value.toString() == value.stdId) {
+                            val u = UserItemResponse(
+                                user.child("email").value.toString(),
+                                user.child("name").value.toString(),
+                                user.child("type").value.toString(),
+                                user.child("uid").value.toString(),
+                                user.child("uphoto").value.toString(),
+                                value.parentId
+                            )
+
+                            val k = user.key
+
+                            dbUserRef.child(k.toString()).removeValue()
+
+                            dbUserRef.push().setValue(
+                                u
+                            ).addOnCompleteListener {
+                                _createChild.value = Resource.Success(value)
+                               // fatchChildList(Firebase.auth.uid.toString())
+                            }
+
+                         // Log.d("_xyz", "onDataChange: okoko")
+                        }
+                    }
+
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    _isClassExists.value = Resource.Error("Error")
+                }
+
+            })
+
 
         }
 
-
     }
+
 
     fun signOut() {
         Firebase.auth.signOut()
-
-
     }
 
     fun findUserType(uId: String) {
@@ -225,8 +292,10 @@ class ParentViewModel : ViewModel() {
                                         user.child("name").value.toString(),
                                         user.child("type").value.toString(),
                                         user.child("uid").value.toString(),
-                                        user.child("uphoto").value.toString()
-                                    )
+                                        user.child("uphoto").value.toString(),
+                                        user.child("parent").value.toString(),
+
+                                        )
                                 )
 
                                 _teacherList.value = Resource.Success(arr)
@@ -246,38 +315,6 @@ class ParentViewModel : ViewModel() {
 
     }
 
-    fun fetchChild(parentId: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            dbChildRef.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val arr = arrayListOf<Child>()
-                    snapshot.children.forEach {
-                        if (it.child("parentId").value.toString() == parentId) {
-                            arr.add(
-                                Child(
-                                    it.child("parentId").value.toString(),
-                                    it.child("parentPhoto").value.toString(),
-                                    it.child("parentName").value.toString(),
-                                    it.child("stdId").value.toString(),
-                                    it.child("stdImage").value.toString(),
-                                    it.child("stdName").value.toString(),
-                                    it.child("status").value.toString(),
-                                    )
-
-                            )
-                        }
-                    }
-                    _childList.value = Resource.Success(arr)
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    _childList.value = Resource.Error("Failed")
-                }
-
-            })
-
-        }
-    }
 
     fun fetchClassList(tcrId: String) {
         _classList.value = Resource.Loading()
@@ -313,6 +350,40 @@ class ParentViewModel : ViewModel() {
         }
     }
 
+    fun fatchChildList(parentId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            dbUserRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val arr = arrayListOf<UserItemResponse>()
+                    snapshot.children.forEach {
+                        //   Log.d("_xyz", "onDataChange:e $parentId ${it.child("parent").value.toString()}  ${it.child("parentId").value.toString() == parentId}")
+                        if (it.child("parent").value.toString() == parentId) {
+                            arr.add(
+                                UserItemResponse(
+                                    it.child("email").value.toString(),
+                                    it.child("name").value.toString(),
+                                    it.child("type").value.toString(),
+                                    it.child("uid").value.toString(),
+                                    it.child("uphoto").value.toString(),
+                                    it.child("parent").value.toString(),
+                                )
+
+                            )
+                        }
+                    }
+                    Log.d("_xyz", "onDataChange: $arr")
+                    _childList.value = Resource.Success(arr)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    _childList.value = Resource.Error("Failed")
+                }
+
+            })
+        }
+    }
+
+
     @RequiresApi(Build.VERSION_CODES.O)
     fun requestTeacher(
         tcrId: String,
@@ -342,7 +413,14 @@ class ParentViewModel : ViewModel() {
                 stdName,
                 "${LocalDateTime.now().month} ${LocalDateTime.now().hour}  "
             )
-            dbRequestedStudentRef.push().setValue(request)
+            dbRequestedStudentRef.push().setValue(request).addOnCompleteListener {
+                val child = Child(
+                    parentId, parentPhoto, parentName, stdId, stdImage, stdName, "pending"
+                )
+                addChild(
+                    stdName, stdImage, stdId, parentId, parentName, parentPhoto, "pending"
+                )
+            }
             i++
         }
     }

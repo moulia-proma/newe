@@ -81,7 +81,7 @@ class SignUpViewModel @Inject constructor(): ViewModel() {
                     auth = Firebase.auth
                     currentUser = auth.currentUser!!
                     val uid =currentUser.uid
-                    val user = UserItemResponse(email, name, type, uid,uImage.random().toString())
+                    val user = UserItemResponse(email, name, type, uid,uImage.random().toString(),"")
                     Log.d("proma", "createUser: $user")
                     dbRef.push().setValue(user)
                         .addOnCompleteListener {

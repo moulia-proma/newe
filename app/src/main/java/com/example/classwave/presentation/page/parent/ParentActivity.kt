@@ -8,16 +8,21 @@ import android.view.Menu
 import android.widget.PopupMenu
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.example.classwave.data.datasource.remote.model.UserItemResponse
 import com.example.classwave.databinding.ActivityParentBinding
 import com.example.classwave.domain.model.Resource
 import com.example.classwave.presentation.dialog.AddNewStdDialog
+import com.example.classwave.presentation.dialog.ChildDetailsDialog
 import com.example.classwave.presentation.dialog.EnterChildCodeDialog
 import com.example.classwave.presentation.dialog.JoinClassParentDialog
 import com.example.classwave.presentation.dialog.SearchTeacherDialog
 import com.example.classwave.presentation.page.main.MainActivity
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -30,14 +35,22 @@ class ParentActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityParentBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        Log.d("_xyz", "onCreate: max")
         binding.cardViewJoinClass.setOnClickListener {
             val dialog = JoinClassParentDialog()
             dialog.show(supportFragmentManager, AddNewStdDialog.TAG)
         }
+
         binding.cardViewAddChild.setOnClickListener {
             val dialog = EnterChildCodeDialog("")
+            dialog.setListener(object : EnterChildCodeDialog.Listener {
+                override fun onDialogClosed(dialog: EnterChildCodeDialog) {
+                    Log.d("_xyz", "onDialogClosed: called")
+                    dialog.dismiss()
+                    viewModel.fatchChildList(Firebase.auth.uid.toString())
+                }
+            })
             dialog.show(supportFragmentManager, EnterChildCodeDialog.TAG)
-
         }
 
         val popup = binding.imgViewMore
@@ -58,12 +71,32 @@ class ParentActivity : AppCompatActivity() {
             }
             true
         }
-        viewModel.fetchChild(Firebase.auth.uid.toString())
+        viewModel.fatchChildList(Firebase.auth.uid.toString())
 
         notAssignedAdapter.setListener(object : ChildNotAssignedAdapter.Listener {
-            override fun onAssignClassClicked(child: Child) {
-                val dialog = SearchTeacherDialog(child.stdId,child.parentId,child.parentName,child.stdName,child.parentPhoto,child.stdImage)
+       /*     override fun onAssignClassClicked(child: Child) {
+                val dialog = SearchTeacherDialog(
+                    child.stdId,
+                    child.parentId,
+                    child.parentName,
+                    child.stdName,
+                    child.parentPhoto,
+                    child.stdImage
+                )
                 dialog.show(supportFragmentManager, SearchTeacherDialog.TAG)
+            }*/
+
+            override fun onStudentDetailClicked(child: UserItemResponse) {
+                val dialog = ChildDetailsDialog(
+                    child.name,
+                    child.uPhoto,
+                    child.parent,
+                    child.uid,
+                    child.email,
+                    child.type
+                )
+                dialog.show(supportFragmentManager,SearchTeacherDialog.TAG )
+
             }
 
         })
@@ -78,15 +111,22 @@ class ParentActivity : AppCompatActivity() {
 
     fun initialFlowCollectors() {
         lifecycleScope.launch {
-            viewModel.childList.collectLatest {
-                it?.let {
-                    when (it) {
-                        is Resource.Error -> {}
-                        is Resource.Loading -> {}
-                        is Resource.Success -> {
-                            Log.d("_xyz", "initialFlowCollectors: ${it.data}")
-                            it.data?.let { it1 -> notAssignedAdapter.setChild(it1) }
-
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.childList.collectLatest {
+                    it?.let {
+                        when (it) {
+                            is Resource.Error -> {}
+                            is Resource.Loading -> {}
+                            is Resource.Success -> {
+                                Log.d("_xyz", "initialFlowCollectors: iii ${it.data}")
+                                 if(it.data != null){
+                                     Log.d("_xyz", "initialFlowCollectors: ${it.data.size}")
+                                     notAssignedAdapter.setChild(it.data)
+                                 }else{
+                                     Log.d("_xyz", "initialFlowCollectors: i m empty ")
+                                     notAssignedAdapter.setChild(arrayListOf())
+                                 }
+                            }
                         }
                     }
                 }
@@ -94,6 +134,18 @@ class ParentActivity : AppCompatActivity() {
         }
 
 
+    }
+
+    override fun onPause() {
+        super.onPause()
+        initialFlowCollectors()
+        Log.d("_d", "onPause: called on pAuse")
+    }
+
+    override fun onResume() {
+        super.onResume()
+       // initialFlowCollectors()
+        Log.d("_d", "onPause: called on repAuse")
     }
 
 

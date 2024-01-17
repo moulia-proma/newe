@@ -5,6 +5,6 @@ data class UserItemResponse(
     val name: String,
     val type: String,
     val uid:String,
-    val uPhoto:String
-
+    val uPhoto:String,
+    val parent:String
 )

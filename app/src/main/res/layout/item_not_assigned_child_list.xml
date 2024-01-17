@@ -39,7 +39,9 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@id/card_view_child_bg"
         app:layout_constraintStart_toStartOf="@id/card_view_child_bg"
-        app:layout_constraintTop_toTopOf="@id/card_view_child_bg" />
+        app:layout_constraintTop_toTopOf="@id/card_view_child_bg"
+         app:layout_constraintBottom_toTopOf="@+id/text_view_details"
+        />
 
     <TextView
         android:id="@+id/text_view_details"
@@ -50,7 +52,8 @@
         app:layout_constraintBottom_toTopOf="@id/btn_assign_class"
         app:layout_constraintEnd_toEndOf="@id/card_view_child_bg"
         app:layout_constraintStart_toStartOf="@id/card_view_child_bg"
-        app:layout_constraintTop_toBottomOf="@id/text_view_name" />
+        app:layout_constraintTop_toBottomOf="@id/text_view_name"
+        />
 
 
     <com.google.android.material.button.MaterialButton
