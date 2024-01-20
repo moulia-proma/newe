@@ -33,18 +33,22 @@ class SignInViewModel @Inject constructor() : ViewModel() {
     private val _loginState = MutableStateFlow<Resource<loginResponse>?>(null)
     val loginState = _loginState.asStateFlow()
 
-    private var _userType = MutableStateFlow<Resource<ArrayList<String?>>>(Resource.Success(arrayListOf()))
+    private var _userType =
+        MutableStateFlow<Resource<ArrayList<String?>>>(Resource.Success(arrayListOf()))
     var userType = _userType.asStateFlow()
 
     fun signIn(email: String, password: String) {
         _loginState.value = Resource.Loading()
+        _userType.value = Resource.Loading()
 
-        if(!isValidEmail(email)) {
+        if (!isValidEmail(email)) {
             _loginState.value = Resource.Error("Please enter a valid email")
+            _userType.value = Resource.Error("Please enter a valid email")
             return
         }
-        if(!isValidPassword(password)) {
+        if (!isValidPassword(password)) {
             _loginState.value = Resource.Error("Password length must be more then 8 characters")
+            _userType.value = Resource.Error("Password length must be more then 8 characters")
             return
         }
 
@@ -54,6 +58,7 @@ class SignInViewModel @Inject constructor() : ViewModel() {
                 findUserType(firebaseAuth.uid.toString())
             } else {
                 _loginState.value = Resource.Error(it.exception.toString())
+                _userType.value = Resource.Error(it.exception.toString())
             }
         }
     }
@@ -66,6 +71,7 @@ class SignInViewModel @Inject constructor() : ViewModel() {
     private fun isValidEmail(email: String): Boolean {
         return email.matches(emailRegex.toRegex())
     }
+
     fun findUserType(uId: String) {
         _userType.value = Resource.Loading()
         viewModelScope.launch(Dispatchers.IO) {

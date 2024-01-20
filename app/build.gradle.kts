@@ -57,6 +57,8 @@ dependencies {
     //firebase
     implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
     implementation("com.google.firebase:firebase-analytics")
+    //for blur view
+    implementation ("com.github.Dimezis:BlurView:version-2.0.3")
 
 
     //authentication
