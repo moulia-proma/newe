@@ -51,7 +51,7 @@ class SignInActivity : AppCompatActivity() {
 
     private fun registerListener() {
 
-        binding.txtSignUp.setOnClickListener {
+        binding.textViewCreateAnAccount.setOnClickListener {
             val intent = Intent(this, SignUpActivity::class.java)
             intent.putExtra("user_type", userType)
             startActivity(intent)
@@ -92,7 +92,7 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun showError(message: String?) {
-        binding.btnSignIn.text = "SignIn"
+        binding.btnSignIn.text = "Sign In"
         binding.progressBarSignInLoading.visibility = View.INVISIBLE
         message?.let { it1 ->
             SnackbarUtil.show(

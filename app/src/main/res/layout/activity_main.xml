@@ -4,137 +4,158 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp"
+    android:background="@drawable/front_bg"
     tools:context=".presentation.page.main.MainActivity">
-
-    <ImageView
-        android:id="@+id/user_type_img"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:src="@drawable/user_type_option_img"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/txt_user_type_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:fontFamily="sans-serif-black"
+        android:fontFamily="@font/jost_medium"
         android:text="ClassWave"
-        android:textColor="@color/colorPrimary"
+
+        android:textColor="@color/white"
         android:textSize="45sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/user_type_img" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/card_student"
+        app:layout_constraintVertical_chainStyle="packed"
+        />
 
-    <androidx.cardview.widget.CardView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/card_student"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
         android:layout_margin="8dp"
+        android:background="@drawable/card_glass"
         app:cardCornerRadius="16dp"
         app:cardElevation="4dp"
         app:contentPadding="24dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txt_user_type_title">
+        app:layout_constraintTop_toBottomOf="@id/txt_user_type_title"
+        app:layout_constraintBottom_toTopOf="@id/card_teacher"
+        >
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center">
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.imageview.ShapeableImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_gravity="start"
-                android:background="@color/primaryColor"
-                android:src="@drawable/ic_student"
-                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Image.16dp"
-                app:strokeColor="#9C1E49"
-                app:strokeWidth="1dp" />
+                android:background="@color/white"
+                android:src="@drawable/st"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Image.25dp"
+
+                />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="I'm a Student"
+                android:fontFamily="@font/jost_regular"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
         </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.cardview.widget.CardView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/card_teacher"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
         android:layout_margin="8dp"
+        android:background="@drawable/card_glass"
         app:cardCornerRadius="16dp"
         app:cardElevation="4dp"
         app:contentPadding="24dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card_student">
+        app:layout_constraintTop_toBottomOf="@id/card_student"
+        app:layout_constraintBottom_toTopOf="@id/card_parent"
+        >
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center">
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.imageview.ShapeableImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="start"
-                android:background="@color/primaryColor"
-                android:src="@drawable/ic_teacher"
-                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Image.16dp"
-                app:strokeColor="#9C1E49"
-                app:strokeWidth="1dp" />
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:background="@color/white"
+                android:src="@drawable/teaching"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Image.25dp"
+
+                />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="I'm a Teacher"
+                android:fontFamily="@font/jost_regular"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.cardview.widget.CardView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/card_parent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
         android:layout_margin="8dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/card_glass"
         app:cardCornerRadius="16dp"
         app:cardElevation="4dp"
         app:contentPadding="24dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card_teacher">
+        app:layout_constraintTop_toBottomOf="@id/card_teacher"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center">
-
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
             <com.google.android.material.imageview.ShapeableImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_gravity="start"
-                android:background="@color/primaryColor"
-                android:src="@drawable/ic_parent"
-                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Image.16dp"
-                app:strokeColor="#9C1E49"
-                app:strokeWidth="1dp" />
+                android:background="@color/white"
+                android:src="@drawable/parent_main"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Image.25dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="I'm a Parent"
+                android:fontFamily="@font/jost_regular"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/group_picker"
@@ -149,7 +170,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:indeterminate="true"
-        android:progressTint="@color/colorPrimary"
+        app:indicatorColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txt_user_type_title" />

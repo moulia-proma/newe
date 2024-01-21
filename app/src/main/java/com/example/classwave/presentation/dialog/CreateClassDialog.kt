@@ -65,7 +65,6 @@ class CreateClassDialog(
             binding.editTxtClassName.setText(name)
             Log.d("_xyz", "onViewCreated: ${section}")
             binding.autoCompleteTextViewDropdownItems.setText(section, false)
-
         }
         registerListener()
     }

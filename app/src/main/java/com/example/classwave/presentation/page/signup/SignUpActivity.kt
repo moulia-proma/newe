@@ -42,10 +42,10 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun registerListener() {
-        binding.btnSignup.setOnClickListener {
-            val email = binding.editTextEmail.text.toString()
-            val password = binding.editTextPassword.text.toString()
-            val name = binding.editTextName.text.toString()
+        binding.btnSignUp.setOnClickListener {
+            val email = binding.editTextSignUpEmail.text.toString()
+            val password = binding.editTextSignUpPassword.text.toString()
+            val name = binding.editTextSignUpFullName.text.toString()
 
             viewModel.createUser(
                 email = email, password = password,
@@ -53,7 +53,7 @@ class SignUpActivity : AppCompatActivity() {
             )
         }
 
-        binding.txtAlreadyHaveAnAccount.setOnClickListener {
+        binding.textViewAlreadyHaveAccount.setOnClickListener {
             val intent = Intent(this, SignInActivity::class.java)
             intent.putExtra("user_type", userType)
             startActivity(intent)
@@ -62,26 +62,20 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun initializeFlowCollectors() {
-        /*       lifecycleScope.launch {
-                   repeatOnLifecycle(Lifecycle.State.CREATED) {
-                       viewModel.authUiState.collectLatest {
-                           it?.let {
-                               when (it) {
-                                   is Resource.Error -> showErrorMessage(message = it.message ?: "")
-                                   is Resource.Loading -> showLoadingView()
-                                   is Resource.Success -> showSuccessView()
-                               }
-                           }
-                       }
-                   }
-               }*/
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.userType.collectLatest {
                     Log.d("_abd", "initializeFlowCollectors: ${it.data}")
                     when (it) {
-                        is Resource.Error -> {}
-                        is Resource.Loading -> {}
+                        is Resource.Error -> {
+                            showError(it.message)
+                        }
+
+                        is Resource.Loading -> {
+                            binding.btnSignUp.text=""
+                            binding.progressBarSignInLoading.visibility=View.VISIBLE
+
+                        }
                         is Resource.Success -> {
                             if (it.data?.isNotEmpty() == true) {
                                 if (it.data[0] == "teacher") {
@@ -111,9 +105,42 @@ class SignUpActivity : AppCompatActivity() {
                 }
             }
         }
-
-
     }
+
+    private fun showError(message: String?) {
+        binding.btnSignUp.text = "Sign Up"
+        binding.progressBarSignInLoading.visibility = View.INVISIBLE
+        message?.let { it1 ->
+            SnackbarUtil.show(
+                this,
+                it1, binding.btnSignUp
+            )
+        }
+    }
+
+/*    private fun showSuccess(data: ArrayList<String?>?) {
+        binding.progressBarSignInLoading.visibility = View.INVISIBLE
+        if (data?.isNotEmpty() == true) {
+            if (data[0] == "teacher") {
+                val intent =
+                    Intent(this, TeacherActivity::class.java)
+                startActivity(intent)
+            } else if (data[0] == "parent") {
+                val intent =
+                    Intent(this, ParentActivity::class.java)
+                startActivity(intent)
+
+            } else if (data[0] == "student") {
+
+                val intent =
+                    Intent(this, StudentActivity::class.java)
+                intent.putExtra("name", data[1])
+                intent.putExtra("email", data[2])
+                startActivity(intent)
+            }
+        }
+
+    }*/
 
 
     /*    private fun showSuccessView() {
@@ -135,14 +162,14 @@ class SignUpActivity : AppCompatActivity() {
         }*/
 
     private fun showErrorMessage(message: String) {
-        binding.progressBarSignUpLoading.visibility = View.INVISIBLE
-        binding.txtSignup.visibility = View.VISIBLE
+        binding.progressBarSignInLoading.visibility = View.INVISIBLE
+        binding.btnSignUp.text = "Sign Up"
 
-        SnackbarUtil.show(this@SignUpActivity, message, binding.btnSignup)
+        SnackbarUtil.show(this@SignUpActivity, message, binding.btnSignUp)
     }
 
     private fun showLoadingView() {
-        binding.txtSignup.visibility = View.INVISIBLE
-        binding.progressBarSignUpLoading.visibility = View.VISIBLE
+        binding.btnSignUp.text = ""
+        binding.progressBarSignInLoading.visibility = View.VISIBLE
     }
 }

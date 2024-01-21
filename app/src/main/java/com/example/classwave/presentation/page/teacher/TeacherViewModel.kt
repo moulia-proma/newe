@@ -103,7 +103,7 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
     }
 
     private val clsImage = arrayListOf<Int>(
-        R.drawable.cls_chemistry,
+      /*  R.drawable.cls_chemistry,
         R.drawable.cls_alculating,
         R.drawable.cls_blackboard,
         R.drawable.cls_calculator,
@@ -111,7 +111,10 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
         R.drawable.cls_computer_science,
         R.drawable.cls_mathematics_symbol,
         R.drawable.cls_online_learning,
-        R.drawable.cls_teaching
+        R.drawable.cls_teaching*/
+        R.drawable.class_1,
+        R.drawable.class_2,
+        R.drawable.class_3,
     )
     private val stdImage = arrayListOf<Int>(
         R.drawable.st_boy,

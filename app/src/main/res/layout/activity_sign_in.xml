@@ -10,10 +10,14 @@
         android:id="@+id/image_view_login"
         android:layout_width="match_parent"
         android:layout_height="500dp"
+
         android:scaleType="centerCrop"
-        android:src="@drawable/login_ui_image"
+        android:src="@drawable/bg_sign_in"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.4"
+        />
 
     <TextView
         android:layout_width="wrap_content"
@@ -26,42 +30,55 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.65" />
+        app:layout_constraintVertical_bias="0.8"
+        android:fontFamily="@font/jost_medium"
+
+        />
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="340dp"
         android:layout_marginHorizontal="16dp"
-        android:background="@drawable/glass_morphism"
-        android:padding="16dp"
+        android:background="@drawable/glass_morphism_image"
+        android:elevation="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.7">
+        app:layout_constraintVertical_bias="0.65">
 
         <TextView
+            android:layout_marginTop="8dp"
             android:id="@+id/text_view_sign_in"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sign In"
+            android:layout_marginHorizontal="16dp"
+            android:textSize="16sp"
             android:textColor="@color/white"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:fontFamily="@font/jost_medium"
+            />
 
         <TextView
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
             android:id="@+id/text_view_new_user"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="New user? "
+            android:fontFamily="@font/jost_regular"
             android:textColor="@color/white"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/text_view_sign_in" />
 
         <TextView
+            android:fontFamily="@font/jost_regular"
+            android:layout_marginTop="8dp"
             android:id="@+id/text_view_create_an_account"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -71,17 +88,18 @@
             app:layout_constraintTop_toBottomOf="@id/text_view_sign_in" />
 
         <com.google.android.material.textfield.TextInputEditText
+            android:fontFamily="@font/jost_regular"
             android:id="@+id/edit_text_sign_in_email"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_margin="24dp"
             android:layout_marginTop="16dp"
+            android:paddingHorizontal="24dp"
             android:background="@drawable/edit_text_style"
             android:backgroundTint="@color/white"
             android:elevation="5dp"
             android:hint="Enter email"
-            android:padding="8dp"
-            android:textColorHint="#58E0A9"
+            android:textColorHint="@color/grey_500"
             android:textSize="14sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/text_view_create_an_account"
@@ -89,6 +107,7 @@
             />
 
         <com.google.android.material.textfield.TextInputEditText
+           android:fontFamily="@font/jost_regular"
             android:id="@+id/edit_text_sign_in_password"
             android:layout_width="match_parent"
             android:layout_height="45dp"
@@ -98,11 +117,37 @@
             android:backgroundTint="@color/white"
             android:elevation="5dp"
             android:hint="Enter password"
-            android:padding="8dp"
-            android:textColorHint="#58E0A9"
+            android:paddingHorizontal="24dp"
+            android:textColorHint="@color/grey_500"
             android:textSize="14sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/edit_text_sign_in_email" />
+
+        <TextView
+            android:id="@+id/text_view_forget_password"
+            android:padding="8dp"
+            android:fontFamily="@font/jost_medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Forget Password?"
+            android:textColor="@color/white"
+           app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="24dp"
+            app:layout_constraintTop_toBottomOf="@id/edit_text_sign_in_password"
+
+            />
+        <ProgressBar
+            android:id="@+id/progress_bar_sign_in_loading"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:elevation="7dp"
+            android:indeterminateTint="@color/white"
+            android:progressTint="@color/white"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@id/btn_sign_in"
+            app:layout_constraintEnd_toEndOf="@id/btn_sign_in"
+            app:layout_constraintStart_toStartOf="@id/btn_sign_in"
+            app:layout_constraintTop_toTopOf="@id/btn_sign_in" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_sign_in"
@@ -112,28 +157,31 @@
             android:layout_gravity="center_horizontal"
             android:layout_margin="24dp"
             android:layout_marginTop="24dp"
-            android:backgroundTint="#47C5FB"
+            android:backgroundTint="@color/btnColor"
             android:elevation="6dp"
             android:stateListAnimator="@null"
 
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/edit_text_sign_in_password" />
+            app:layout_constraintTop_toBottomOf="@id/text_view_forget_password" />
 
-        <ProgressBar
-            android:id="@+id/progress_bar_sign_in_loading"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:elevation="5dp"
-            android:indeterminateTint="@color/white"
-            android:progressTint="@color/white"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@id/btn_sign_in"
-            app:layout_constraintEnd_toEndOf="@id/btn_sign_in"
-            app:layout_constraintStart_toStartOf="@id/btn_sign_in"
-            app:layout_constraintTop_toTopOf="@id/btn_sign_in" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+
+        android:fontFamily="@font/jost_regular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="By signing in you will be to access all the features available for a specefic user."
+        android:textColor="@color/grey_500"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:textAlignment="center"
+        app:layout_constraintTop_toBottomOf="@id/constraint"
+        android:padding="16dp"
+
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

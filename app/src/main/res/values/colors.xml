@@ -5,6 +5,7 @@
     <color name="transparent">#00FFFFFF</color>
     <color name="colorBackground">#FFFFFF</color>
     <color name="primaryColor">#BC607F</color>
+    <color name="btnColor">#9D70FF</color>
 
     <color name="colorPrimary">#19082E</color>
 
