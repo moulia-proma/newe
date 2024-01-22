@@ -1,11 +1,9 @@
 package com.example.classwave.presentation.page.teacher
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.classwave.R
 import com.example.classwave.databinding.ItemStudentBinding
 
 class AddStudentAdapter : RecyclerView.Adapter<AddStudentAdapter.ViewHolder>() {
@@ -14,7 +12,7 @@ class AddStudentAdapter : RecyclerView.Adapter<AddStudentAdapter.ViewHolder>() {
     lateinit var classId: String
 
     interface Listener {
-        fun onAddNewStudentClicked(clsId: String)
+        /*        fun onAddNewStudentClicked(clsId: String)*/
 
         fun onClassSelected(
             clsId: String,
@@ -22,7 +20,7 @@ class AddStudentAdapter : RecyclerView.Adapter<AddStudentAdapter.ViewHolder>() {
             studentName: String,
             img: String,
 
-        )
+            )
 
     }
 
@@ -30,31 +28,20 @@ class AddStudentAdapter : RecyclerView.Adapter<AddStudentAdapter.ViewHolder>() {
         val binding = ItemStudentBinding.inflate(
             LayoutInflater.from(parent.context), parent, false
         )
-        Log.d("TAG", "initializeFlowCollectors: bind ")
         return ViewHolder(binding)
     }
 
 
     override fun getItemCount(): Int {
-        val size = (mStudentList.size) + 1
-        Log.d("TAG", "initializeFlowCollectors: ${size}")
-        return (mStudentList.size + 1)
+        return mStudentList.size
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        Log.d("TAG", "initializeFlowCollectors: onviewholder ")
-        if (position == mStudentList.size) {
-            Log.d("TAG", "initializeFlowCollectors: 0 ")
-            holder.setAddStudent()
-        } else {
-            holder.setStudent(mStudentList[position])
-        }
-
+        holder.setStudent(mStudentList[position])
     }
 
     fun setStudents(students: List<Student>) {
         mStudentList = students
-        Log.d("TAG", "setStudents:${mStudentList} ")
         notifyDataSetChanged()
     }
 
@@ -77,20 +64,14 @@ class AddStudentAdapter : RecyclerView.Adapter<AddStudentAdapter.ViewHolder>() {
             )
             binding.txtStdName.text = student.studentName
             binding.cardAddNewStd.setOnClickListener {
-                mListener?.onClassSelected(clsId = classId,student.studentId,student.studentName,student.img)
+                mListener?.onClassSelected(
+                    clsId = classId,
+                    student.studentId,
+                    student.studentName,
+                    student.img
+                )
             }
 
-        }
-
-        fun setAddStudent() {
-            binding.imageStdProfile.setImageResource(
-                R.drawable.ic_add
-            )
-            binding.txtStdName.text = "Add Student"
-
-            binding.cardAddNewStd.setOnClickListener {
-                mListener?.onAddNewStudentClicked(clsId = classId)
-            }
         }
     }
 

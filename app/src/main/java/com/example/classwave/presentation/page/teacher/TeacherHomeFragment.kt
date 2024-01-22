@@ -16,7 +16,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.classwave.databinding.FragmentTeacherHomeBinding
 import com.example.classwave.domain.model.Resource
-import com.example.classwave.presentation.dialog.AddNewStdDialog
 import com.example.classwave.presentation.dialog.ClassInviteDialog
 import com.example.classwave.presentation.dialog.SkillDialog
 import com.example.classwave.presentation.page.Attandance.AttendanceActivity
@@ -29,8 +28,6 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.util.Timer
-import kotlin.concurrent.schedule
 
 class TeacherHomeFragment : Fragment() {
 
@@ -56,7 +53,6 @@ class TeacherHomeFragment : Fragment() {
         return binding.root
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         super.onViewCreated(view, savedInstanceState)
@@ -65,27 +61,23 @@ class TeacherHomeFragment : Fragment() {
 
         val layoutManager = FlexboxLayoutManager(context)
         layoutManager.flexDirection = FlexDirection.ROW
-        layoutManager.justifyContent = JustifyContent.FLEX_START
+        layoutManager.justifyContent = JustifyContent.SPACE_BETWEEN
 
         binding.recyclerViewStdInfo.layoutManager = layoutManager
         binding.recyclerViewStdInfo.adapter = addStudentAdapter
 
-        /*   val modal = ModalBottomSheetDialog()
-           supportFragmentManager.let { modal.show(it, ModalBottomSheetDialog.TAG) }*/
+
+        binding.imageViewBackArrow.setOnClickListener {
+            viewModel.openDrawer()
+        }
+
         addStudentAdapter.setListener(listener = object : AddStudentAdapter.Listener {
-
-            override fun onAddNewStudentClicked(clsId: String) {
-                val dialog = AddNewStdDialog(clsId)
-                dialog.show(parentFragmentManager, "CreateStdDialog")
-            }
-
             override fun onClassSelected(
                 clsId: String,
                 stdId: String,
                 studentName: String,
                 img: String,
-
-                ) {
+            ) {
                 // viewModel.fetchStudentReport(stdId)
                 val dialog = SkillDialog(clsId, stdId, studentName, img)
                 dialog.show(parentFragmentManager, "ProvideMarksdialog")
@@ -125,9 +117,6 @@ class TeacherHomeFragment : Fragment() {
         }
 
 
-
-
-
         initializeFlowCollectors()
         registerListener()
     }
@@ -137,7 +126,6 @@ class TeacherHomeFragment : Fragment() {
             val intent = Intent(requireContext(), ClassReportActivity::class.java)
             intent.putExtra("clsId", clsId)
             startActivity(intent)
-
         }
         binding.cardAttendance.setOnClickListener {
             val intent = Intent(requireContext(), AttendanceActivity::class.java)
@@ -152,10 +140,9 @@ class TeacherHomeFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.selectedClass.collectLatest { cls ->
                     if (cls != null) {
+
                         binding.toolbar.title = cls.name
                         viewModel.fetchStudentByClassId(cls.classId)
-
-                        // comment from prvz
                         addStudentAdapter.setId(cls.classId)
                         clsId = cls.classId
                         clas = cls
@@ -174,23 +161,30 @@ class TeacherHomeFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.studentList.collectLatest {
 
-                    Log.d(TAG, "initializeFlowCollectors: xxx ${it?.data}")
+                    Log.d(TAG, "initializeFlowCollectors:y ${it?.data}")
                     it?.let {
                         when (it) {
                             is Resource.Error -> {}
                             is Resource.Loading -> {
                                 binding.progressBarStudentLoading.visibility = View.VISIBLE
-                                binding.recyclerViewStdInfo.visibility = View.INVISIBLE
+                                binding.groupPickerNoData.visibility = View.INVISIBLE
+                                binding.groupPickerOndata.visibility = View.INVISIBLE
                             }
 
                             is Resource.Success -> {
-                                if (it.data != null) {
-                                    binding.recyclerViewStdInfo.visibility = View.VISIBLE
+
+                                if (!it.data.isNullOrEmpty()) {
                                     binding.progressBarStudentLoading.visibility = View.INVISIBLE
+                                    binding.groupPickerNoData.visibility = View.GONE
+                                    binding.groupPickerOndata.visibility = View.VISIBLE
                                     it.data?.let { addStudentAdapter.setStudents(it) }
+                                } else {
+                                    binding.progressBarStudentLoading.visibility = View.INVISIBLE
+                                    binding.groupPickerNoData.visibility = View.VISIBLE
+                                    binding.groupPickerOndata.visibility = View.GONE
 
                                 }
-                                binding.progressBarStudentLoading.visibility = View.INVISIBLE
+
 
                             }
                         }
@@ -241,7 +235,7 @@ class TeacherHomeFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-    
+
     companion object {
         private const val TAG = "TeacherHomeFragment"
     }

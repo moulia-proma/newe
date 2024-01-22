@@ -90,6 +90,9 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
     private val _notificationList = MutableStateFlow<Resource<ArrayList<Request>>?>(null)
     var notificationList = _notificationList.asStateFlow()
 
+    private val _openDrawer = MutableStateFlow<Boolean>(false)
+    var openDrawer = _openDrawer.asStateFlow()
+
 
     fun setNull() {
         _createClass = MutableStateFlow<Resource<Class>?>(null)
@@ -103,15 +106,15 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
     }
 
     private val clsImage = arrayListOf<Int>(
-      /*  R.drawable.cls_chemistry,
-        R.drawable.cls_alculating,
-        R.drawable.cls_blackboard,
-        R.drawable.cls_calculator,
-        R.drawable.cls_maths,
-        R.drawable.cls_computer_science,
-        R.drawable.cls_mathematics_symbol,
-        R.drawable.cls_online_learning,
-        R.drawable.cls_teaching*/
+        /*  R.drawable.cls_chemistry,
+          R.drawable.cls_alculating,
+          R.drawable.cls_blackboard,
+          R.drawable.cls_calculator,
+          R.drawable.cls_maths,
+          R.drawable.cls_computer_science,
+          R.drawable.cls_mathematics_symbol,
+          R.drawable.cls_online_learning,
+          R.drawable.cls_teaching*/
         R.drawable.class_1,
         R.drawable.class_2,
         R.drawable.class_3,
@@ -149,12 +152,17 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
         }
         if (cls == null) return
         fetchNotification()
+        fetchSkillByClassId(cls.classId)
 
 //          comment from prvz
 //        notification()
 //        fetchStudentByClassId(classId = cls.classId)
 //        fetchSkillByClassId(classId = cls.classId)
 //        fetchSkillByClassId(classId = cls.classId)
+    }
+
+    fun openDrawer() {
+        _openDrawer.value = !_openDrawer.value
     }
 
     fun getMarksDropdownList(highestScore: String, type: String): ArrayList<Int> {
@@ -303,7 +311,7 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    private fun fetchSkillByClassId(classId: String) {
+    fun fetchSkillByClassId(classId: String) {
         _posSkillList.value = Resource.Loading()
         _negSkillList.value = Resource.Loading()
         viewModelScope.launch(Dispatchers.IO) {

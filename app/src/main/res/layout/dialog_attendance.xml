@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:background="@color/primaryColor">
 
     <com.google.android.material.appbar.AppBarLayout
 
@@ -20,7 +21,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/cyan_600"
+            android:background="@color/primaryColor"
             android:elevation="16dp"
             app:title="Attendance"
             app:titleCentered="true"
@@ -52,6 +53,33 @@
             android:layout_height="match_parent">
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_day_report"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_weight="2"
+                app:cardBackgroundColor="@color/secendryColor"
+                app:cardCornerRadius="16dp"
+                app:layout_constraintBottom_toTopOf="@id/barrier_date"
+
+                app:layout_constraintEnd_toStartOf="@id/card_month_report"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="8dp"
+                    android:text="Day"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_year_report"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -60,10 +88,13 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_weight="2"
+                app:cardBackgroundColor="@color/secendryColor"
                 app:cardCornerRadius="16dp"
                 app:layout_constraintBottom_toTopOf="@id/barrier_date"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/card_month_report"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -72,7 +103,7 @@
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="8dp"
                     android:text="Year"
-                    android:textColor="@color/cyan_600"
+                    android:textColor="@color/white"
                     android:textStyle="bold" />
 
             </com.google.android.material.card.MaterialCardView>
@@ -83,8 +114,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_weight="2"
+                app:cardBackgroundColor="@color/secendryColor"
                 app:cardCornerRadius="16dp"
                 app:layout_constraintBottom_toTopOf="@id/barrier_date"
+                app:layout_constraintEnd_toStartOf="@id/card_year_report"
                 app:layout_constraintStart_toEndOf="@id/card_day_report"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -95,32 +128,7 @@
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="8dp"
                     android:text="Month"
-                    android:textColor="@color/cyan_600"
-                    android:textStyle="bold" />
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_day_report"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_weight="2"
-                app:cardCornerRadius="16dp"
-
-
-                app:layout_constraintBottom_toTopOf="@id/barrier_date"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:paddingHorizontal="16dp"
-                    android:paddingVertical="8dp"
-                    android:text="Day"
-                    android:textColor="@color/cyan_600"
+                    android:textColor="@color/white"
                     android:textStyle="bold" />
 
             </com.google.android.material.card.MaterialCardView>
@@ -137,7 +145,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/barrier_date"
                 app:srcCompat="@drawable/ic_arrow_back"
-                app:tint="@color/cyan_500" />
+                app:tint="@color/white" />
 
             <TextView
                 android:id="@+id/text_report_date"
@@ -145,7 +153,7 @@
                 android:layout_height="wrap_content"
                 android:text="date"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                android:textColor="@color/cyan_500"
+                android:textColor="@color/white"
 
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -155,18 +163,22 @@
                 android:id="@+id/btn_next"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:background="@color/transparent"
 
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/text_report_date"
                 app:layout_constraintTop_toBottomOf="@id/barrier_date"
+
                 app:srcCompat="@drawable/ic_arrow_front_grey" />
 
             <androidx.constraintlayout.widget.Barrier
                 android:id="@+id/barrier_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:padding="8dp"
                 app:barrierDirection="bottom"
                 app:constraint_referenced_ids="btn_next,btn_prev,text_report_date" />
 
@@ -178,7 +190,7 @@
                 app:constraint_referenced_ids="btn_next,btn_prev,text_report_date" />
 
             <androidx.recyclerview.widget.RecyclerView
-                tools:listitem="@layout/item_std_report_in_details_with_date"
+                android:layout_marginTop="16dp"
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -186,17 +198,19 @@
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toTopOf="@id/button_save"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/barrier_recycler_view"
+                tools:itemCount="2"
+                tools:listitem="@layout/item_std_report_in_details_with_date"
 
                 />
 
             <com.google.android.material.button.MaterialButton
+                android:elevation="5dp"
                 android:id="@+id/button_save"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/cyan_500"
+                android:layout_width="88dp"
+                android:layout_height="42dp"
+                android:backgroundTint="@color/btnColor"
                 android:text="Save"
                 android:textColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"

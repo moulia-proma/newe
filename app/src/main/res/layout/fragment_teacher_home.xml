@@ -4,15 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground"
+    android:background="@color/primaryColor"
     tools:context=".presentation.page.teacher.TeacherHomeFragment">
+
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:elevation="6dp"
-        app:elevation="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -20,23 +19,46 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/cyan_600"
-            android:elevation="16dp"
-            app:title="Class Name"
+            android:background="@color/primaryColor"
+            app:title="ClassName"
+
             app:titleCentered="true"
-            app:titleTextColor="@color/white">
+            app:titleTextColor="@color/white"
+           app:titleTextAppearance="@style/ToolbarTheme"
+            >
 
             <ImageView
                 android:id="@+id/img_view_more"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_more_vert_24px"
                 android:layout_gravity="end"
-                android:layout_marginEnd="16dp" />
+                android:layout_marginEnd="16dp"
+                android:src="@drawable/ic_more_vert_24px" />
+
 
         </com.google.android.material.appbar.MaterialToolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
+    <ImageView
+        android:id="@+id/image_view_back_arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:src="@drawable/ic_arrow_back"
+        app:layout_constraintStart_toStartOf="@id/app_bar"
+        app:layout_constraintTop_toTopOf="@id/app_bar"
+        app:layout_constraintBottom_toBottomOf="@id/app_bar"
+        android:layout_marginStart="16dp"
+        />
+
+
+  <!--  <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src=""
+        />-->
+
+
 
     <HorizontalScrollView
         android:id="@+id/scroll"
@@ -53,10 +75,11 @@
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_attendance"
                 android:layout_width="wrap_content"
+                app:cardBackgroundColor="@color/secendryColor"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_weight="2"
                 app:cardCornerRadius="16dp"
                 app:layout_constraintEnd_toStartOf="@id/card_class_report"
@@ -70,37 +93,40 @@
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="8dp"
                     android:text="@string/label_attendance"
-                    android:textColor="@color/cyan_600"
+                    android:textColor="@color/white"
                     android:textStyle="bold" />
 
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_class_report"
+                app:cardBackgroundColor="@color/secendryColor"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_weight="2"
                 app:cardCornerRadius="16dp"
                 app:layout_constraintStart_toEndOf="@id/card_attendance"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="8dp"
                     android:text="@string/label_class_report"
-                    android:textColor="@color/cyan_600"
+                    android:textColor="@color/white"
                     android:textStyle="bold" />
 
             </com.google.android.material.card.MaterialCardView>
 
             <androidx.recyclerview.widget.RecyclerView
+
                 android:id="@+id/recycler_view_card_skill"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:orientation="horizontal"
                 app:layout_constraintStart_toEndOf="@id/card_class_report"
                 app:layout_constraintTop_toTopOf="parent"
@@ -108,16 +134,16 @@
                 android:layout_width="wrap_content"
                 tools:listitem="@layout/item_skill_report"
                 android:layout_height="wrap_content" />
-            <androidx.recyclerview.widget.RecyclerView
+       <!--     <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view_card_neg_skill"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:orientation="horizontal"
                 app:layout_constraintStart_toEndOf="@id/card_class_report"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 android:layout_width="wrap_content"
                 tools:listitem="@layout/item_skill_report"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content" />-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -129,7 +155,7 @@
         android:id="@+id/progress_bar_student_loading"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:indeterminateTint="@color/blue_grey_800"
+        android:indeterminateTint="@color/white"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -138,16 +164,17 @@
 
     <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/felexbox"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         app:flexWrap="wrap"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/scroll">
 
-
         <androidx.recyclerview.widget.RecyclerView
+            android:padding="16dp"
             android:id="@+id/recycler_view_std_info"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -157,5 +184,49 @@
 
 
     </com.google.android.flexbox.FlexboxLayout>
+
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_picker_ondata"
+        android:layout_width="3dp"
+        android:layout_height="2dp"
+        android:visibility="gone"
+        app:constraint_referenced_ids="felexbox,scroll"
+        />
+
+    <ImageView
+        android:id="@+id/image_view_minions"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:src="@drawable/empty_2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.435"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_bar"
+        app:layout_constraintVertical_bias="0.289" />
+
+    <TextView
+        android:id="@+id/text_view_description"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No Students in your class, to connect students share the class Code with them "
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/image_view_minions"
+        android:textColor= "@color/grey_500"
+        android:textSize="20sp"
+        android:fontFamily="@font/jost_regular"
+        android:textAlignment="center"
+        />
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_picker_no_data"
+        android:layout_width="3dp"
+        android:layout_height="2dp"
+        android:visibility="gone"
+        app:constraint_referenced_ids="image_view_minions,text_view_description"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

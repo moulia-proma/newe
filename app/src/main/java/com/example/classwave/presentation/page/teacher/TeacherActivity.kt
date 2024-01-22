@@ -100,34 +100,41 @@ class TeacherActivity : AppCompatActivity() {
                 }
             }
         }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.openDrawer.collectLatest {
+                    binding.drawerLayout.openDrawer(GravityCompat.START)
+                }
+            }
+        }
 
 
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
-            viewModel.notificationList.collectLatest {
-                it?.let {
-                    when (it) {
-                        is Resource.Error -> {}
-                        is Resource.Loading -> {}
-                        is Resource.Success -> {
-                            val notifications = it.data
-                            val count = notifications?.let { requests ->
-                                requests.count { request ->
-                                    request.state != "viewed"
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.notificationList.collectLatest {
+                    it?.let {
+                        when (it) {
+                            is Resource.Error -> {}
+                            is Resource.Loading -> {}
+                            is Resource.Success -> {
+                                val notifications = it.data
+                                val count = notifications?.let { requests ->
+                                    requests.count { request ->
+                                        request.state != "viewed"
+                                    }
                                 }
-                            }
-                            val badge = binding.bottomNavigationView.getOrCreateBadge(R.id.chat)
+                                val badge = binding.bottomNavigationView.getOrCreateBadge(R.id.chat)
 
-                            if (notifications.isNullOrEmpty() || count == null || count == 0) {
-                                badge.isVisible = false
-                            } else {
-                                badge.isVisible = true
-                                badge.number = count
+                                if (notifications.isNullOrEmpty() || count == null || count == 0) {
+                                    badge.isVisible = false
+                                } else {
+                                    badge.isVisible = true
+                                    badge.number = count
+                                }
                             }
                         }
                     }
                 }
-            }
             }
         }
     }
@@ -153,5 +160,6 @@ class TeacherActivity : AppCompatActivity() {
         headerBinding.progressBarClassLoading.visibility = View.VISIBLE
 
     }
+
 
 }

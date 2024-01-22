@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:openDrawer="start"
-    android:background="#A8CCE1"
+    android:background="#BB9BFF"
     tools:context=".presentation.page.teacher.TeacherActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -30,8 +29,9 @@
             style="@style/BottomNavigationView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:itemIconTint="@color/colorPrimary"
-            app:itemTextColor="@color/colorPrimary"
+            app:itemIconTint="@color/iconColor"
+            app:itemTextColor="@color/iconColor"
+            android:background="@color/secendryColor"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
