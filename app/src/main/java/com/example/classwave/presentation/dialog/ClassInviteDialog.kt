@@ -67,6 +67,10 @@ class ClassInviteDialog(
             clipManager.setPrimaryClip(clipData)
             Toast.makeText(requireContext(), "Class code copied", Toast.LENGTH_LONG).show()
         }
+        binding.toolbar.setNavigationOnClickListener {
+            dismiss()
+        }
+
     }
     /*
 

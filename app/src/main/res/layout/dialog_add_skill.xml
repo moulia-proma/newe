@@ -5,18 +5,22 @@
     android:padding="16dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.dialog.AddNewStdDialog">
+    tools:context=".presentation.dialog.AddNewStdDialog"
+    android:background="@color/primaryColor"
+    >
+
     <ImageView
-        android:layout_marginTop="40dp"
         android:id="@+id/image_std_profile"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_marginTop="40dp"
         app:layout_constraintBottom_toTopOf="@id/edit_text_add_skill_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/logical_thinking"
-        />
+        app:srcCompat="@drawable/new_task_bg" />
+
     <EditText
         android:padding="16dp"
         android:layout_marginTop="8dp"
@@ -26,10 +30,12 @@
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:hint="Enter skill name"
+        android:textColorHint="@color/white"
         android:background="@drawable/edit_text_style"
 
         />
     <EditText
+        android:textColorHint="@color/white"
         android:padding="16dp"
         android:layout_marginTop="8dp"
         android:id="@+id/edit_text_add_skill_high_score_name"
@@ -54,7 +60,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/colorPrimary"
+        android:backgroundTint="@color/btnColor"
         android:text="Add"
         android:textColor="@color/white"
         />

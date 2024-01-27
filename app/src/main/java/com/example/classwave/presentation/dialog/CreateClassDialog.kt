@@ -81,7 +81,7 @@ class CreateClassDialog(
         }
         binding.editTxtClassName.addTextChangedListener {
             binding.btnCreateClass.isClickable = true
-            binding.btnCreateClass.setBackgroundColor(getResources().getColor(R.color.colorPrimary))
+            binding.btnCreateClass.setBackgroundColor(getResources().getColor(R.color.btnColor))
         }
 
         binding.btnCreateClass.setOnClickListener {

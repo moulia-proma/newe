@@ -3,13 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/primaryColor"
+    >
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/cyan_500"
+        android:background="@color/primaryColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -18,31 +20,32 @@
         app:titleTextColor="@color/white" />
 
     <ImageView
-        android:visibility="gone"
+
         android:id="@+id/image_view_empty"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:src="@drawable/empty"
+        android:src="@drawable/not_evaluated_bg"
         app:layout_constraintBottom_toTopOf="@id/text_empty"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:visibility="invisible"
+
         android:id="@+id/text_empty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="You haven't evaluated this Task!"
-        android:textColor="@color/grey_500"
+        android:text="You haven't evaluated this Task! Quickly evaluate the task and see the report here!"
+        android:textColor="@color/white"
         android:textSize="20sp"
+        android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/image_view_empty" />
 
     <ProgressBar
-        android:visibility="gone"
+
         android:id="@+id/progress_bar_loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -53,7 +56,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.core.widget.NestedScrollView
-        android:visibility="gone"
+
         android:id="@id/scroll"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -126,6 +129,20 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+
     </androidx.core.widget.NestedScrollView>
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_picker_empty"
+        android:layout_width="3dp"
+        android:layout_height="2dp"
+        android:visibility="gone"
+        app:constraint_referenced_ids="text_empty, image_view_empty" />
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_picker_with_data"
+        android:layout_width="3dp"
+        android:layout_height="2dp"
+        android:visibility="gone"
+        app:constraint_referenced_ids="scroll" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -50,7 +50,7 @@ class EnterClassCodeDialog(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         super.onViewCreated(view, savedInstanceState)
-        binding.editTextAddStdName.hint = "Enter class code,if you don't have ask to ur teacher"
+        binding.editTextAddStdName.hint = "Class code"
         binding.btnAddStd.text = "Join"
         Log.d("_pr", "onViewCreated:  classId = $clsId")
         binding.btnAddStd.setOnClickListener {

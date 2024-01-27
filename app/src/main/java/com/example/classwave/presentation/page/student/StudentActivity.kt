@@ -1,23 +1,27 @@
 package com.example.classwave.presentation.page.student
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
+import android.view.Menu
 import android.view.View
+import android.widget.PopupMenu
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupWithNavController
-import com.example.classwave.R
-import com.example.classwave.databinding.ActivityStudentBinding
+import com.example.classwave.databinding.FragmentStudentHomeBinding
 import com.example.classwave.databinding.NavDrawerBinding
 import com.example.classwave.domain.model.Resource
+import com.example.classwave.presentation.dialog.ClassInviteDialog
 import com.example.classwave.presentation.dialog.EnterClassCodeDialog
+import com.example.classwave.presentation.dialog.ShareProfileDialog
+import com.example.classwave.presentation.page.main.MainActivity
+import com.example.classwave.presentation.page.report.Repo0rtActivity
 import com.example.classwave.presentation.page.teacher.Class
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.collectLatest
@@ -25,24 +29,24 @@ import kotlinx.coroutines.launch
 
 class StudentActivity : AppCompatActivity() {
     private val viewModel: StudentViewModel by viewModels()
-    private lateinit var binding: ActivityStudentBinding
+    private lateinit var binding: FragmentStudentHomeBinding
     private lateinit var headerBinding: NavDrawerBinding
     private var joinClassAdapter = JoinClassAdapter()
-
+    private var classId = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val uName = intent.getStringExtra("name").toString()
         var uEmail = intent.getStringExtra("email").toString()
 
         super.onCreate(savedInstanceState)
-        binding = ActivityStudentBinding.inflate(layoutInflater)
+        binding = FragmentStudentHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val navHostFragment =
+/*        val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
         val navController = navHostFragment.navController
         val navView: BottomNavigationView = findViewById(R.id.bottom_navigation_view)
-        navView.setupWithNavController(navController)
+        navView.setupWithNavController(navController)*/
 
         headerBinding =
             NavDrawerBinding.inflate(layoutInflater, binding.navigationViewDrawer, false)
@@ -77,11 +81,62 @@ class StudentActivity : AppCompatActivity() {
         })
 
         viewModel.fetchClassList(Firebase.auth.uid.toString())
+        binding.cardViewReportBg.setOnClickListener {
+
+            val intent = Intent(this, Repo0rtActivity::class.java)
+            if (classId.isNotEmpty()) {
+                intent.putExtra("classId", classId)
+                intent.putExtra("student_id", Firebase.auth.uid.toString())
+                startActivity(intent)
+            }
+
+        }
+        viewModel.findUserType(Firebase.auth.uid.toString())
+        val popup = binding.imgViewMore
+        val showPopup = PopupMenu(this, popup)
+        showPopup.menu.add(Menu.NONE, 0, 0, "Share class")
+        showPopup.menu.add(Menu.NONE, 1, 1, "Sign out")
+        showPopup.gravity = Gravity.END
+        popup.setOnClickListener { showPopup.show() }
+
+        showPopup.setOnMenuItemClickListener { menuItem ->
+            val id = menuItem.itemId
+            if (id == 0) {
+                val dialog = ShareProfileDialog(Firebase.auth.uid.toString())
+                dialog.show(supportFragmentManager, ClassInviteDialog.TAG)
+            } else if (id == 1) {
+                viewModel.signOut()
+                var intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+            true
+        }
+        binding.appBar.setNavigationOnClickListener {
+            binding.drawerLayout.openDrawer(GravityCompat.START)
+        }
+
         initializeFlowCollectors()
 
     }
 
     private fun initializeFlowCollectors() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.selectedClass.collectLatest { cls ->
+                    Log.d("TAG", "initializeFlowCollectors: i am cls")
+                    if (cls != null) {
+
+                        classId = cls.classId
+                        //clas = cls
+
+                    } else {
+                        binding.textViewName.text = "No Class"
+                    }
+                }
+            }
+        }
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.classList.collectLatest {
@@ -90,10 +145,20 @@ class StudentActivity : AppCompatActivity() {
                             is Resource.Error -> {}
                             is Resource.Loading -> {}
                             is Resource.Success -> {
-                                Log.d("_pro", "initializeFlowCollectors: ab ${it.data}")
                                 viewModel.showClasses(it.data)
                             }
                         }
+                    }
+                }
+            }
+        }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.userType.collectLatest { user ->
+                    if (user.isNotEmpty()) {
+                        binding.textViewName.text = "Welcome, ${user[1]}"
+                    } else {
+                        binding.textViewName.text = "No Class"
                     }
                 }
             }

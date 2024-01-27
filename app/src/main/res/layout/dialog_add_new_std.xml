@@ -5,19 +5,24 @@
     android:padding="16dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.dialog.AddNewStdDialog">
-<ImageView
-    android:layout_marginTop="40dp"
-    android:id="@+id/image_std_profile"
-    android:layout_width="80dp"
-    android:layout_height="80dp"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintBottom_toTopOf="@id/edit_text_add_std_name"
-    app:layout_constraintTop_toTopOf="parent"
-    app:srcCompat="@drawable/user"
-    />
-<EditText
+    tools:context=".presentation.dialog.AddNewStdDialog"
+    android:background="@color/primaryColor"
+    >
+
+    <ImageView
+
+        android:id="@+id/image_std_profile"
+        android:layout_width="350dp"
+        android:layout_height="300dp"
+        android:layout_marginTop="40dp"
+        app:layout_constraintBottom_toTopOf="@id/edit_text_add_std_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/join_cls_bg" />
+
+    <EditText
     android:layout_marginTop="8dp"
     android:id="@+id/edit_text_add_std_name"
     app:layout_constraintStart_toStartOf="parent"
@@ -26,7 +31,10 @@
     android:layout_height="80dp"
     android:background="@drawable/edit_text_style"
     android:hint="Enter Student Name"
-    android:padding="16dp" />
+    android:padding="16dp"
+    android:textColorHint="@color/grey_500"
+        android:textColor="@color/white"
+    />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_add_std"
@@ -36,9 +44,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/colorPrimary"
+        android:backgroundTint="@color/btnColor"
         android:text="Add"
         android:textColor="@color/white" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enter your class code, if you don't have a code ask it to your teacher"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_add_std"
+        android:paddingVertical="16dp"
+        android:textColor="@color/grey_500"
+        android:fontFamily="@font/jost_regular"
+        android:textAlignment="center"
+        />
 
     <ProgressBar
         android:id="@+id/progress_bar_delete_loading"

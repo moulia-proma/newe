@@ -330,20 +330,27 @@ class AttendanceActivity : AppCompatActivity() {
                 viewModel.studentList.collectLatest {
                     it.let {
                         when (it) {
-                            is Resource.Error -> {}
-                            is Resource.Loading -> {}
+                            is Resource.Error -> {
+
+                            }
+                            is Resource.Loading -> {
+                                Log.d("_rak", "initialFlowCollectors: jijdddddddddddddddddddi")
+                                binding.progressBarLoading.visibility=View.VISIBLE
+                            }
                             is Resource.Success -> {
+                                binding.progressBarLoading.visibility=View.INVISIBLE
                                 it.data?.forEach { st ->
                                     name[st.studentId] = st.studentName
                                     profile[st.studentId] = st.img
                                 }
                                 attendanceAdapter.setData(name, profile)
-                                Log.d("_xyz", "initialFlowCollectors:x  ${name}")
                                 callAttendance(it.data, clsId)
-                                Log.d("_xyz", "initialFlowCollectors: $stdList")
+
                             }
 
-                            null -> {}
+                            null -> {
+                                Log.d("_rak", "initialFlowCollectors: null")
+                            }
                         }
                     }
 

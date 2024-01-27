@@ -10,7 +10,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/cyan_500"
+        android:background="@color/primaryColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -28,7 +28,9 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@color/primaryColor"
+            >
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_year_report"
@@ -40,6 +42,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_weight="2"
                 app:cardCornerRadius="16dp"
+                app:cardBackgroundColor="@color/secendryColor"
                 app:layout_constraintBottom_toTopOf="@id/barrier_header"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -51,7 +54,7 @@
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="8dp"
                     android:text="Year"
-                    android:textColor="@color/cyan_600"
+                    android:textColor="@color/white"
                     android:textStyle="bold" />
 
             </com.google.android.material.card.MaterialCardView>
@@ -63,6 +66,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_weight="2"
                 app:cardCornerRadius="16dp"
+                app:cardBackgroundColor="@color/secendryColor"
                 app:layout_constraintBottom_toTopOf="@id/barrier_header"
                 app:layout_constraintStart_toEndOf="@id/card_year_report"
                 app:layout_constraintTop_toTopOf="parent">
@@ -74,7 +78,7 @@
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="8dp"
                     android:text="Month"
-                    android:textColor="@color/cyan_600"
+                    android:textColor="@color/white"
                     android:textStyle="bold" />
 
             </com.google.android.material.card.MaterialCardView>
@@ -88,7 +92,9 @@
                 app:cardCornerRadius="16dp"
                 app:layout_constraintBottom_toTopOf="@id/barrier_header"
                 app:layout_constraintStart_toEndOf="@id/card_month_report"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                app:cardBackgroundColor="@color/primaryColor"
+                >
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -97,7 +103,7 @@
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="8dp"
                     android:text="Day"
-                    android:textColor="@color/cyan_600"
+                    android:textColor="@color/white"
                     android:textStyle="bold" />
 
             </com.google.android.material.card.MaterialCardView>
@@ -122,7 +128,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/barrier_header"
                 app:srcCompat="@drawable/ic_arrow_back"
-                app:tint="@color/black" />
+                app:tint="@color/white" />
 
             <TextView
                 android:id="@+id/text_report_date"
@@ -145,7 +151,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/barrier_header"
                 app:srcCompat="@drawable/ic_arrow_front"
-                app:tint="@color/black" />
+                app:tint="@color/white" />
 
             <androidx.constraintlayout.widget.Barrier
                 android:id="@+id/barrier_date"

@@ -12,7 +12,9 @@
         app:cardCornerRadius="16dp"
         app:cardElevation="0dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:cardBackgroundColor="@color/secendryColor"
+        />
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/shapable_image_view_std_photo"
@@ -27,10 +29,10 @@
         app:layout_constraintStart_toStartOf="@id/card_view_child_bg"
         app:layout_constraintTop_toTopOf="@id/card_view_child_bg"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Image.25dp"
-        app:strokeColor="#9C1E49"
-        app:strokeWidth="1dp" />
+        />
 
     <TextView
+        android:textColor="@color/white"
         android:id="@+id/text_view_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -44,6 +46,7 @@
         />
 
     <TextView
+        android:textColor="@color/white"
         android:id="@+id/text_view_details"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -65,7 +68,7 @@
         app:layout_constraintStart_toStartOf="@id/card_view_child_bg"
         android:layout_marginBottom="8dp"
         android:text="Click to assign in a class"
-        android:backgroundTint="@color/blue_900"
+        android:backgroundTint="@color/btnColor"
         android:textColor="@color/white"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>

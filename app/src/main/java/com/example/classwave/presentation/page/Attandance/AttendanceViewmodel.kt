@@ -29,7 +29,7 @@ class AttendanceViewModel @Inject constructor() : ViewModel() {
     var reportList: StateFlow<Resource<MutableMap<String, MutableList<Report>>>> =
         _reportList.asStateFlow()
 
-    private val _studentList = MutableStateFlow<Resource<List<Student>>?>(null)
+    private val _studentList = MutableStateFlow<Resource<List<Student>>?>(Resource.Loading())
     var studentList = _studentList.asStateFlow()
     private var dbStdRef = FirebaseDatabase.getInstance().getReference("Students")
     private val _addMarks = MutableStateFlow<Resource<Marks>?>(null)
@@ -159,7 +159,6 @@ class AttendanceViewModel @Inject constructor() : ViewModel() {
                             }
 
                         }
-                        Log.d("mikasa", "onDataChange: $studentList")
                         _studentList.value = Resource.Success(studentList)
                     }
 

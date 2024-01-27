@@ -28,6 +28,14 @@ class SkillReportActivity : AppCompatActivity() {
         viewModel.getReportSkillSpecific(skillId)
         binding.recyclerView.adapter = reportChildAdapter
         initialFlowCollectors()
+        registerFlowListener()
+    }
+
+    private fun registerFlowListener(){
+  binding.toolbar.setNavigationOnClickListener {
+      onBackPressed()
+  }
+
     }
 
     private fun initialFlowCollectors() {
@@ -40,22 +48,19 @@ class SkillReportActivity : AppCompatActivity() {
                             is Resource.Error -> {}
                             is Resource.Loading -> {
                                 Log.d("_xyz", "initialFlowCollectors: ami ami")
-                                binding.progressBarLoading.visibility=View.VISIBLE
-                                binding.imageViewEmpty.visibility=View.GONE
-                                binding.textEmpty.visibility=View.GONE
+                                binding.progressBarLoading.visibility = View.VISIBLE
+                                binding.imageViewEmpty.visibility = View.GONE
+                                binding.textEmpty.visibility = View.GONE
                                 binding.scroll.visibility = View.GONE
                             }
+
                             is Resource.Success -> {
 
                                 if (it.data?.isEmpty() != true) {
-                                    binding.progressBarLoading.visibility=View.INVISIBLE
-                                    binding.imageViewEmpty.visibility=View.GONE
-                                    binding.textEmpty.visibility=View.GONE
-                                    binding.scroll.visibility = View.VISIBLE
-                                    Log.d(
-                                        "_xyz",
-                                        "initialFlowCollectors: ${it.data?.size}   ${it.data} "
-                                    )
+                                    binding.progressBarLoading.visibility = View.INVISIBLE
+                                    binding.groupPickerEmpty.visibility = View.GONE
+                                    binding.groupPickerWithData.visibility = View.VISIBLE
+
                                     it.data?.let { it1 -> reportChildAdapter.setReports(it1) }
                                     binding.textName.text =
                                         "Max: " + (it.data?.get(it.data.size - 1)?.stdName
@@ -68,13 +73,12 @@ class SkillReportActivity : AppCompatActivity() {
                                             it1.toInt()
                                         )
                                     }
-                                }else {
-                                    Log.d("_xyz", "initialFlowCollectors: abcd")
+                                } else {
+
                                     reportChildAdapter.setReports(mutableListOf())
-                                    binding.progressBarLoading.visibility=View.INVISIBLE
-                                    binding.imageViewEmpty.visibility=View.VISIBLE
-                                    binding.textEmpty.visibility=View.VISIBLE
-                                    binding.scroll.visibility = View.GONE
+                                    binding.progressBarLoading.visibility = View.INVISIBLE
+                                    binding.groupPickerEmpty.visibility=View.VISIBLE
+                                   binding.groupPickerWithData.visibility=View.GONE
 
                                 }
                             }

@@ -53,17 +53,7 @@ class StudentHomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         super.onViewCreated(view, savedInstanceState)
-        binding.cardViewReportBg.setOnClickListener {
 
-            val intent = Intent(requireContext(), Repo0rtActivity::class.java)
-            if (classId.isNotEmpty()) {
-                intent.putExtra("classId", classId)
-                intent.putExtra("student_id", Firebase.auth.uid.toString())
-                startActivity(intent)
-            }
-
-        }
-        viewModel.findUserType(Firebase.auth.uid.toString())
 
 
         val popup = binding.imgViewMore

@@ -2,48 +2,66 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/primaryColor"
+    >
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/cyan_500"
+        android:background="@color/primaryColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/ic_arrow_back"
         app:title="Class Invite"
-        app:titleTextColor="@color/white" />
+        app:titleTextColor="@color/white"
+        app:titleTextAppearance="@style/ToolbarTheme" />
 
 
     <TextView
+        android:paddingTop="32dp"
         android:id="@+id/text_view_invite_instruction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
         android:text="Use this code to invite parent and Students in your class"
         android:textAlignment="center"
         android:textSize="25sp"
-        app:layout_constraintBottom_toTopOf="@id/card_view_class_link_bg"
+        android:paddingHorizontal="16dp"
+        android:textColor="@color/grey_400"
+        app:layout_constraintBottom_toTopOf="@id/img_share_cls_bg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
+        android:fontFamily="@font/jost_regular"
 
         />
+
+    <ImageView
+        android:id="@+id/img_share_cls_bg"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:src="@drawable/share_code_bg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_view_invite_instruction"
+        />
+
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_view_class_link_bg"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="16dp"
-        app:cardBackgroundColor="@color/grey_100"
+        app:cardBackgroundColor="@color/secendryColor"
         app:cardCornerRadius="16dp"
         app:cardElevation="0dp"
         app:contentPadding="8dp"
+        android:layout_marginHorizontal="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_view_invite_instruction" />
+        app:layout_constraintTop_toBottomOf="@id/img_share_cls_bg" />
 
     <ImageView
         android:id="@+id/image_copy_icon"
@@ -64,6 +82,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:text="abcdefghijBHHHH"
+        android:fontFamily="@font/jost_regular"
         android:textColor="@color/blue_700"
         app:layout_constraintBottom_toBottomOf="@id/card_view_class_link_bg"
         app:layout_constraintEnd_toEndOf="@id/card_view_class_link_bg"
@@ -82,7 +101,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/card_view_class_link_bg"
-
+        android:fontFamily="@font/jost_regular"
         />
 
 
