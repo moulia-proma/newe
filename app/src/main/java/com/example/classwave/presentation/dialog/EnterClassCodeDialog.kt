@@ -2,7 +2,6 @@ package com.example.classwave.presentation.dialog
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,13 +13,15 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.classwave.R
 import com.example.classwave.databinding.DialogAddNewStdBinding
+import com.example.classwave.domain.model.Resource
 import com.example.classwave.presentation.page.student.StudentViewModel
+import com.example.classwave.presentation.util.SnackbarUtil
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
 class EnterClassCodeDialog(
-    val clsId: String,
+    var clsId: String,
     teacherId: String,
     name: String,
     img: String,
@@ -52,15 +53,23 @@ class EnterClassCodeDialog(
         super.onViewCreated(view, savedInstanceState)
         binding.editTextAddStdName.hint = "Class code"
         binding.btnAddStd.text = "Join"
-        Log.d("_pr", "onViewCreated:  classId = $clsId")
-        binding.btnAddStd.setOnClickListener {
-           // Log.d("pro", "onViewCreated: $uName")
-            if (uName?.isNotEmpty() == true) {
-                viewModel.createStudent(binding.editTextAddStdName.text.toString(), uName)
-            }
-        }
 
         initialFlowCollectors()
+        registerListener()
+    }
+
+    fun registerListener() {
+        binding.toolbar.setNavigationOnClickListener {
+            viewModel.setNull()
+            dismiss()
+        }
+        binding.btnAddStd.setOnClickListener {
+        clsId = binding.editTextAddStdName.text.toString()
+            if (uName != null) {
+                viewModel.isClassExists(clsId, uName)
+            }
+
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -79,6 +88,42 @@ class EnterClassCodeDialog(
                     if (it.isNotEmpty()) {
                         if (it[0] == "student") {
                             uType = it
+                        }
+                    }
+
+
+                }
+            }
+        }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.createStudent.collectLatest {
+                    it?.let {
+                        when (it) {
+                            is Resource.Error -> {
+                                it.message?.let { it1 ->
+                                    SnackbarUtil.show(
+                                        requireContext(),
+                                        it1, binding.btnAddStd
+                                    )
+
+                                }
+                                binding.btnAddStd.text = "join"
+                                binding.progressBarDeleteLoading.visibility = View.INVISIBLE
+                            }
+
+                            is Resource.Loading -> {
+                                binding.btnAddStd.text = ""
+                                binding.progressBarDeleteLoading.visibility = View.VISIBLE
+                            }
+
+                            is Resource.Success -> {
+                                binding.progressBarDeleteLoading.visibility = View.INVISIBLE
+                                binding.btnAddStd.text = "join"
+                                dismiss()
+                                viewModel.setNull()
+                            }
+
                         }
                     }
 

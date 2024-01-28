@@ -29,10 +29,9 @@ class StudentViewModel : ViewModel() {
     private var dbMarksRef = FirebaseDatabase.getInstance().getReference("Marks")
     private var dbUserRef = FirebaseDatabase.getInstance().getReference("Users")
 
-    private var _isClassExists = MutableStateFlow<Boolean?>(null)
-    var isClassExists = _isClassExists.asStateFlow()
     private var _createStudent = MutableStateFlow<Resource<Student>?>(null)
     var createStudent = _createStudent.asStateFlow()
+
     private val _classList = MutableStateFlow<Resource<List<String>>?>(null)
     var classList = _classList.asStateFlow()
 
@@ -41,9 +40,9 @@ class StudentViewModel : ViewModel() {
 
     private val _selectedClass = MutableStateFlow<Class?>(null)
     val selectedClass = _selectedClass.asStateFlow()
+
     private var _userType = MutableStateFlow<ArrayList<String>>(arrayListOf())
     var userType = _userType.asStateFlow()
-
 
     private val stdImage = arrayListOf<Int>(
         R.drawable.st_boy,
@@ -54,55 +53,58 @@ class StudentViewModel : ViewModel() {
         R.drawable.st_user
     )
 
-    fun isClassExists(clsId: String) {
+    fun setNull(){
+        _createStudent = MutableStateFlow<Resource<Student>?>(null)
+        createStudent = _createStudent.asStateFlow()
+    }
+
+    fun isClassExists(clsId: String, uName: String) {
+
+        _createStudent.value = Resource.Loading()
+        if (clsId.isEmpty()) {
+            _createStudent.value = Resource.Error("Class code can't be empty")
+            return
+        }
+        var isExist =0
+
         viewModelScope.launch(Dispatchers.IO) {
             dbClassREf.addListenerForSingleValueEvent(object : ValueEventListener {
+                @RequiresApi(Build.VERSION_CODES.O)
                 override fun onDataChange(snapshot: DataSnapshot) {
                     snapshot.children.forEach { cls ->
-                        Log.d(
-                            "_pr",
-                            "onDataChange: ${cls.child("classId").value.toString()}    $clsId"
-                        )
                         if (clsId == cls.child("classId").value.toString()) {
-                            Log.d("_pr", "onDataChange: existed")
-                            _isClassExists.value = true
+                            isExist =1
+
+                            createStudent(clsId, uName)
                         }
+                    }
+                    if(isExist == 0){
+                        _createStudent.value = Resource.Error("No class found with this code,Try again!")
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    _isClassExists.value = false
+                    _createStudent.value = Resource.Error("Something is wrong,Try again!")
                 }
-
             })
 
-
         }
-
     }
 
     fun updateClass(cls: Class?) {
         _selectedClass.value = cls
+
     }
-
-
-
-
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun createStudent(clsId: String, name: String) {
-        _createStudent.value = Resource.Loading()
-        if (name.isEmpty()) {
-            _createStudent.value = Resource.Error("Class name can't be empty")
-            return
-        }
 
         val stdId = Firebase.auth.uid.toString()
         var profile = stdImage.random().toString()
         val student = Student(clsId ?: "", stdId ?: "", name, profile)
 
         val st = ("attendance123" + "_" + stdId)
-        Log.d("tag", "addMarks: ${st}")
+
         val stdAttendance = stdId?.let {
             Marks(
                 clsId,
@@ -119,17 +121,15 @@ class StudentViewModel : ViewModel() {
 
             )
         }
-
-
         dbStdRef.push().setValue(student).addOnCompleteListener {
             _createStudent.value = Resource.Success(student)
             dbMarksRef.push().setValue(stdAttendance)
         }.addOnFailureListener {
-            _createStudent.value = Resource.Error("User creation Failed")
-            Log.d("TAG", "createClass: cls created")
+            _createStudent.value = Resource.Error("Something is wrong")
+
         }
 
-        //fetchStudentByClassId(clsId)
+        fetchClassList(stdId)
     }
 
     fun fetchClassList(stdId: String) {
@@ -147,7 +147,7 @@ class StudentViewModel : ViewModel() {
                         }
 
                     }
-                    Log.d("_xyz", "onDataChange: ${classList}")
+
                     _classList.value = Resource.Success(classList)
                 }
 
@@ -179,9 +179,6 @@ class StudentViewModel : ViewModel() {
 
             })
         }
-
-
-        Log.d("_pt", "findUserType: ${_userType.value} ")
     }
 
     fun showClasses(data: List<String>?) {
@@ -191,7 +188,6 @@ class StudentViewModel : ViewModel() {
                     val arr = mutableListOf<Class>()
                     snapshot.children.forEach { cls ->
                         data?.forEach { std ->
-                            Log.d("_pro" ,"onDataChange: ${cls.child("classId").value.toString()}       $std ")
 
                             if (std == cls.child("classId").value.toString()) {
                                 Log.d("_pro", "onDataChange: milce")
@@ -202,6 +198,7 @@ class StudentViewModel : ViewModel() {
                                         cls.child("name").value.toString(),
                                         cls.child("grade").value.toString(),
                                         cls.child("img").value.toString(),
+                                        cls.child("teacherName").value.toString(),
                                     )
                                 )
                             }
@@ -222,7 +219,23 @@ class StudentViewModel : ViewModel() {
 
 
     }
-    fun signOut(){
+
+    fun updateStudentName() {
+        viewModelScope.launch(Dispatchers.IO) {
+            dbUserRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+
+                }
+
+            })
+        }
+    }
+
+    fun signOut() {
         Firebase.auth.signOut()
 
 

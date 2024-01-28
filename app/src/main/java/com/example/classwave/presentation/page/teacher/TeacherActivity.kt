@@ -86,9 +86,8 @@ class TeacherActivity : AppCompatActivity() {
         val dialog = CreateClassDialog("", "", "", "", "", "create")
         dialog.show(supportFragmentManager, CreateClassDialog.TAG)
     }
-
-
     private fun initializeFlowCollectors() {
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.classList.collectLatest { result ->

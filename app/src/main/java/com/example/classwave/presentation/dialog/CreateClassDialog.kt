@@ -88,6 +88,8 @@ class CreateClassDialog(
             val className = binding.editTxtClassName.text.toString()
             val grade = binding.autoCompleteTextViewDropdownItems.text.toString()
             viewModel.createClass(className, grade, classId, teacherId, img, type)
+           // viewModel.userInfo(teacherId,className, grade, classId, img, type)
+
         }
         initializeFlowCollectors()
     }
@@ -96,7 +98,6 @@ class CreateClassDialog(
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.createClass.collectLatest {
-                    Log.d("_xyz", "create classState : ${it}")
                     it?.let {
                         when (it) {
 

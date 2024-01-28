@@ -1,11 +1,17 @@
 package com.example.classwave.presentation.page.student
 
+import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.View
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
 import android.widget.PopupMenu
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +19,7 @@ import androidx.core.view.GravityCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.example.classwave.R
 import com.example.classwave.databinding.FragmentStudentHomeBinding
 import com.example.classwave.databinding.NavDrawerBinding
 import com.example.classwave.domain.model.Resource
@@ -33,20 +40,21 @@ class StudentActivity : AppCompatActivity() {
     private lateinit var headerBinding: NavDrawerBinding
     private var joinClassAdapter = JoinClassAdapter()
     private var classId = ""
+    var uName = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val uName = intent.getStringExtra("name").toString()
+         uName = intent.getStringExtra("name").toString()
         var uEmail = intent.getStringExtra("email").toString()
 
         super.onCreate(savedInstanceState)
         binding = FragmentStudentHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-/*        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
-        val navController = navHostFragment.navController
-        val navView: BottomNavigationView = findViewById(R.id.bottom_navigation_view)
-        navView.setupWithNavController(navController)*/
+        /*        val navHostFragment =
+                    supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
+                val navController = navHostFragment.navController
+                val navView: BottomNavigationView = findViewById(R.id.bottom_navigation_view)
+                navView.setupWithNavController(navController)*/
 
         headerBinding =
             NavDrawerBinding.inflate(layoutInflater, binding.navigationViewDrawer, false)
@@ -56,7 +64,6 @@ class StudentActivity : AppCompatActivity() {
         headerBinding.recyclerView.adapter = joinClassAdapter
         joinClassAdapter.setListener(listener = object : JoinClassAdapter.Listener {
             override fun onAddNewClassClicked() {
-                Log.d("pro", "onAddNewClassClicked: $uName")
                 val dialog = EnterClassCodeDialog("", "", "", "", "", "create", uName)
                 dialog.show(supportFragmentManager, EnterClassCodeDialog.TAG)
             }
@@ -112,13 +119,40 @@ class StudentActivity : AppCompatActivity() {
             }
             true
         }
+
+
+        initializeFlowCollectors()
+        registerListener()
+    }
+
+
+    private fun registerListener() {
+        val dialogView =
+            layoutInflater.inflate(R.layout.custom_dialog_student_profile_edit_layout, null)
+        val btnSave = dialogView.findViewById<View>(R.id.btn_save) as Button
+        val btnCancel = dialogView.findViewById<View>(R.id.image_view_cancel) as ImageView
+        val editText = dialogView.findViewById<View>(R.id.edit_text_name) as EditText
+        val dialog = AlertDialog.Builder(this).setView(dialogView).create()
+
+
+        binding.imageViewEdit.setOnClickListener {
+            dialog.show()
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            editText.setText(uName)
+            viewModel.updateStudentName()
+        }
+
+        btnSave.setOnClickListener {
+            dialog.dismiss()
+        }
         binding.appBar.setNavigationOnClickListener {
             binding.drawerLayout.openDrawer(GravityCompat.START)
         }
-
-        initializeFlowCollectors()
-
+       btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
     }
+
 
     private fun initializeFlowCollectors() {
         lifecycleScope.launch {
@@ -126,8 +160,9 @@ class StudentActivity : AppCompatActivity() {
                 viewModel.selectedClass.collectLatest { cls ->
                     Log.d("TAG", "initializeFlowCollectors: i am cls")
                     if (cls != null) {
-
+                        binding.textClassName.text = cls.name
                         classId = cls.classId
+                        binding.textTeacherName.text = cls.teacherName
                         //clas = cls
 
                     } else {
@@ -184,14 +219,16 @@ class StudentActivity : AppCompatActivity() {
             }
         }
 
-
-        /*     lifecycleScope.launch {
+/*
+             lifecycleScope.launch {
                  repeatOnLifecycle(Lifecycle.State.CREATED) {
-                     viewModel.classList.collectLatest {
+                     viewModel.createStudent.collectLatest {
                          it?.let {
                              when (it) {
                                  is Resource.Error -> {}
-                                 is Resource.Loading -> {}
+                                 is Resource.Loading -> {
+                                     binding.
+                                 }
                                  is Resource.Success -> {
                                      showSuccessView(it.data)
                                  }

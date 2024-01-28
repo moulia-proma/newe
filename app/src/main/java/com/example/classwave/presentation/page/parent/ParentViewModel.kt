@@ -77,6 +77,7 @@ class ParentViewModel : ViewModel() {
                                     cls.child("name").value.toString(),
                                     cls.child("grade").value.toString(),
                                     cls.child("img").value.toString(),
+                                    cls.child("teacherName").value.toString()
                                 )
                             )
                         }
@@ -315,7 +316,6 @@ class ParentViewModel : ViewModel() {
 
     }
 
-
     fun fetchClassList(tcrId: String) {
         _classList.value = Resource.Loading()
         val uid = Firebase.auth.currentUser?.uid
@@ -332,14 +332,12 @@ class ParentViewModel : ViewModel() {
                                     classRoom.child("name").value.toString(),
                                     classRoom.child("grade").value.toString(),
                                     classRoom.child("img").value.toString(),
-
-
+                                    classRoom.child("teacherName").value.toString(),
                                     )
                             )
                         }
 
                     }
-
                     _classList.value = Resource.Success(classList)
                 }
 
@@ -356,7 +354,6 @@ class ParentViewModel : ViewModel() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val arr = arrayListOf<UserItemResponse>()
                     snapshot.children.forEach {
-                        //   Log.d("_xyz", "onDataChange:e $parentId ${it.child("parent").value.toString()}  ${it.child("parentId").value.toString() == parentId}")
                         if (it.child("parent").value.toString() == parentId) {
                             arr.add(
                                 UserItemResponse(
@@ -371,7 +368,6 @@ class ParentViewModel : ViewModel() {
                             )
                         }
                     }
-                    Log.d("_xyz", "onDataChange: $arr")
                     _childList.value = Resource.Success(arr)
                 }
 

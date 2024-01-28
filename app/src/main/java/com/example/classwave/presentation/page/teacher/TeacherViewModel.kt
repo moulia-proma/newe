@@ -32,6 +32,7 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
     private var dbStdRef = FirebaseDatabase.getInstance().getReference("Students")
     private var dbSkillRef = FirebaseDatabase.getInstance().getReference("Skills")
     private var dbMarksRef = FirebaseDatabase.getInstance().getReference("Marks")
+    private var dbUserRef = FirebaseDatabase.getInstance().getReference("Users")
     private var dbRequestedStudentRef =
         FirebaseDatabase.getInstance().getReference("requestedStudent")
 
@@ -93,6 +94,8 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
     private val _openDrawer = MutableStateFlow<Boolean>(false)
     var openDrawer = _openDrawer.asStateFlow()
 
+    private var _teacerName = MutableStateFlow<String>("")
+
 
     fun setNull() {
         _createClass = MutableStateFlow<Resource<Class>?>(null)
@@ -104,6 +107,7 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
         _createSkill = MutableStateFlow<Resource<Skill>?>(null)
         createSkill = _createSkill.asStateFlow()
     }
+
 
     private val clsImage = arrayListOf<Int>(
         /*  R.drawable.cls_chemistry,
@@ -144,10 +148,52 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
         fetchClassList()
     }
 
-    fun selectedClass(cls: Class?) {
+    fun userInfo(
+        teacherId: String,
+        clsRoom: Class,
+        type: String,
+        attendanceSkill: Skill?,
+    ) {
+        _createClass.value = Resource.Loading()
 
-        Log.d("_xyz", "selectedClass: ${cls?.classId} | ${cls?.name}")
+        viewModelScope.launch(Dispatchers.IO) {
+            dbUserRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    snapshot.children.forEach { user ->
+                        if (user.child("uid").value.toString() == teacherId) {
+                            val cls = Class(
+                                clsRoom.classId,
+                                clsRoom.teacherId,
+                                clsRoom.name,
+                                clsRoom.grade,
+                                clsRoom.img,
+                                user.child("name").value.toString()
+                            )
+                            user.child("name").value.toString()
+
+                            dbRef.push().setValue(cls).addOnCompleteListener {
+                                _createClass.value = Resource.Success(cls)
+                                if (type == "create") {
+                                    dbSkillRef.push().setValue(attendanceSkill)
+                                }
+                                fetchClassList()
+                            }.addOnFailureListener {
+                            }
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+
+                }
+            })
+        }
+
+    }
+
+    fun selectedClass(cls: Class?) {
         viewModelScope.launch {
+
             _selectedClass.value = cls
         }
         if (cls == null) return
@@ -159,6 +205,7 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
 //        fetchStudentByClassId(classId = cls.classId)
 //        fetchSkillByClassId(classId = cls.classId)
 //        fetchSkillByClassId(classId = cls.classId)
+
     }
 
     fun openDrawer() {
@@ -266,7 +313,8 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
                                     classRoom.child("teacherId").value.toString(),
                                     classRoom.child("name").value.toString(),
                                     classRoom.child("grade").value.toString(),
-                                    classRoom.child("img").value.toString()
+                                    classRoom.child("img").value.toString(),
+                                    classRoom.child("teacherName").value.toString()
                                 )
                             )
                         }
@@ -403,7 +451,8 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
                         }
 
                     }
-                    val clsRoom = Class(clsId ?: "", teacherId ?: "", name, grade, img)
+                    val clsRoom =
+                        Class(clsId ?: "", teacherId ?: "", name, grade, img, _teacerName.value)
                     val attendanceSkill = clsId?.let {
                         Skill(
                             it,
@@ -414,15 +463,7 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
                             "pos"
                         )
                     }
-                    dbRef.push().setValue(clsRoom).addOnCompleteListener {
-                        _createClass.value = Resource.Success(clsRoom)
-                        if (type == "create") {
-                            dbSkillRef.push().setValue(attendanceSkill)
-
-                        }
-                        fetchClassList()
-                    }.addOnFailureListener {
-                    }
+                    userInfo(teacherId, clsRoom, type, attendanceSkill)
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -608,6 +649,8 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun fetchNotification() {
+        Log.d("", "fetchNotification: ")
+        Log.d("_yy", "fetchNotification: haha")
         viewModelScope.launch(Dispatchers.IO) {
             dbRequestedStudentRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -686,13 +729,19 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
     }
 
     fun signOut() {
+
         Firebase.auth.signOut()
     }
 
 }
 
 data class Class(
-    var classId: String, var teacherId: String, var name: String, var grade: String, var img: String
+    var classId: String,
+    var teacherId: String,
+    var name: String,
+    var grade: String,
+    var img: String,
+    var teacherName: String
 )
 
 data class Skill(

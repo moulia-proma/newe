@@ -12,59 +12,55 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/primaryColor"
-        >
+        android:background="@color/primaryColor">
+
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:titleCentered="true"
-            app:title="Profile"
-            app:navigationIcon="@drawable/ic_arrow_back"
-            app:titleTextColor="@color/white"
             android:background="@color/primaryColor"
-            app:titleTextAppearance="@style/ToolbarTheme" />
-<!--        <ImageView
-            android:id="@+id/image_view_back_arrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:src="@drawable/ic_arrow_back"
-            app:layout_constraintStart_toStartOf="@id/app_bar"
-            app:layout_constraintTop_toTopOf="@id/app_bar"
-            app:layout_constraintBottom_toBottomOf="@id/app_bar"
-            android:layout_marginStart="16dp"
-            />-->
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:title="Profile"
+            app:titleCentered="true"
+            app:titleTextAppearance="@style/ToolbarTheme"
+            app:titleTextColor="@color/white" />
+
 
         <ImageView
+
             android:id="@+id/profile_glass_bg"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:src="@drawable/st_profile_bg_3"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="350dp"
+            android:layout_height="450dp"
+            android:src="@drawable/prp_g"
             app:layout_constraintBottom_toBottomOf="parent"
-            />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/image_profile_pic"
-            app:layout_constraintStart_toStartOf="@id/profile_glass_bg"
-            app:layout_constraintEnd_toEndOf="@id/profile_glass_bg"
-            app:layout_constraintTop_toTopOf="@id/profile_glass_bg"
-            app:layout_constraintBottom_toTopOf="@id/profile_glass_bg"
-            app:shapeAppearance="@style/ShapeAppearanceOverlay.MyApp.Image.50dp"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:src="@drawable/st_boy" />
+            android:src="@drawable/st_boy"
+            app:layout_constraintBottom_toTopOf="@id/profile_glass_bg"
+            app:layout_constraintEnd_toEndOf="@id/profile_glass_bg"
+            app:layout_constraintStart_toStartOf="@id/profile_glass_bg"
+            app:layout_constraintTop_toTopOf="@id/profile_glass_bg"
+            app:shapeAppearance="@style/ShapeAppearanceOverlay.MyApp.Image.50dp" />
 
-
-
-
-
-
+        <ImageView
+            android:elevation="10dp"
+            android:id="@+id/image_view_edit"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/ic_edit"
+            app:layout_constraintStart_toEndOf="@id/text_view_name"
+            app:layout_constraintTop_toBottomOf="@id/image_profile_pic" />
         <TextView
             android:id="@+id/text_view_name"
             android:layout_width="wrap_content"
@@ -72,26 +68,65 @@
             android:layout_marginVertical="16dp"
             android:text="Welcome, Proma"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/image_profile_pic"
+            app:layout_constraintTop_toBottomOf="@id/image_profile_pic" />
+        <TextView
+            android:id="@+id/text_class_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/jost_medium"
+            android:paddingStart="16dp"
+            android:paddingTop="8dp"
+            android:text="Mathmatics "
             android:textColor="@color/white"
-            />
+            android:textSize="16dp"
+            app:layout_constraintEnd_toEndOf="@id/profile_glass_bg"
+            app:layout_constraintStart_toStartOf="@id/profile_glass_bg"
+            app:layout_constraintTop_toBottomOf="@id/text_view_name" />
+
+        <TextView
+            android:id="@+id/text_by"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/jost_medium"
+            android:paddingStart="16dp"
+            android:paddingTop="8dp"
+            android:text="by"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="@id/profile_glass_bg"
+            app:layout_constraintStart_toStartOf="@id/profile_glass_bg"
+            app:layout_constraintTop_toBottomOf="@id/text_class_name" />
+
+        <TextView
+            android:id="@+id/text_teacher_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/jost_medium"
+            android:paddingStart="16dp"
+            android:paddingTop="8dp"
+            android:text="Anisur Rahman Parvez"
+            android:textColor="#EDF9F7FA"
+            android:textSize="16dp"
+            app:layout_constraintEnd_toEndOf="@id/profile_glass_bg"
+            app:layout_constraintStart_toStartOf="@id/profile_glass_bg"
+            app:layout_constraintTop_toBottomOf="@id/text_by" />
+
 
         <androidx.cardview.widget.CardView
             android:id="@+id/card_view_border"
             android:layout_width="250dp"
-            android:layout_height="200dp"
+            android:layout_height="120dp"
 
             app:cardBackgroundColor="@color/deep_purple_200"
             app:cardCornerRadius="16dp"
             app:cardElevation="0dp"
             app:contentPadding="2dp"
+            app:layout_constraintBottom_toBottomOf="@id/profile_glass_bg"
             app:layout_constraintEnd_toEndOf="@id/profile_glass_bg"
             app:layout_constraintStart_toStartOf="@id/profile_glass_bg"
-            app:layout_constraintTop_toBottomOf="@id/text_view_name"
-            app:layout_constraintBottom_toBottomOf="@id/profile_glass_bg"
-            >
+            app:layout_constraintTop_toBottomOf="@id/text_view_name">
 
             <androidx.cardview.widget.CardView
 
@@ -101,41 +136,34 @@
                 app:cardBackgroundColor="@color/secendryColor"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="0dp"
-                app:contentPadding="8dp"
-
-                />
-
-
+                app:contentPadding="8dp" />
         </androidx.cardview.widget.CardView>
-
         <ImageView
 
-            android:layout_marginTop="16dp"
             android:id="@+id/image_view_report"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="16dp"
             android:src="@drawable/report_std"
-            app:layout_constraintBottom_toTopOf="@id/text_view_click"
+            app:layout_constraintBottom_toBottomOf="@id/card_view_border"
             app:layout_constraintEnd_toEndOf="@id/card_view_border"
-            app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="@id/card_view_border"
             app:layout_constraintTop_toTopOf="@id/card_view_border" />
 
         <TextView
-            android:fontFamily="@font/jost_regular"
             android:id="@+id/text_view_click"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/jost_medium"
+            android:paddingTop="16dp"
             android:text="Class Report"
+            android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="@id/card_view_border"
             app:layout_constraintEnd_toEndOf="@id/card_view_border"
             app:layout_constraintStart_toStartOf="@id/card_view_border"
-            app:layout_constraintTop_toBottomOf="@id/image_view_report"
-            android:textAlignment="center"
-            />
+            app:layout_constraintTop_toBottomOf="@id/image_view_report" />
 
         <ImageView
             android:id="@+id/img_view_more"
@@ -146,10 +174,6 @@
             android:src="@drawable/ic_more_vert_24px"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.navigation.NavigationView
