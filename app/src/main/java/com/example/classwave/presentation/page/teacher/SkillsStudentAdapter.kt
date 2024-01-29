@@ -65,7 +65,7 @@ class SkillsStudentAdapter : RecyclerView.Adapter<SkillsStudentAdapter.ViewHolde
                 skill.img.toInt()
             )
             binding.txtStdName.text = skill.name
-            binding.cardAddNewStd.setOnClickListener {
+            binding.imageStdProfile.setOnClickListener {
                 mListener?.onSkillSelected(skill.skillId, skill.highestScore,skill.name,skill.img)
             }
 
@@ -77,7 +77,7 @@ class SkillsStudentAdapter : RecyclerView.Adapter<SkillsStudentAdapter.ViewHolde
             )
             binding.txtStdName.text = "Add Skill"
 
-            binding.cardAddNewStd.setOnClickListener {
+            binding.imageStdProfile.setOnClickListener {
                 mListener?.onAddNewSkillClicked()
             }
         }
@@ -87,7 +87,7 @@ class SkillsStudentAdapter : RecyclerView.Adapter<SkillsStudentAdapter.ViewHolde
             )
             binding.txtStdName.text = "view report"
 
-            binding.cardAddNewStd.setOnClickListener {
+            binding.imageStdProfile.setOnClickListener {
                 mListener?.onViewReportClicked()
             }
         }

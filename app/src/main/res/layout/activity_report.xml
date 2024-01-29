@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/primaryColor"
     tools:context=".presentation.page.report.ReportActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -131,6 +132,8 @@
                 app:tint="@color/white" />
 
             <TextView
+                android:textColor="@color/white"
+                android:fontFamily="@font/jost_regular"
                 android:id="@+id/text_report_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -150,8 +153,7 @@
                 app:layout_constraintBottom_toTopOf="@id/barrier_date"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/barrier_header"
-                app:srcCompat="@drawable/ic_arrow_front"
-                app:tint="@color/white" />
+                app:srcCompat="@drawable/ic_arrow_front" />
 
             <androidx.constraintlayout.widget.Barrier
                 android:id="@+id/barrier_date"

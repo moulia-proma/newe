@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,16 +14,21 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.classwave.R
 import com.example.classwave.databinding.ClassInviteDialogBinding
 import com.example.classwave.presentation.page.teacher.TeacherViewModel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 
-class ClassInviteDialog(
-    val clsId: String,
-) : DialogFragment() {
+class ClassInviteDialog : DialogFragment() {
     private val viewModel: TeacherViewModel by activityViewModels()
     private var _binding: ClassInviteDialogBinding? = null
+
+    var clsId = ""
     private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +47,6 @@ class ClassInviteDialog(
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.textViewClsCode.text = clsId
 
 
         /*   binding.editTextAddStdName.hint = clsId
@@ -49,6 +54,7 @@ class ClassInviteDialog(
            initialFlowCollectors()*/
 
         registerListener()
+        initialFlowCollectors()
     }
 
 
@@ -72,6 +78,34 @@ class ClassInviteDialog(
         }
 
     }
+
+    fun initialFlowCollectors() {
+        Log.d("_chk", "initialFlowCollectors: jjj")
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.selectedClass.collectLatest {
+                    if (it == null) {
+
+                        if (clsId.isEmpty()) {
+                            binding.textViewClsCode.visibility = View.INVISIBLE
+                            binding.btnShareCode.visibility = View.INVISIBLE
+                            binding.textViewInviteInstruction.text =
+                                "Please create a class first and then share your class code!"
+                            binding.cardViewClassLinkBg.visibility= View.INVISIBLE
+                            binding.imageCopyIcon.visibility = View.INVISIBLE
+                        }
+                    } else {
+                        clsId = it.classId
+                        binding.textViewClsCode.text = clsId
+                    }
+
+                }
+            }
+        }
+
+
+    }
+
     /*
 
            private fun initialFlowCollectors() {

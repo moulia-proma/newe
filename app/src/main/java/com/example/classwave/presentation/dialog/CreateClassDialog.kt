@@ -88,24 +88,20 @@ class CreateClassDialog(
             val className = binding.editTxtClassName.text.toString()
             val grade = binding.autoCompleteTextViewDropdownItems.text.toString()
             viewModel.createClass(className, grade, classId, teacherId, img, type)
-           // viewModel.userInfo(teacherId,className, grade, classId, img, type)
-
+            // viewModel.userInfo(teacherId,className, grade, classId, img, type)
         }
         initializeFlowCollectors()
     }
-
     private fun initializeFlowCollectors() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.createClass.collectLatest {
                     it?.let {
                         when (it) {
-
                             is Resource.Error -> showErrorMessage(message = it.message ?: "")
                             is Resource.Loading -> {
                                 showLoadingView()
                             }
-
                             is Resource.Success -> {
                                 showSuccessView()
                                 Toast.makeText(requireContext(), "Success", Toast.LENGTH_SHORT)
@@ -122,7 +118,6 @@ class CreateClassDialog(
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.deleteClass.collectLatest {
-                    //  Log.d("hhh", "initializeFlowCollectorss: ${it}")
                     it?.let {
                         when (it) {
                             is Resource.Error -> showErrorMessage(message = it.message ?: "")
@@ -145,9 +140,9 @@ class CreateClassDialog(
             }
         }
     }
-
     private fun showErrorMessage(message: String) {
-
+        binding.btnCreateClass.text = "Create class"
+        binding.progressBarSignInLoading.visibility = View.INVISIBLE
         SnackbarUtil.show(requireContext(), message, binding.btnCreateClass)
     }
 
@@ -155,6 +150,7 @@ class CreateClassDialog(
         //   viewModel.setCreateClassNull()
         Log.d("_xyzz", "showSuccessView: my name")
         binding.progressBarSignInLoading.visibility = View.INVISIBLE
+        binding.btnCreateClass.text = "Create class"
         viewModel.setNull()
         dismiss()
     }

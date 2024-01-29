@@ -10,9 +10,14 @@ import android.widget.ArrayAdapter
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.classwave.R
 import com.example.classwave.databinding.DialogProvideMarksBinding
 import com.example.classwave.presentation.page.teacher.TeacherViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class ProvideMarksDialog(
     private val clsId: String,
@@ -61,7 +66,22 @@ class ProvideMarksDialog(
             dismiss()
 
         }
+
+        binding.toolbar.setNavigationOnClickListener {
+            dismiss()
+        }
+
+
     }
+    private fun initialFlowCollectors(){
+        lifecycleScope.launch(Dispatchers.IO) {
+            repeatOnLifecycle(Lifecycle.State.CREATED){
+
+            }
+
+        }
+    }
+
 
     companion object {
         const val TAG = "ProvideMarksdialog"

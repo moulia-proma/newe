@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.classwave.R
@@ -177,8 +178,7 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
                                     dbSkillRef.push().setValue(attendanceSkill)
                                 }
                                 fetchClassList()
-                            }.addOnFailureListener {
-                            }
+                            }.addOnFailureListener {}
                         }
                     }
                 }
@@ -422,10 +422,11 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
             _createClass.value = Resource.Error("Class name can't be empty")
             return
         }
-        if (name.isEmpty()) {
+        if (grade.isEmpty()) {
             _createClass.value = Resource.Error("You have to select at least one grade")
             return
         }
+
         var clsId = ""
         var teacherId = ""
         var img = ""
@@ -511,12 +512,22 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
     }
 
     fun createSkill(clsId: String, name: String, hScore: String, typeofSkill: String) {
-        Log.d("TAG", "createSkill: Created")
+
         _createSkill.value = Resource.Loading()
-        if (name.isEmpty()) {
-            _createSkill.value = Resource.Error("add name of the skill")
+
+        if(!hScore.isDigitsOnly()){
+            _createSkill.value = Resource.Error("score must only contain numbers!")
             return
         }
+        if (name.isEmpty() ) {
+            _createSkill.value = Resource.Error("Task name can't be empty!")
+            return
+        }
+        if (hScore.isEmpty() ) {
+            _createSkill.value = Resource.Error("Please add maximum score of this Task!")
+            return
+        }
+
         val skillId = dbSkillRef.push().key
         val skill = Skill(
             clsId ?: "", skillId ?: "", name, hScore, skillImage.random().toString(), typeofSkill
@@ -646,6 +657,8 @@ class TeacherViewModel @Inject constructor() : ViewModel() {
                 }
             })
         }
+
+
     }
 
     private fun fetchNotification() {

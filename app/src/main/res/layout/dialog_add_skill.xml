@@ -8,6 +8,18 @@
     tools:context=".presentation.dialog.AddNewStdDialog"
     android:background="@color/primaryColor"
     >
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="Add New Task"
+        app:titleTextColor="@color/white"
+        app:titleTextAppearance="@style/ToolbarTheme"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
 
     <ImageView
         android:id="@+id/image_std_profile"
@@ -18,10 +30,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:srcCompat="@drawable/new_task_bg" />
 
     <EditText
+        android:textColor="@color/white"
         android:padding="16dp"
         android:layout_marginTop="8dp"
         android:id="@+id/edit_text_add_skill_name"
@@ -35,6 +48,7 @@
 
         />
     <EditText
+        android:textColor="@color/white"
         android:textColorHint="@color/white"
         android:padding="16dp"
         android:layout_marginTop="8dp"

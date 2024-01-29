@@ -1,11 +1,12 @@
 package com.example.classwave.presentation.page.report
 
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -35,11 +36,12 @@ class ClassReportActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private var currentDate = LocalDate.now()
-    private var clsId= ""
+    private var clsId = ""
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        clsId= intent.getStringExtra("clsId").toString()
+        clsId = intent.getStringExtra("clsId").toString()
 
 
         binding = ActivityReportBinding.inflate(layoutInflater)
@@ -67,6 +69,7 @@ class ClassReportActivity : AppCompatActivity() {
         initializeFlowCollectors()
 
     }
+
     private fun initializeFlowCollectors() {
 
         lifecycleScope.launch {
@@ -76,8 +79,6 @@ class ClassReportActivity : AppCompatActivity() {
                         is Resource.Error -> {}
                         is Resource.Loading -> {}
                         is Resource.Success -> {
-
-
                             data.data?.let {
                                 reportParentAdapter.setReports(it)
                                 viewModel.getTotalPosMarks(it)
@@ -115,52 +116,80 @@ class ClassReportActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun registerListener() {
-
         binding.btnNext.setOnClickListener {
+
+            val image = ContextCompat.getDrawable(this, R.drawable.ic_arrow_front)
+            binding.btnNext.setImageDrawable(image)
+
             if (selectedFilterType == FilterType.Day) {
-
-                Log.d("_xyz", "registerListener: jj")
+                binding.btnNext.isClickable = false
                 currentDate = currentDate.plusDays(1)
-                binding.textReportDate.text = currentDate.toString()
-                clsId?.let { it1 ->
-                    viewModel.fetchClassReport(
-                        it1,
-                        currentDate.dayOfMonth,
-                        currentDate.monthValue,
-                        currentDate.year
-                    )
+                if ( currentDate> LocalDate.now()) {
+                    binding.btnNext.isClickable = false
+                    val image = ContextCompat.getDrawable(this, R.drawable.ic_arrow_front_grey)
+                    binding.btnNext.setImageDrawable(image)
+                } else {
+                    binding.btnNext.isClickable = true
+                    Log.d("_cnt", "registerListener: $currentDate")
+                    binding.textReportDate.text = currentDate.toString()
+                    clsId?.let { it1 ->
+                        viewModel.fetchClassReport(
+                            it1,
+                            currentDate.dayOfMonth,
+                            currentDate.monthValue,
+                            currentDate.year
+                        )
+                    }
                 }
             }
+
             if (selectedFilterType == FilterType.Month) {
-
-
                 currentDate = currentDate.plusMonths(1)
-                binding.textReportDate.text =
-                    currentDate.month.toString() + " " + currentDate.year.toString()
-                clsId?.let { it1 ->
-                    viewModel.fetchClassReport(
-                        it1, null, currentDate.monthValue, currentDate.year
-                    )
+                if (currentDate > LocalDate.now()) {
+                    binding.btnNext.isClickable = false
+                    val image = ContextCompat.getDrawable(this, R.drawable.ic_arrow_front_grey)
+                    binding.btnNext.setImageDrawable(image)
+                } else {
+                    binding.btnNext.isClickable = true
+                    binding.textReportDate.text =
+                        currentDate.month.toString() + " " + currentDate.year.toString()
+                    clsId?.let { it1 ->
+                        viewModel.fetchClassReport(
+                            it1, null, currentDate.monthValue, currentDate.year
+                        )
+                    }
                 }
             }
-            if (selectedFilterType == FilterType.Year) {
 
+            if (selectedFilterType == FilterType.Year) {
                 currentDate = currentDate.plusYears(1)
-                binding.textReportDate.text = currentDate.year.toString()
-                clsId?.let { it1 ->
-                    viewModel.fetchClassReport(
-                        it1, null, null, currentDate.year
-                    )
+                if (currentDate > LocalDate.now()) {
+                    binding.btnNext.isClickable = false
+                    val image = ContextCompat.getDrawable(this, R.drawable.ic_arrow_front_grey)
+                    binding.btnNext.setImageDrawable(image)
+                } else {
+                    binding.btnNext.isClickable = true
+                    binding.textReportDate.text = currentDate.year.toString()
+                    clsId?.let { it1 ->
+                        viewModel.fetchClassReport(
+                            it1, null, null, currentDate.year
+                        )
+                    }
                 }
+
+
             }
         }
 
         binding.btnPrev.setOnClickListener {
 
-
+            binding.btnNext.isClickable = true
+            binding.btnNext.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.ic_arrow_front))
             if (selectedFilterType == FilterType.Day) {
-                Log.d("_xyz", "registerListener: jj")
+
                 currentDate = currentDate.minusDays(1)
+
+
                 binding.textReportDate.text = currentDate.toString()
                 clsId?.let { it1 ->
                     viewModel.fetchClassReport(
@@ -195,7 +224,7 @@ class ClassReportActivity : AppCompatActivity() {
             currentDate = LocalDate.now()
             selectedFilterType = FilterType.Day
             binding.textReportDate.text = currentDate.toString()
-          clsId?.let { it1 ->
+            clsId?.let { it1 ->
                 viewModel.fetchClassReport(
                     it1,
                     currentDate.dayOfMonth,
@@ -212,7 +241,7 @@ class ClassReportActivity : AppCompatActivity() {
             selectedFilterType = FilterType.Month
             binding.textReportDate.text =
                 currentDate.month.toString() + " " + currentDate.year.toString()
-           clsId?.let { it1 ->
+            clsId?.let { it1 ->
                 viewModel.fetchClassReport(
                     it1, null, currentDate.monthValue, currentDate.year
                 )

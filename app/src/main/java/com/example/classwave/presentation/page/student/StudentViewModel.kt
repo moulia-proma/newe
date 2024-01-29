@@ -132,17 +132,16 @@ class StudentViewModel : ViewModel() {
         fetchClassList(stdId)
     }
 
-    fun fetchClassList(stdId: String) {
+    fun fetchClassList(stdId: String) {     ///ekta student kun kun cls a ache etar list
         _classList.value = Resource.Loading()
-        val uid = Firebase.auth.currentUser?.uid
         viewModelScope.launch(Dispatchers.IO) {
             dbStdRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     val classList = arrayListOf<String>()
-                    dataSnapshot.children.forEach { classRoom ->
-                        if (classRoom.child("studentId").value.toString() == stdId) {
+                    dataSnapshot.children.forEach { std ->
+                        if (std.child("studentId").value.toString() == stdId) {
                             classList.add(
-                                classRoom.child("classId").value.toString()
+                              std.child("classId").value.toString()
                             )
                         }
 

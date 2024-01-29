@@ -5,17 +5,31 @@
     android:padding="16dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.dialog.AddNewStdDialog">
+    tools:context=".presentation.dialog.AddNewStdDialog"
+    android:background="@color/primaryColor">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="Score"
+        app:titleTextColor="@color/white"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:titleTextAppearance="@style/ToolbarTheme"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/image_std_profile" />
     <ImageView
-        android:layout_marginTop="40dp"
+
         android:id="@+id/image_std_profile"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/edit_text_add_skill_name"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/question_mark"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:srcCompat="@drawable/provide_marks_bg_2"
         />
 <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/edit_text_add_skill_name"
@@ -28,6 +42,7 @@
         app:layout_constraintTop_toBottomOf="@id/image_std_profile">
 
         <AutoCompleteTextView
+            android:background="@color/white"
             android:id="@+id/auto_complete_text_view_dropdown_items"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -38,13 +53,13 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_add_marks"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/edit_text_add_skill_name"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/colorPrimary"
+        android:backgroundTint="@color/btnColor"
         android:text="Add"
         android:textColor="@color/white"
         />

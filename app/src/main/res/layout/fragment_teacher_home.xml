@@ -221,6 +221,9 @@
         android:fontFamily="@font/jost_regular"
         android:textAlignment="center"
         />
+
+
+
     <androidx.constraintlayout.widget.Group
         android:id="@+id/group_picker_no_data"
         android:layout_width="3dp"

@@ -43,7 +43,7 @@ class StudentActivity : AppCompatActivity() {
     var uName = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
-         uName = intent.getStringExtra("name").toString()
+        uName = intent.getStringExtra("name").toString()
         var uEmail = intent.getStringExtra("email").toString()
 
         super.onCreate(savedInstanceState)
@@ -88,16 +88,7 @@ class StudentActivity : AppCompatActivity() {
         })
 
         viewModel.fetchClassList(Firebase.auth.uid.toString())
-        binding.cardViewReportBg.setOnClickListener {
 
-            val intent = Intent(this, Repo0rtActivity::class.java)
-            if (classId.isNotEmpty()) {
-                intent.putExtra("classId", classId)
-                intent.putExtra("student_id", Firebase.auth.uid.toString())
-                startActivity(intent)
-            }
-
-        }
         viewModel.findUserType(Firebase.auth.uid.toString())
         val popup = binding.imgViewMore
         val showPopup = PopupMenu(this, popup)
@@ -148,9 +139,20 @@ class StudentActivity : AppCompatActivity() {
         binding.appBar.setNavigationOnClickListener {
             binding.drawerLayout.openDrawer(GravityCompat.START)
         }
-       btnCancel.setOnClickListener {
+        btnCancel.setOnClickListener {
             dialog.dismiss()
         }
+        binding.cardViewReportBg.setOnClickListener {
+
+            val intent = Intent(this, Repo0rtActivity::class.java)
+            if (classId.isNotEmpty()) {
+                intent.putExtra("classId", classId)
+                intent.putExtra("student_id", Firebase.auth.uid.toString())
+                startActivity(intent)
+            }
+
+        }
+
     }
 
 
@@ -160,13 +162,17 @@ class StudentActivity : AppCompatActivity() {
                 viewModel.selectedClass.collectLatest { cls ->
                     Log.d("TAG", "initializeFlowCollectors: i am cls")
                     if (cls != null) {
+                        binding.textClassName.visibility = View.VISIBLE
+                        binding.textTeacherName.visibility = View.VISIBLE
+
                         binding.textClassName.text = cls.name
                         classId = cls.classId
                         binding.textTeacherName.text = cls.teacherName
-                        //clas = cls
-
                     } else {
-                        binding.textViewName.text = "No Class"
+                        Log.d("TAG", "initializeFlowCollectors: abc")
+                        binding.textClassName.visibility = View.INVISIBLE
+                        binding.textTeacherName.visibility = View.INVISIBLE
+
                     }
                 }
             }
@@ -210,7 +216,7 @@ class StudentActivity : AppCompatActivity() {
                             is Resource.Error -> {}
                             is Resource.Loading -> {}
                             is Resource.Success -> {
-                                Log.d("_pro", "initializeFlowCollectors: c ${it.data}")
+                                Log.d("TAG", "initializeFlowCollectors: ol ${it.data}")
                                 showSuccessView(it.data)
                             }
                         }
@@ -219,34 +225,44 @@ class StudentActivity : AppCompatActivity() {
             }
         }
 
-/*
-             lifecycleScope.launch {
-                 repeatOnLifecycle(Lifecycle.State.CREATED) {
-                     viewModel.createStudent.collectLatest {
-                         it?.let {
-                             when (it) {
-                                 is Resource.Error -> {}
-                                 is Resource.Loading -> {
-                                     binding.
-                                 }
-                                 is Resource.Success -> {
-                                     showSuccessView(it.data)
+        /*
+                     lifecycleScope.launch {
+                         repeatOnLifecycle(Lifecycle.State.CREATED) {
+                             viewModel.createStudent.collectLatest {
+                                 it?.let {
+                                     when (it) {
+                                         is Resource.Error -> {}
+                                         is Resource.Loading -> {
+                                             binding.
+                                         }
+                                         is Resource.Success -> {
+                                             showSuccessView(it.data)
+                                         }
+                                     }
                                  }
                              }
                          }
-                     }
-                 }
-             }*/
+                     }*/
 
     }
 
     private fun showSuccessView(classList: List<Class>?) {
         headerBinding.progressBarClassLoading.visibility = View.INVISIBLE
         if (!classList.isNullOrEmpty()) {
+            Log.d("TAG", " okok showSuccessView: ${classList[0]}")
             viewModel.updateClass(classList[0])
 
             joinClassAdapter.setClasses(classList)
+            binding.textClassName.visibility = View.VISIBLE
+            binding.textTeacherName.visibility = View.VISIBLE
+
+            binding.textClassName.text = classList[0].name
+            classId = classList[0].classId
+            binding.textTeacherName.text = classList[0].teacherName
+
         } else {
+            binding.textBy.text = "You haven't joined any classes!"
+
             viewModel.updateClass(null)
             joinClassAdapter.setClasses(listOf())
         }

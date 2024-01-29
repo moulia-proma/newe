@@ -1,5 +1,6 @@
 package com.example.classwave.presentation.page.teacher
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -14,6 +15,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.example.classwave.R
 import com.example.classwave.databinding.FragmentTeacherHomeBinding
 import com.example.classwave.domain.model.Resource
 import com.example.classwave.presentation.dialog.ClassInviteDialog
@@ -53,6 +55,7 @@ class TeacherHomeFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("ResourceAsColor")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         super.onViewCreated(view, savedInstanceState)
@@ -105,7 +108,7 @@ class TeacherHomeFragment : Fragment() {
         showPopup.setOnMenuItemClickListener { menuItem ->
             val id = menuItem.itemId
             if (id == 0) {
-                val dialog = ClassInviteDialog(clsId)
+                val dialog = ClassInviteDialog()
                 dialog.show(parentFragmentManager, ClassInviteDialog.TAG)
             } else if (id == 1) {
                 viewModel.signOut()
@@ -146,9 +149,16 @@ class TeacherHomeFragment : Fragment() {
                         addStudentAdapter.setId(cls.classId)
                         clsId = cls.classId
                         clas = cls
+                        binding.textViewDescription.text = "No Students in your class, to connect students share the class Code with them "
+
+
 
                     } else {
+                        binding.textViewDescription.textSize = 20.0F
+                        binding.textViewDescription.text = "No class found! Please create a class first and by sharing the class code invite your student!"
                         binding.toolbar.title = "No Class"
+                        binding.groupPickerNoData.visibility = View.VISIBLE
+                        binding.progressBarStudentLoading.visibility= View.INVISIBLE
                     }
                 }
             }
@@ -178,6 +188,7 @@ class TeacherHomeFragment : Fragment() {
                                     binding.groupPickerNoData.visibility = View.GONE
                                     binding.groupPickerOndata.visibility = View.VISIBLE
                                     it.data?.let { addStudentAdapter.setStudents(it) }
+
                                 } else {
                                     binding.progressBarStudentLoading.visibility = View.INVISIBLE
                                     binding.groupPickerNoData.visibility = View.VISIBLE

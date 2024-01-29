@@ -13,6 +13,7 @@ import com.example.classwave.R
 import com.example.classwave.databinding.DialogAddSkillBinding
 import com.example.classwave.domain.model.Resource
 import com.example.classwave.presentation.page.teacher.TeacherViewModel
+import com.example.classwave.presentation.util.SnackbarUtil
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -50,14 +51,27 @@ class AddSkillDialog(private val clsId: String, private val typeofSkill: String)
             val hScore = binding.editTextAddSkillHighScoreName.text.toString()
             viewModel.createSkill(clsId, skillName, hScore, typeofSkill)
         }
+        binding.toolbar.setNavigationOnClickListener {
+            dismiss()
+            viewModel.setNull()
+        }
+
+
     }
     private fun initialFlowCollectors(){
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED){
                 viewModel.createSkill.collectLatest {
-                    it.let {
+                    it?.let {
                         when(it){
-                            is Resource.Error -> {}
+                            is Resource.Error -> {
+                                binding.btnAddSkill.text = "Add"
+                                binding.progressBarDeleteLoading.visibility= View.INVISIBLE
+                                it.message?.let { it1 ->
+                                    SnackbarUtil.show(requireContext(),
+                                        it1,binding.btnAddSkill)
+                                }
+                            }
                             is Resource.Loading -> {
                                 binding.btnAddSkill.text=""
                                 binding.progressBarDeleteLoading.visibility= View.VISIBLE
@@ -67,7 +81,7 @@ class AddSkillDialog(private val clsId: String, private val typeofSkill: String)
                                 viewModel.setNull()
                                 dismiss()
                             }
-                            null -> {}
+
                         }
                     }
                 }

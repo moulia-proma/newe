@@ -84,7 +84,9 @@ class AttendanceActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun registerListener() {
-
+        binding.toolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
         binding.btnNext.setOnClickListener {
             if (currentDate == LocalDate.now()) {
                 binding.btnNext.isClickable = false
@@ -97,11 +99,11 @@ class AttendanceActivity : AppCompatActivity() {
 
                 currentDate = currentDate.plusDays(1)
                 if (currentDate == LocalDate.now()) {
-                    binding.buttonSave.visibility=View.VISIBLE
+                    binding.buttonSave.visibility = View.VISIBLE
                     binding.btnNext.isClickable = false
                     binding.btnNext.setImageResource(R.drawable.ic_arrow_front_grey)
-                }else{
-                    binding.buttonSave.visibility=View.INVISIBLE
+                } else {
+                    binding.buttonSave.visibility = View.INVISIBLE
                 }
                 if (currentDate == LocalDate.now()) {
                     binding.textReportDate.text = "Today"
@@ -179,10 +181,10 @@ class AttendanceActivity : AppCompatActivity() {
                     binding.btnNext.setImageResource(R.drawable.ic_arrow_front_grey)
                 }
                 if (currentDate == LocalDate.now()) {
-                    binding.buttonSave.visibility=View.VISIBLE
+                    binding.buttonSave.visibility = View.VISIBLE
                     binding.textReportDate.text = "Today"
                 } else {
-                    binding.buttonSave.visibility=View.INVISIBLE
+                    binding.buttonSave.visibility = View.INVISIBLE
                     binding.textReportDate.text =
                         currentDate.toString()
                 }
@@ -333,12 +335,14 @@ class AttendanceActivity : AppCompatActivity() {
                             is Resource.Error -> {
 
                             }
+
                             is Resource.Loading -> {
                                 Log.d("_rak", "initialFlowCollectors: jijdddddddddddddddddddi")
-                                binding.progressBarLoading.visibility=View.VISIBLE
+                                binding.progressBarLoading.visibility = View.VISIBLE
                             }
+
                             is Resource.Success -> {
-                                binding.progressBarLoading.visibility=View.INVISIBLE
+                                binding.progressBarLoading.visibility = View.INVISIBLE
                                 it.data?.forEach { st ->
                                     name[st.studentId] = st.studentName
                                     profile[st.studentId] = st.img
