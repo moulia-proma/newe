@@ -33,9 +33,14 @@ class SignInViewModel @Inject constructor() : ViewModel() {
     private val _loginState = MutableStateFlow<Resource<loginResponse>?>(null)
     val loginState = _loginState.asStateFlow()
 
+    private val _resetPassword= MutableStateFlow<Resource<String>?>(null)
+    val resetPassword = _loginState.asStateFlow()
+
     private var _userType =
         MutableStateFlow<Resource<ArrayList<String?>>>(Resource.Success(arrayListOf()))
     var userType = _userType.asStateFlow()
+
+
 
     fun signIn(email: String, password: String) {
         _loginState.value = Resource.Loading()
@@ -54,11 +59,20 @@ class SignInViewModel @Inject constructor() : ViewModel() {
 
         Firebase.auth.signInWithEmailAndPassword(email, password).addOnCompleteListener {
             if (it.isSuccessful) {
-                _loginState.value = Resource.Success(loginResponse(email, password))
-                findUserType(firebaseAuth.uid.toString())
+                if (FirebaseAuth.getInstance().currentUser?.isEmailVerified == true) {
+                    _loginState.value = Resource.Success(loginResponse(email, password))
+                    findUserType(firebaseAuth.uid.toString())
+                } else {
+                    _loginState.value =
+                        Resource.Error("please varify your email!check your email there is a varification link")
+                    _userType.value =
+                        Resource.Error("please varify your email!check your email there is a varification link")
+
+                }
+
             } else {
-                _loginState.value = Resource.Error(it.exception.toString())
                 _userType.value = Resource.Error(it.exception.toString())
+
             }
         }
     }
@@ -98,4 +112,15 @@ class SignInViewModel @Inject constructor() : ViewModel() {
         Log.d("_pt", "findUserType: ${_userType.value} ")
     }
 
-}
+    fun resetPassword(email: String) {
+        Firebase.auth.sendPasswordResetEmail(email).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                _resetPassword.value = Resource.Success("A password reset email has been sent to your email!please check!")
+            }
+        }.addOnFailureListener {
+            _resetPassword.value = Resource.Error("Please Enter a correct email! or Try again!")
+        }
+        }
+    }
+
+

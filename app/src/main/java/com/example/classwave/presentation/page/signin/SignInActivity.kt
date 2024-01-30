@@ -1,15 +1,22 @@
 package com.example.classwave.presentation.page.signin
 
+import android.app.Dialog
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import android.view.ViewGroup
-import android.view.ViewOutlineProvider
+import android.view.Window
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.example.classwave.R
 import com.example.classwave.databinding.ActivitySignInBinding
 import com.example.classwave.domain.model.Resource
 import com.example.classwave.presentation.page.parent.ParentActivity
@@ -17,8 +24,9 @@ import com.example.classwave.presentation.page.signup.SignUpActivity
 import com.example.classwave.presentation.page.student.StudentActivity
 import com.example.classwave.presentation.page.teacher.TeacherActivity
 import com.example.classwave.presentation.util.SnackbarUtil
+import com.google.android.material.button.MaterialButton
 import dagger.hilt.android.AndroidEntryPoint
-import eightbitlab.com.blurview.RenderScriptBlur
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -29,6 +37,7 @@ class SignInActivity : AppCompatActivity() {
     private val viewModel: SignInViewModel by viewModels()
     private lateinit var binding: ActivitySignInBinding
     private var userType: String = ""
+    lateinit var btnSend : MaterialButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -41,15 +50,32 @@ class SignInActivity : AppCompatActivity() {
      // binding.blurView.setupWith(binding.root,RenderScriptBlur(this)).setBlurRadius(2F)
         binding.btnSignIn.text = "SignIn"
 
-
-
         registerListener()
         initializeFlowCollectors()
     }
 
-
-
     private fun registerListener() {
+        binding.textViewForgetPassword.setOnClickListener {
+
+            val dialog = Dialog(this)
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            val dialogView = layoutInflater.inflate(R.layout.custom_dialog_forget_password, null)
+            dialog.setContentView(dialogView)
+            val btnCancel = dialogView.findViewById<ImageView>(R.id.image_view_cancel)
+
+            btnSend = dialogView.findViewById<View>(R.id.btn_send) as MaterialButton
+
+            btnSend.setOnClickListener {
+                val email = (dialogView.findViewById<EditText>(R.id.edit_text_email) ).text.toString()
+                viewModel.resetPassword(email)
+            }
+            dialog.show()
+            btnCancel.setOnClickListener {
+                dialog.dismiss()
+            }
+
+        }
 
         binding.textViewCreateAnAccount.setOnClickListener {
             val intent = Intent(this, SignUpActivity::class.java)
@@ -85,6 +111,30 @@ class SignInActivity : AppCompatActivity() {
                         }
                     }
 
+                }
+            }
+        }
+
+        lifecycleScope.launch (Dispatchers.IO){
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.resetPassword.collectLatest {
+                    it?.let{
+                        when(it){
+                            is Resource.Error -> {
+                                it.message?.let { it1 ->
+                                    SnackbarUtil.show(this@SignInActivity,
+                                        it1,btnSend)
+                                }
+                            }
+                            is Resource.Loading -> {
+
+
+                            }
+                            is Resource.Success -> {
+
+                            }
+                        }
+                    }
                 }
             }
         }

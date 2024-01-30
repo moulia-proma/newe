@@ -5,8 +5,9 @@
     android:layout_height="50dp"
     android:layout_gravity="bottom"
     app:cardBackgroundColor="@color/secendryColor"
-    app:contentPadding="4dp"
-    app:cardCornerRadius="16dp">
+    app:contentPadding="8dp"
+    app:cardCornerRadius="16dp"
+    >
 
     <TextView
         android:id="@+id/txn_snack_msg"

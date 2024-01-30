@@ -36,26 +36,12 @@ class ParentActivity : AppCompatActivity() {
         binding = ActivityParentBinding.inflate(layoutInflater)
         setContentView(binding.root)
         Log.d("_xyz", "onCreate: max")
-        binding.cardViewJoinClass.setOnClickListener {
-            val dialog = JoinClassParentDialog()
-            dialog.show(supportFragmentManager, AddNewStdDialog.TAG)
-        }
 
-        binding.cardViewAddChild.setOnClickListener {
-            val dialog = EnterChildCodeDialog("")
-            dialog.setListener(object : EnterChildCodeDialog.Listener {
-                override fun onDialogClosed(dialog: EnterChildCodeDialog) {
-                    Log.d("_xyz", "onDialogClosed: called")
-                    dialog.dismiss()
-                    viewModel.fatchChildList(Firebase.auth.uid.toString())
-                }
-            })
-            dialog.show(supportFragmentManager, EnterChildCodeDialog.TAG)
-        }
+
+
 
         val popup = binding.imgViewMore
         val showPopup = PopupMenu(this, popup)
-        showPopup.menu.add(Menu.NONE, 0, 0, "Share class")
         showPopup.menu.add(Menu.NONE, 1, 1, "Sign out")
         showPopup.gravity = Gravity.END
         popup.setOnClickListener { showPopup.show() }
@@ -100,12 +86,30 @@ class ParentActivity : AppCompatActivity() {
             }
 
         })
-
-
-
         binding.recyclerViewNotAssignedChildList.adapter = notAssignedAdapter
 
         initialFlowCollectors()
+        registerListener()
+
+    }
+
+
+    fun registerListener(){
+        binding.cardViewAddChild.setOnClickListener {
+            val dialog = EnterChildCodeDialog("")
+            dialog.setListener(object : EnterChildCodeDialog.Listener {
+                override fun onDialogClosed(dialog: EnterChildCodeDialog) {
+                    Log.d("_xyz", "onDialogClosed: called")
+                    dialog.dismiss()
+                    viewModel.fatchChildList(Firebase.auth.uid.toString())
+                }
+            })
+            dialog.show(supportFragmentManager, EnterChildCodeDialog.TAG)
+        }
+        binding.cardViewJoinClass.setOnClickListener {
+            val dialog = JoinClassParentDialog()
+            dialog.show(supportFragmentManager, AddNewStdDialog.TAG)
+        }
 
     }
 

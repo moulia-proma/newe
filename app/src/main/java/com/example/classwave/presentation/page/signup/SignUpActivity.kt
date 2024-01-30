@@ -43,7 +43,7 @@ class SignUpActivity : AppCompatActivity() {
 
     private fun registerListener() {
         binding.btnSignUp.setOnClickListener {
-            val email = binding.editTextSignUpEmail.text.toString()
+           val email = binding.editTextSignUpEmail.text.toString()
             val password = binding.editTextSignUpPassword.text.toString()
             val name = binding.editTextSignUpFullName.text.toString()
 
@@ -51,6 +51,10 @@ class SignUpActivity : AppCompatActivity() {
                 email = email, password = password,
                 name = name, type = userType
             )
+
+          /*  viewModel.emailAuthentcationCode(email)*/
+
+
         }
 
         binding.textViewAlreadyHaveAccount.setOnClickListener {
@@ -68,16 +72,18 @@ class SignUpActivity : AppCompatActivity() {
                     Log.d("_abd", "initializeFlowCollectors: ${it.data}")
                     when (it) {
                         is Resource.Error -> {
+                            Log.d("_e", "initializeFlowCollectors: error")
                             showError(it.message)
                         }
 
                         is Resource.Loading -> {
+                            Log.d("_e", "initializeFlowCollectors: loading")
                             binding.btnSignUp.text=""
                             binding.progressBarSignInLoading.visibility=View.VISIBLE
 
                         }
                         is Resource.Success -> {
-                            if (it.data?.isNotEmpty() == true) {
+                         /*   if (it.data?.isNotEmpty() == true) {
                                 if (it.data[0] == "teacher") {
                                     val intent =
                                         Intent(this@SignUpActivity, TeacherActivity::class.java)
@@ -97,7 +103,7 @@ class SignUpActivity : AppCompatActivity() {
 
                                 }
                             }
-
+*/
 
                         }
                     }
@@ -108,6 +114,7 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun showError(message: String?) {
+        Log.d("_e", "showError: abc")
         binding.btnSignUp.text = "Sign Up"
         binding.progressBarSignInLoading.visibility = View.INVISIBLE
         message?.let { it1 ->

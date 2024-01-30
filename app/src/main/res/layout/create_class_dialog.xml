@@ -35,11 +35,11 @@
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="img_cancel,txt_title" />
     <ImageView
-
+        android:layout_marginTop="16dp"
         android:id="@+id/image_view_bg"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:src="@drawable/create_cls_bg_7"
+        android:layout_height="230dp"
+        android:src="@drawable/create_class_bg_7"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/barrier"
         app:layout_constraintBottom_toTopOf="@id/txt_class_name"
@@ -97,6 +97,7 @@
         app:layout_constraintTop_toBottomOf="@id/txt_label_grade">
 
         <AutoCompleteTextView
+
             android:fontFamily="@font/jost_regular"
             android:background="@color/white"
             android:id="@+id/auto_complete_text_view_dropdown_items"

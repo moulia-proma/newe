@@ -8,7 +8,7 @@ import com.example.classwave.data.datasource.remote.model.UserItemResponse
 import com.example.classwave.domain.model.Resource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.auth
+import com.google.firebase.auth.actionCodeSettings
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -58,61 +58,63 @@ class SignUpViewModel @Inject constructor(): ViewModel() {
 
 
     fun createUser(email: String, name: String, type: String, password: String) {
-        _authUiState.value = Resource.Loading()
-
+        _userType.value = Resource.Loading()
         if(!isValidEmail(email)) {
-            _authUiState.value = Resource.Error("Please enter a valid email")
+            _userType.value = Resource.Error("Please enter a valid email")
             return
         }
         if(!isValidPassword(password)) {
-            _authUiState.value = Resource.Error("Password length must be more then 8 characters")
+            _userType.value = Resource.Error("Password length must be more then 8 characters")
             return
         }
 
         if(name.isEmpty()) {
-            _authUiState.value = Resource.Error("Please enter a valid name")
+            _userType.value = Resource.Error("Please enter a valid name")
             return
         }
 
         firebaseAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener {
-                findUserType(firebaseAuth.uid.toString())
-                if (it.isSuccessful) {
+                if(it.isSuccessful){
                     auth = Firebase.auth
                     currentUser = auth.currentUser!!
                     val uid =currentUser.uid
                     val user = UserItemResponse(email, name, type, uid,uImage.random().toString(),"")
-                    Log.d("proma", "createUser: $user")
+
                     dbRef.push().setValue(user)
                         .addOnCompleteListener {
-                            _authUiState.value = Resource.Success(user)
-                            Log.d("proma", "createUser: $user")
+                            FirebaseAuth.getInstance().currentUser?.sendEmailVerification()
+                                ?.addOnCompleteListener {
+                                    findUserType(firebaseAuth.uid.toString())
+                                }?.addOnFailureListener {
+
+                                }
                         }
                         .addOnFailureListener {
-                            _authUiState.value = Resource.Error("User creation Failed")
+                            _userType.value = Resource.Error("User creation Failed")
                         }
-                } //
-                else {
-                    _authUiState.value = Resource.Error("Authentication Failed")
                 }
+
+
             }.addOnFailureListener { exception ->
-                _authUiState.value = Resource.Error(
+                _userType.value = Resource.Error(
                     exception.message ?: ""
                 )
             }
     }
     fun findUserType(uId: String) {
-        _userType.value = Resource.Loading()
         viewModelScope.launch(Dispatchers.IO) {
             dbRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     snapshot.children.forEach { user ->
+                        Log.d("_e", "onDataChange: ${user.child("uid").value.toString()}   kk ${uId}")
                         if (user.child("uid").value.toString() == uId) {
                             val arr = arrayListOf<String?>()
                             arr.add(user.child("type").value.toString())
                             arr.add(user.child("name").value.toString())
                             arr.add(user.child("email").value.toString())
-                            _userType.value = Resource.Success(arr)
+                            Log.d("_e", "onDataChange: okay")
+                            _userType.value = Resource.Error("An Email varification link has been sent to your email, to sign in varify your email first!")
                         }
                     }
                 }

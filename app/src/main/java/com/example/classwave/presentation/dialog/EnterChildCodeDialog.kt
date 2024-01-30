@@ -66,6 +66,7 @@ class EnterChildCodeDialog(val clsId: String, ) : DialogFragment() {
         binding.editTextAddStdName.hint =
             "Enter your child connection code ,if you don't have ask to ur child"
         binding.btnAddStd.text = "Connect"
+        binding.toolbar.title = "Add child"
 
 
         binding.btnAddStd.setOnClickListener {
@@ -73,7 +74,11 @@ class EnterChildCodeDialog(val clsId: String, ) : DialogFragment() {
             stdId = binding.editTextAddStdName.text.toString()
             viewModel.findUserType(Firebase.auth.uid.toString())
         }
+
         initialFlowCollectors()
+        binding.toolbar.setNavigationOnClickListener {
+            dismiss()
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

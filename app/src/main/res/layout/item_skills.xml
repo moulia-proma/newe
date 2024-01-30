@@ -4,10 +4,12 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_add_std"
-    android:layout_width="100dp"
-    android:layout_height="100dp"
+    android:layout_width="80dp"
+    android:layout_height="80dp"
     android:layout_margin="16dp"
-    android:background="@drawable/cskill_card_glass_bg_2">
+    android:background="@drawable/cskill_card_glass_bg_2"
+    android:layout_gravity="center"
+    >
 
     <com.google.android.material.imageview.ShapeableImageView
 

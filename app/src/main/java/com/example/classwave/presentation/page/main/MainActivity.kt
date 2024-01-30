@@ -15,6 +15,7 @@ import com.example.classwave.presentation.page.signin.SignInActivity
 import com.example.classwave.presentation.page.student.StudentActivity
 import com.example.classwave.presentation.page.teacher.TeacherActivity
 import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -72,7 +73,7 @@ class MainActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.isAuthenticated.collectLatest { isAuthenticated ->
                     if (isAuthenticated == null) return@collectLatest
-                    if (isAuthenticated) {
+                    if (isAuthenticated && FirebaseAuth.getInstance().currentUser?.isEmailVerified == true) {
                         Log.d("_pkz", "initializeFlowCollectors: proma")
                         Firebase.auth.uid?.let { viewModel.findUserType(it) }
                         // Log.d("_pt", "initializeFlowCollectors: mm $isAuthenticated ")

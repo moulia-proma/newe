@@ -73,6 +73,11 @@ class AttendanceActivity : AppCompatActivity() {
                 )
 
             }
+
+
+            onBackPressed()
+
+
         }
 
 
