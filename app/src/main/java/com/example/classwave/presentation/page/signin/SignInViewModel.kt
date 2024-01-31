@@ -115,11 +115,16 @@ class SignInViewModel @Inject constructor() : ViewModel() {
     fun resetPassword(email: String) {
         Firebase.auth.sendPasswordResetEmail(email).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                _resetPassword.value = Resource.Success("A password reset email has been sent to your email!please check!")
+                _resetPassword.value = Resource.Error("A password reset email has been sent to your email!please check!")
+            }else{
+                _resetPassword.value = Resource.Error("Please Enter a correct email! or Try again!")
             }
         }.addOnFailureListener {
             _resetPassword.value = Resource.Error("Please Enter a correct email! or Try again!")
         }
+
+
+        Log.d("_xyz", "resetPassword: ${_resetPassword.value?.message}")
         }
     }
 

@@ -60,6 +60,8 @@ class CreateClassDialog(
         binding.autoCompleteTextViewDropdownItems.setAdapter(arrayAdapter)
         Log.d("_xyz", "onViewCreated: ${type}")
         if (type == "update") {
+            binding.txtTitle.text = "Update Class"
+            binding.textViewCreateClassInstruction.visibility = View.INVISIBLE
             binding.btnDeleteClass.visibility = View.VISIBLE
             binding.btnCreateClass.text = "Update"
             binding.editTxtClassName.setText(name)

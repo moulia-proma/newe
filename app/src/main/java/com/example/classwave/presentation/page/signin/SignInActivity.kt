@@ -73,6 +73,7 @@ class SignInActivity : AppCompatActivity() {
             dialog.show()
             btnCancel.setOnClickListener {
                 dialog.dismiss()
+                Log.d("_ok", "registerListener: cancel pressed")
             }
 
         }
@@ -98,6 +99,7 @@ class SignInActivity : AppCompatActivity() {
                 viewModel.userType.collectLatest {
                     when (it) {
                         is Resource.Error -> {
+                            Log.d("_e", "initializeFlowCollectors: error")
                             showError(it.message)
                         }
 
@@ -119,15 +121,18 @@ class SignInActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.STARTED){
                 viewModel.resetPassword.collectLatest {
                     it?.let{
+                        Log.d("_xyz", "initializeFlowCollectors: ${it.data}  x ${it.message}  ")
                         when(it){
+                            
                             is Resource.Error -> {
                                 it.message?.let { it1 ->
+                                    Log.d("_e", "initializeFlowCollectors: i m error")
                                     SnackbarUtil.show(this@SignInActivity,
                                         it1,btnSend)
                                 }
                             }
                             is Resource.Loading -> {
-
+                                       
 
                             }
                             is Resource.Success -> {

@@ -49,6 +49,9 @@ class ShareProfileDialog(
             shareIntent.putExtra(Intent.EXTRA_TEXT, stdId)
             startActivity(Intent.createChooser(shareIntent, "Anything"))
         }
+        binding.imgShareClsBg.setImageResource(R.drawable.share_profile_bg)
+        binding.toolbar.title  = "Share profile"
+
         binding.cardViewClassLinkBg.setOnClickListener {
             val clipManager =
                 activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -56,6 +59,14 @@ class ShareProfileDialog(
             clipManager.setPrimaryClip(clipData)
             Toast.makeText(requireContext(), "Class code copied", Toast.LENGTH_LONG).show()
         }
+
+        binding.toolbar.setNavigationOnClickListener {
+            dismiss()
+        }
+
+
+        binding.textViewInviteInstruction.text = "By sharing this code your parent can connect with you,please share this code with your parent!"
+
 
         /*        binding.editTextAddStdName.hint = clsId
                    binding.btnAddStd.text = "Share Code"

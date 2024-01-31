@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.classwave.R
+import com.example.classwave.data.datasource.remote.model.UserItemResponse
 import com.example.classwave.domain.model.Resource
 import com.example.classwave.presentation.page.teacher.Class
 import com.example.classwave.presentation.page.teacher.Marks
@@ -53,7 +54,7 @@ class StudentViewModel : ViewModel() {
         R.drawable.st_user
     )
 
-    fun setNull(){
+    fun setNull() {
         _createStudent = MutableStateFlow<Resource<Student>?>(null)
         createStudent = _createStudent.asStateFlow()
     }
@@ -65,7 +66,7 @@ class StudentViewModel : ViewModel() {
             _createStudent.value = Resource.Error("Class code can't be empty")
             return
         }
-        var isExist =0
+        var isExist = 0
 
         viewModelScope.launch(Dispatchers.IO) {
             dbClassREf.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -73,13 +74,14 @@ class StudentViewModel : ViewModel() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     snapshot.children.forEach { cls ->
                         if (clsId == cls.child("classId").value.toString()) {
-                            isExist =1
+                            isExist = 1
 
                             createStudent(clsId, uName)
                         }
                     }
-                    if(isExist == 0){
-                        _createStudent.value = Resource.Error("No class found with this code,Try again!")
+                    if (isExist == 0) {
+                        _createStudent.value =
+                            Resource.Error("No class found with this code,Try again!")
                     }
                 }
 
@@ -113,7 +115,7 @@ class StudentViewModel : ViewModel() {
                 "0",
                 LocalDate.now().toString(),
                 st,
-                name,
+                "Attendance",
                 "",
                 "1",
                 name,
@@ -141,7 +143,7 @@ class StudentViewModel : ViewModel() {
                     dataSnapshot.children.forEach { std ->
                         if (std.child("studentId").value.toString() == stdId) {
                             classList.add(
-                              std.child("classId").value.toString()
+                                std.child("classId").value.toString()
                             )
                         }
 
@@ -169,6 +171,7 @@ class StudentViewModel : ViewModel() {
                             arr.add(user.child("name").value.toString())
                             arr.add(user.child("email").value.toString())
                             _userType.value = arr
+                            Log.d("_xyz", "onDataChange: $arr")
                         }
                     }
                 }
@@ -219,11 +222,33 @@ class StudentViewModel : ViewModel() {
 
     }
 
-    fun updateStudentName() {
+    fun updateStudentName(name: String) {
         viewModelScope.launch(Dispatchers.IO) {
             dbUserRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
+                    snapshot.children.forEach { user ->
+                        if (user.child("uid").value.toString() == Firebase.auth.uid.toString()) {
+                            val k = user.key
+                            val updatedUser = UserItemResponse(
+                                user.child("email").value.toString(),
+                                name,
+                                user.child("type").value.toString(),
+                                user.child("uid").value.toString(),
+                                user.child("uphoto").value.toString(),
+                                user.child("parent").value.toString(),
+                            )
+                            FirebaseDatabase.getInstance().getReference("Users")
+                                .child(k.toString()).removeValue()
+                            dbUserRef.push().setValue(updatedUser).addOnCompleteListener {
+                                Log.d("_msg", "onDataChange: name updated")
+                                findUserType(Firebase.auth.currentUser?.uid.toString())
+                            }.addOnFailureListener {
+                                Log.d("_msg", "onDataChange: something is wrong")
+                            }
 
+
+                        }
+                    }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -232,7 +257,83 @@ class StudentViewModel : ViewModel() {
 
             })
         }
+        viewModelScope.launch(Dispatchers.IO) {
+            dbStdRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    snapshot.children.forEach { std ->
+                        if (std.child("studentId").value.toString() == Firebase.auth.uid.toString()) {
+                            val k = std.key
+                            val updatedStd = Student(
+                                std.child("classId").value.toString(),
+                                std.child("studentId").value.toString(),
+                                name,
+                                std.child("img").value.toString()
+                            )
+                            FirebaseDatabase.getInstance().getReference("Students")
+                                .child(k.toString()).removeValue()
+                            dbStdRef.push().setValue(updatedStd).addOnCompleteListener {
+                                Log.d("_msg", "onDataChange: name updated")
+                                findUserType(Firebase.auth.currentUser?.uid.toString())
+                            }.addOnFailureListener {
+                                Log.d("_msg", "onDataChange: something is wrong")
+                            }
+
+
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+
+                }
+
+            })
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            dbMarksRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    snapshot.children.forEach { marks   ->
+                        if (marks.child("stdId").value.toString() == Firebase.auth.uid.toString()) {
+                            val k = marks.key
+                            val updatedMark = Marks(
+                                marks.child("classId").value.toString(),
+                                marks.child("skillId").value.toString(),
+                                marks.child("stdId").value.toString(),
+                                marks.child("marks").value.toString(),
+                                marks.child("date").value.toString(),
+                                marks.child("skillIdStdId").value.toString(),
+                                marks.child("skillName").value.toString(),
+                                marks.child("skillPhoto").value.toString(),
+                                marks.child("highScore").value.toString(),
+                                name,
+                                marks.child("stdProfile").value.toString(),
+
+
+
+                            )
+                            FirebaseDatabase.getInstance().getReference("Marks")
+                                .child(k.toString()).removeValue()
+                            dbMarksRef.push().setValue(updatedMark).addOnCompleteListener {
+                                Log.d("_msg", "onDataChange: name updated")
+                                findUserType(Firebase.auth.currentUser?.uid.toString())
+                            }.addOnFailureListener {
+                                Log.d("_msg", "onDataChange: something is wrong")
+                            }
+
+
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+
+                }
+
+            })
+        }
+
     }
+
 
     fun signOut() {
         Firebase.auth.signOut()

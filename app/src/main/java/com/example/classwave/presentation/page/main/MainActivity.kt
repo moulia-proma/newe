@@ -100,10 +100,8 @@ class MainActivity : AppCompatActivity() {
                         } else if (it[0] == "student") {
                             Log.d("pro", "initializeFlowCollectors: $uName")
                             val intent = Intent(this@MainActivity, StudentActivity::class.java)
-                            intent.putExtra("name", it[1])
                             intent.putExtra("email", it[2])
                             startActivity(intent)
-
                         }
                     }
 

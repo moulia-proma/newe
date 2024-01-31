@@ -47,14 +47,21 @@ class JoinClassParentDialog : DialogFragment() {
 
         super.onViewCreated(view, savedInstanceState)
         binding.editTextAddStdName.hint =
-            "Enter class code,if you don't have ask to ur child teacher"
+            "Class code"
+        binding.toolbar.title= "Join Child's Class"
+     //binding.textViewRandomMsg.text = "Aha! Wise Wise! Greate decision to join child class!"
+        binding.textViewRandomMsg.visibility = View.INVISIBLE
         binding.btnAddStd.text = "Submit"
+        binding.textViewInstruction.text = "Enter your class child code, if you don't have a code ask it to your child's teacher,By joining a class you will get full access of the class , which is available for a parent."
         // Log.d("_pr", "onViewCreated:  classId = $clsId")
-
+        binding.imageStdProfile.setImageResource(R.drawable.join_child_class_bg)
         binding.btnAddStd.setOnClickListener {
             val clsId = binding.editTextAddStdName.text.toString()
             viewModel.isClassExists(clsId)
 
+        }
+        binding.toolbar.setNavigationOnClickListener {
+            dismiss()
         }
         initialFlowCollectors()
     }

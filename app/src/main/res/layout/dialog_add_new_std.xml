@@ -22,15 +22,34 @@
         app:titleTextAppearance="@style/ToolbarTheme"
         />
 
+    <TextView
+
+        android:id="@+id/text_view_random_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ooops! so you are ready for a bunch of tasks!"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/edit_text_add_std_name"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:fontFamily="@font/jost"
+        android:layout_marginBottom="16dp"
+        android:textSize="16sp"
+        android:paddingHorizontal="16dp"
+        android:textAlignment="center"
+
+        />
+
+
     <ImageView
-       android:layout_marginHorizontal="16dp"
         android:id="@+id/image_std_profile"
         android:layout_width="350dp"
         android:layout_height="300dp"
+        android:layout_marginHorizontal="16dp"
         android:layout_marginTop="40dp"
         app:layout_constraintBottom_toTopOf="@id/edit_text_add_std_name"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/join_cls_bg" />
@@ -42,7 +61,7 @@
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@id/image_std_profile"
     android:layout_width="match_parent"
-    android:layout_height="80dp"
+    android:layout_height="60dp"
     android:background="@drawable/edit_text_style"
     android:hint="Enter Student Name"
     android:padding="16dp"
@@ -64,10 +83,11 @@
         android:textColor="@color/white" />
 
     <TextView
+        android:id="@+id/text_view_instruction"
         android:paddingHorizontal="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Enter your class code, if you don't have a code ask it to your teacher"
+        android:text="Enter your class code, if you don't have a code ask it to your teacher,By joining a class you will get full access of the class , which is available for a student."
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btn_add_std"

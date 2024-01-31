@@ -1,6 +1,7 @@
 package com.example.classwave.presentation.page.student
 
 import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -9,6 +10,7 @@ import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.View
+import android.view.Window
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -43,18 +45,11 @@ class StudentActivity : AppCompatActivity() {
     var uName = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        uName = intent.getStringExtra("name").toString()
         var uEmail = intent.getStringExtra("email").toString()
 
         super.onCreate(savedInstanceState)
         binding = FragmentStudentHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        /*        val navHostFragment =
-                    supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
-                val navController = navHostFragment.navController
-                val navView: BottomNavigationView = findViewById(R.id.bottom_navigation_view)
-                navView.setupWithNavController(navController)*/
 
         headerBinding =
             NavDrawerBinding.inflate(layoutInflater, binding.navigationViewDrawer, false)
@@ -92,7 +87,7 @@ class StudentActivity : AppCompatActivity() {
         viewModel.findUserType(Firebase.auth.uid.toString())
         val popup = binding.imgViewMore
         val showPopup = PopupMenu(this, popup)
-        showPopup.menu.add(Menu.NONE, 0, 0, "Share class")
+        showPopup.menu.add(Menu.NONE, 0, 0, "Share profile")
         showPopup.menu.add(Menu.NONE, 1, 1, "Sign out")
         showPopup.gravity = Gravity.END
         popup.setOnClickListener { showPopup.show() }
@@ -123,17 +118,20 @@ class StudentActivity : AppCompatActivity() {
         val btnSave = dialogView.findViewById<View>(R.id.btn_save) as Button
         val btnCancel = dialogView.findViewById<View>(R.id.image_view_cancel) as ImageView
         val editText = dialogView.findViewById<View>(R.id.edit_text_name) as EditText
-        val dialog = AlertDialog.Builder(this).setView(dialogView).create()
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(dialogView)
 
 
         binding.imageViewEdit.setOnClickListener {
             dialog.show()
             dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             editText.setText(uName)
-            viewModel.updateStudentName()
         }
 
         btnSave.setOnClickListener {
+            val name = editText.text.toString()
+            viewModel.updateStudentName(name)
             dialog.dismiss()
         }
         binding.appBar.setNavigationOnClickListener {
@@ -198,6 +196,8 @@ class StudentActivity : AppCompatActivity() {
                 viewModel.userType.collectLatest { user ->
                     if (user.isNotEmpty()) {
                         binding.textViewName.text = "Welcome, ${user[1]}"
+                        uName = user[1]
+
                     } else {
                         binding.textViewName.text = "No Class"
                     }
@@ -257,10 +257,13 @@ class StudentActivity : AppCompatActivity() {
             binding.textTeacherName.visibility = View.VISIBLE
 
             binding.textClassName.text = classList[0].name
+            binding.textBy.text = "By"
             classId = classList[0].classId
             binding.textTeacherName.text = classList[0].teacherName
 
         } else {
+            binding.textTeacherName.text = ""
+            binding.textClassName.text = ""
             binding.textBy.text = "You haven't joined any classes!"
 
             viewModel.updateClass(null)

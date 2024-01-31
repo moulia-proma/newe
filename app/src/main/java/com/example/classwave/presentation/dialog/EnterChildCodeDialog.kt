@@ -64,9 +64,13 @@ class EnterChildCodeDialog(val clsId: String, ) : DialogFragment() {
 
         super.onViewCreated(view, savedInstanceState)
         binding.editTextAddStdName.hint =
-            "Enter your child connection code ,if you don't have ask to ur child"
+            "Enter your child profile code"
         binding.btnAddStd.text = "Connect"
-        binding.toolbar.title = "Add child"
+        binding.toolbar.title = "Connect child"
+        binding.textViewRandomMsg.text = "Stay in touch to your child!!"
+        binding.imageStdProfile.setImageResource(R.drawable.connect_child_bg)
+        binding.textViewInstruction.text = "Enter your child profile code, if you don't have a code go to your child profile and click on the share profile option in the right corner and copy the code and then paste it here!"
+
 
 
         binding.btnAddStd.setOnClickListener {
