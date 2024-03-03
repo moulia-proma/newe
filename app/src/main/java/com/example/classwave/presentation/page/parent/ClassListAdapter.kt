@@ -14,7 +14,7 @@ class ClassListAdapter : RecyclerView.Adapter<ClassListAdapter.ViewHolder>() {
     private var mListener: ClassListAdapter.Listener? = null
 
     interface Listener {
-        fun onRequestClicked(clsId:String,type:String)
+        fun onRequestClicked(clsId: String, type: String, name: String, img: String)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -45,7 +45,6 @@ class ClassListAdapter : RecyclerView.Adapter<ClassListAdapter.ViewHolder>() {
     }
 
     override fun getItemCount(): Int {
-        Log.d("_xyz", "getItemCount: ${teacherList.size}")
         return teacherList.size
 
     }
@@ -53,26 +52,21 @@ class ClassListAdapter : RecyclerView.Adapter<ClassListAdapter.ViewHolder>() {
     inner class ViewHolder(private val binding: ItemClassesBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun set(cls: Class) {
-            Log.d("_xyz", "set: jj")
-
-
             binding.txtClsName.text = cls.name
             binding.imageClsProfile.setImageResource(cls.img.toInt())
 
             binding.cardAddClass.setOnLongClickListener {
-                if( binding.imageViewEditClass.visibility == View.INVISIBLE){
+                if (binding.imageViewEditClass.visibility == View.INVISIBLE) {
                     binding.imageViewEditClass.visibility = View.VISIBLE
-                    mListener?.onRequestClicked(cls.classId,"add")
-                }else{
+                    mListener?.onRequestClicked(cls.classId, "add",cls.name,cls.img)
+                } else {
                     binding.imageViewEditClass.visibility = View.INVISIBLE
-                    mListener?.onRequestClicked(cls.classId,"remove")
+                    mListener?.onRequestClicked(cls.classId, "remove",cls.name,cls.img)
                 }
 
 
                 true
             }
-
-
 
 
             /*  binding.textViewName.setOnClickListener {

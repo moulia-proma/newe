@@ -143,7 +143,8 @@ class TeacherHomeFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.selectedClass.collectLatest { cls ->
                     if (cls != null) {
-
+                       binding.groupPickerNoData.visibility = View.INVISIBLE
+                        binding.groupPickerOndata.visibility = View.VISIBLE
                         binding.toolbar.title = cls.name
                         viewModel.fetchStudentByClassId(cls.classId)
                         addStudentAdapter.setId(cls.classId)
@@ -151,9 +152,11 @@ class TeacherHomeFragment : Fragment() {
                         clas = cls
                         binding.textViewDescription.text = "No Students in your class, to connect students share the class Code with them "
 
-
-
                     } else {
+                        viewModel.fetchNotification()
+                        viewModel.fetchStudentByClassId("")
+                        binding.groupPickerNoData.visibility  = View.VISIBLE
+                        binding.groupPickerOndata.visibility = View.INVISIBLE
                         binding.textViewDescription.textSize = 20.0F
                         binding.textViewDescription.text = "No class found! Please create a class first and by sharing the class code invite your student!"
                         binding.toolbar.title = "No Class"

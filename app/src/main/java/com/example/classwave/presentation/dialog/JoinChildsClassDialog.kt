@@ -12,18 +12,18 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.classwave.R
 import com.example.classwave.databinding.DialogAddNewStdBinding
 import com.example.classwave.domain.model.Resource
 import com.example.classwave.presentation.page.parent.ParentViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
-class JoinClassParentDialog : DialogFragment() {
+class JoinChildsClassDialog : DialogFragment() {
     private val viewModel: ParentViewModel by activityViewModels()
     private var _binding: DialogAddNewStdBinding? = null
     private val binding get() = _binding!!
@@ -48,13 +48,23 @@ class JoinClassParentDialog : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.editTextAddStdName.hint =
             "Class code"
-        binding.toolbar.title= "Join Child's Class"
-     //binding.textViewRandomMsg.text = "Aha! Wise Wise! Greate decision to join child class!"
+        binding.toolbar.title = "Join Child's Class"
+        //binding.textViewRandomMsg.text = "Aha! Wise Wise! Greate decision to join child class!"
         binding.textViewRandomMsg.visibility = View.INVISIBLE
         binding.btnAddStd.text = "Submit"
-        binding.textViewInstruction.text = "Enter your class child code, if you don't have a code ask it to your child's teacher,By joining a class you will get full access of the class , which is available for a parent."
+        binding.textViewInstruction.text =
+            "Enter your class child code, if you don't have a code ask it to your child's teacher,By joining a class you will get full access of the class , which is available for a parent."
         // Log.d("_pr", "onViewCreated:  classId = $clsId")
         binding.imageStdProfile.setImageResource(R.drawable.join_child_class_bg)
+
+
+        initialFlowCollectors()
+        registerListener()
+    }
+
+
+    fun registerListener() {
+
         binding.btnAddStd.setOnClickListener {
             val clsId = binding.editTextAddStdName.text.toString()
             viewModel.isClassExists(clsId)
@@ -63,27 +73,42 @@ class JoinClassParentDialog : DialogFragment() {
         binding.toolbar.setNavigationOnClickListener {
             dismiss()
         }
-        initialFlowCollectors()
     }
 
 
     private fun initialFlowCollectors() {
-        lifecycleScope.launch(Dispatchers.IO) {
-            viewModel.isClassExists.collectLatest {
-                it?.let {
-                    when (it) {
-                        is Resource.Error -> {
-                            withContext(Dispatchers.Main) {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.isClassExists.collectLatest {
+                    it?.let {
+                        when (it) {
+                            is Resource.Error -> {
+                                /*withContext(Dispatchers.Main) {*/
                                 it.message?.let { it1 -> ShowError(it1) }
+                                /* }*/
+
                             }
 
-                        }
+                            is Resource.Loading -> {
+                                binding.btnAddStd.text = ""
+                                binding.progressBarDeleteLoading.visibility = View.VISIBLE
 
-                        is Resource.Loading -> {}
-                        is Resource.Success -> {
-                            val dialog = SendJoinRequestDialog()
-                            dialog.show(parentFragmentManager, SendJoinRequestDialog.TAG)
-                            viewModel.setNull()
+                            }
+
+                            is Resource.Success -> {
+                                it.data?.let { it1 ->
+                                    ConnectToYourKidDialog(
+                                        it1.classId,
+                                        it.data.name,
+
+                                        it.data.teacherName,
+                                        it.data.teacherId,
+                                                it.data.img,
+                                    )
+                                }?.show(parentFragmentManager, ConnectToYourKidDialog.TAG)
+                                viewModel.setNull()
+                                dismiss()
+                            }
                         }
                     }
                 }
@@ -111,6 +136,8 @@ class JoinClassParentDialog : DialogFragment() {
         val btnOkay = dialogView.findViewById<View>(com.example.classwave.R.id.btn_okay) as TextView
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         btnOkay.setOnClickListener {
+            binding.progressBarDeleteLoading.visibility=View.INVISIBLE
+            binding.btnAddStd.text = "Submit"
             dialog.dismiss()
         }
     }

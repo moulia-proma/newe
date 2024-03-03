@@ -17,12 +17,11 @@ import com.example.classwave.domain.model.Resource
 import com.example.classwave.presentation.dialog.AddNewStdDialog
 import com.example.classwave.presentation.dialog.ChildDetailsDialog
 import com.example.classwave.presentation.dialog.EnterChildCodeDialog
-import com.example.classwave.presentation.dialog.JoinClassParentDialog
+import com.example.classwave.presentation.dialog.JoinChildsClassDialog
 import com.example.classwave.presentation.dialog.SearchTeacherDialog
 import com.example.classwave.presentation.page.main.MainActivity
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -32,6 +31,7 @@ class ParentActivity : AppCompatActivity() {
     private val clsId = ""
     private val notAssignedAdapter = ChildNotAssignedAdapter()
     override fun onCreate(savedInstanceState: Bundle?) {
+        viewModel.findUserType(Firebase.auth.uid.toString())
         super.onCreate(savedInstanceState)
         binding = ActivityParentBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -57,6 +57,7 @@ class ParentActivity : AppCompatActivity() {
             }
             true
         }
+        Log.d("_hm", "onCreate: hahaha5")
         viewModel.fatchChildList(Firebase.auth.uid.toString())
 
         notAssignedAdapter.setListener(object : ChildNotAssignedAdapter.Listener {
@@ -79,7 +80,9 @@ class ParentActivity : AppCompatActivity() {
                     child.parent,
                     child.uid,
                     child.email,
-                    child.type
+                    child.type,
+
+
                 )
                 dialog.show(supportFragmentManager,SearchTeacherDialog.TAG )
 
@@ -96,32 +99,40 @@ class ParentActivity : AppCompatActivity() {
 
     fun registerListener(){
         binding.cardViewAddChild.setOnClickListener {
+            viewModel.setUtypeNull()
             val dialog = EnterChildCodeDialog("")
             dialog.setListener(object : EnterChildCodeDialog.Listener {
                 override fun onDialogClosed(dialog: EnterChildCodeDialog) {
                     Log.d("_xyz", "onDialogClosed: called")
+                   viewModel.setNull()
                     dialog.dismiss()
+                    Log.d("_hm", "onCreate: hahaha4")
                     viewModel.fatchChildList(Firebase.auth.uid.toString())
                 }
             })
+            viewModel.setNull()
             dialog.show(supportFragmentManager, EnterChildCodeDialog.TAG)
         }
         binding.cardViewJoinClass.setOnClickListener {
-            val dialog = JoinClassParentDialog()
+            viewModel.setNull()
+
+            val dialog = JoinChildsClassDialog()
             dialog.show(supportFragmentManager, AddNewStdDialog.TAG)
         }
-
     }
 
     fun initialFlowCollectors() {
+        Log.d("_hm", "onCreate: hahaha3")
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.childList.collectLatest {
+                    Log.d("_hm", "onCreate: hahaha2")
                     it?.let {
                         when (it) {
                             is Resource.Error -> {}
                             is Resource.Loading -> {}
                             is Resource.Success -> {
+                                //Log.d("_hm", "onCreate: hahaha1 ${it.data}")
                                 Log.d("_xyz", "initialFlowCollectors: iii ${it.data}")
                                  if(it.data != null){
                                      Log.d("_xyz", "initialFlowCollectors: ${it.data.size}")
@@ -130,6 +141,8 @@ class ParentActivity : AppCompatActivity() {
                                      Log.d("_xyz", "initialFlowCollectors: i m empty ")
                                      notAssignedAdapter.setChild(arrayListOf())
                                  }
+                               // viewModel.setNull()
+
                             }
                         }
                     }

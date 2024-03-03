@@ -6,21 +6,24 @@
     <string name="label_class_report">Class Report</string>
     <string name="nav_open">open</string>
     <string name="nav_close">close</string>
-    <string name="hint_select_grade">Select Grade</string>
+    <string name="hint_select_grade">Select Class</string>
     <string name="click_to_view_your_class_report">Click to view your class report</string>
     <string name="add_child">Add Child</string>
 
     <string-array name="label_grades">
-        <item>1st Grade</item>
-        <item>2nd Grade</item>
-        <item>3rd Grade</item>
-        <item>4th Grade</item>
-        <item>5th Grade</item>
-        <item>1st Grade</item>
-        <item>2nd Grade</item>
-        <item>3rd Grade</item>
-        <item>4th Grade</item>
-        <item>5th Grade</item>
+        <item>Class 1</item>
+        <item>Class 2</item>
+        <item>Class3</item>
+        <item>Class 4</item>
+        <item>Class 5</item>
+        <item>Class 6</item>
+        <item>Class 7</item>
+        <item>Class 8</item>
+        <item>Class 9</item>
+        <item>Class 10</item>
+        <item>Class 11</item>
+        <item>Class 12</item>
+        <item>UnderGraduate</item>
     </string-array>
 
 </resources>

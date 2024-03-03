@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/primaryColor">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="Details Notification"
+        app:titleTextColor="@color/white"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:titleTextAppearance="@style/ToolbarTheme"
+        />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_profile_pic"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:cardCornerRadius="80dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <ImageView
+            android:id="@+id/img_view_profile_pic"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_add" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <TextView
+        android:id="@+id/text_view_parent_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card_profile_pic"
+        android:text="Moulia das Proma"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/white"
+        android:fontFamily="@font/jost_medium"
+        android:textSize="20sp"
+        />
+    <TextView
+        android:id="@+id/text_view_wants_to_join_with"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_view_parent_name"
+        android:text="Wantes to Connect with "
+        android:layout_marginTop="8dp"
+        android:textColor="@color/white"
+        android:fontFamily="@font/jost_regular"
+        android:textSize="15sp"
+        />
+    <TextView
+        android:id="@+id/text_view_student_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_view_wants_to_join_with"
+        android:text="Tomalika Das"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/white"
+        android:fontFamily="@font/jost_medium"
+        android:textSize="20sp"
+        android:paddingBottom="16dp"
+        />
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_accept"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_view_student_name"
+        android:backgroundTint="@color/green_500"
+        android:text="Admit"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toStartOf="@id/btn_reject"
+        />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_reject"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/btn_accept"
+        app:layout_constraintTop_toBottomOf="@id/text_view_student_name"
+        android:backgroundTint="@color/red_500"
+        android:text="Reject"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        android:textColor="@color/white"
+        />
+    <TextView
+        android:id="@+id/text_view_instruction"
+        android:paddingHorizontal="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="If you accept this request , the parent will able to see her student report card, if you want to deny this permission please press the reject button."
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_reject"
+        android:paddingVertical="16dp"
+        android:textColor="@color/grey_500"
+        android:fontFamily="@font/jost_regular"
+        android:textAlignment="center"
+        />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_not_responded"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="btn_accept,btn_reject,text_view_instruction,text_view_student_name,text_view_parent_name,text_view_wants_to_join_with,card_profile_pic"
+        />
+    <ImageView
+        android:id="@+id/image_view_already_reviewed_notification"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:src="@drawable/already_reviewed_notification"
+        app:layout_constraintBottom_toTopOf="@id/text_view_reviewed_notification" />
+    <TextView
+        android:id="@+id/text_view_reviewed_notification"
+        android:paddingHorizontal="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="You Already reviewed this request!"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/image_view_already_reviewed_notification"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:paddingVertical="16dp"
+        android:textColor="@color/grey_500"
+        android:fontFamily="@font/jost_regular"
+        android:textAlignment="center"
+        />
+      <androidx.constraintlayout.widget.Group
+          android:id="@+id/group_notification_reviewed"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          app:constraint_referenced_ids="image_view_already_reviewed_notification,text_view_reviewed_notification"
+           android:visibility="gone"
+          />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

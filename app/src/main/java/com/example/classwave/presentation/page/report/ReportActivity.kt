@@ -97,12 +97,7 @@ class Repo0rtActivity : AppCompatActivity() {
                                             it
                                         )
                                     }"
-                                binding.textNegativeMark.text =
-                                    "Negative ${viewModel.getTotalAchivedPosMarks(it)}/${
-                                        viewModel.getTotalNegMarks(
-                                            it
-                                        )
-                                    }"
+
                                 var progress =
                                     viewModel.getProgress(
                                         viewModel.getTotalPosMarks(it),

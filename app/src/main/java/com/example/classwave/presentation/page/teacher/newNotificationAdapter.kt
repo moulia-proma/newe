@@ -1,18 +1,22 @@
 package com.example.classwave.presentation.page.teacher
 
 import android.annotation.SuppressLint
+import android.content.ContentValues
+import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.classwave.R
 import com.example.classwave.databinding.ItemNotificationBinding
+import com.example.classwave.presentation.dialog.DetailsNotificationDialog
 import com.example.classwave.presentation.page.parent.Request
 
 class NewNotificationAdapter : RecyclerView.Adapter<NewNotificationAdapter.ViewHolder>() {
     private var notificationList = listOf<Request>()
-
+lateinit var context :Context
     /*  private var mListener: NewNotificationAdapter.Listener? = null*/
     lateinit var classId: String
 
@@ -47,8 +51,11 @@ class NewNotificationAdapter : RecyclerView.Adapter<NewNotificationAdapter.ViewH
         holder.setStudent(notificationList[position])
     }
 
-    fun setNotification(notification: ArrayList<Request>) {
+    fun setNotification(notification: ArrayList<Request>, context: Context?) {
         notificationList = notification
+        if (context != null) {
+            this.context= context
+        }
         notifyDataSetChanged()
     }
 
@@ -68,18 +75,23 @@ class NewNotificationAdapter : RecyclerView.Adapter<NewNotificationAdapter.ViewH
                     "${student.parentName}(Parent) Wants to join your Class"
 
                 binding.constraintLayout.background = ContextCompat.getDrawable(
-                    binding.constraintLayout.context, R.color.blue_100
+                    binding.constraintLayout.context, R.color.secendryColor
 
                 )
 
                 // binding.constraintLayout.setBackgroundColor(R.color.blue_100)
             } else {
                 binding.txtNotificationMsg.text =
-                    "${student.parentId}(Parent) Wants to join your Class"
+                    "${student.parentName}(Parent) Wants to join your Class"
 //               binding.constraintLayout.setBackgroundColor(R.color.white)
                 binding.constraintLayout.background = ContextCompat.getDrawable(
-                    binding.constraintLayout.context, R.color.white
+                    binding.constraintLayout.context, R.color.oldNotificationColor
                 )
+            }
+            binding.constraintLayout.setOnClickListener {
+              val dialog = DetailsNotificationDialog(student.parentName,student.parentId,student.parentPhoto,student.clsId,student.clsName,student.clsImage,student.stdId,student.stdName,student.stdImage,student.state)
+                val ft = ( context as AppCompatActivity).supportFragmentManager.beginTransaction()
+                dialog.show(ft, ContentValues.TAG)
             }
 
 

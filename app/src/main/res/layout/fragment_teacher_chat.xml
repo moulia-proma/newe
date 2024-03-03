@@ -34,6 +34,35 @@
         tools:itemCount="3"
         tools:listitem="@layout/item_notification" />
 
+    <ImageView
+        android:visibility="gone"
+        android:id="@+id/no_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/text_view_no_data"
+        android:src="@drawable/no_notification"
+        app:layout_constraintHorizontal_chainStyle="packed"
+
+        />
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/text_view_no_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nothing To show!! If you get any request from parent it will appear here!"
+        android:fontFamily="@font/jost_regular"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/no_data"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:paddingHorizontal="8dp"
+        android:textAlignment="center"
+        app:layout_constraintHorizontal_chainStyle="packed" />
+
+
     <!--    <androidx.recyclerview.widget.RecyclerView-->
     <!--        android:id="@+id/recycler_view_old_notifications"-->
     <!--        android:layout_width="match_parent"-->

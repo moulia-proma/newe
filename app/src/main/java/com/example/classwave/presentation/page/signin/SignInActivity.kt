@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.Window
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.activity.viewModels
@@ -37,7 +36,7 @@ class SignInActivity : AppCompatActivity() {
     private val viewModel: SignInViewModel by viewModels()
     private lateinit var binding: ActivitySignInBinding
     private var userType: String = ""
-    lateinit var btnSend : MaterialButton
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -47,7 +46,7 @@ class SignInActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySignInBinding.inflate(layoutInflater)
         setContentView(binding.root)
-     // binding.blurView.setupWith(binding.root,RenderScriptBlur(this)).setBlurRadius(2F)
+        // binding.blurView.setupWith(binding.root,RenderScriptBlur(this)).setBlurRadius(2F)
         binding.btnSignIn.text = "SignIn"
 
         registerListener()
@@ -64,10 +63,11 @@ class SignInActivity : AppCompatActivity() {
             dialog.setContentView(dialogView)
             val btnCancel = dialogView.findViewById<ImageView>(R.id.image_view_cancel)
 
-            btnSend = dialogView.findViewById<View>(R.id.btn_send) as MaterialButton
+            val btnSend = dialogView.findViewById<View>(R.id.btn_send) as MaterialButton
 
             btnSend.setOnClickListener {
-                val email = (dialogView.findViewById<EditText>(R.id.edit_text_email) ).text.toString()
+                val email =
+                    (dialogView.findViewById<EditText>(R.id.edit_text_email)).text.toString()
                 viewModel.resetPassword(email)
             }
             dialog.show()
@@ -117,24 +117,34 @@ class SignInActivity : AppCompatActivity() {
             }
         }
 
-        lifecycleScope.launch (Dispatchers.IO){
-            repeatOnLifecycle(Lifecycle.State.STARTED){
+        lifecycleScope.launch(Dispatchers.IO) {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.resetPassword.collectLatest {
-                    it?.let{
+                    it?.let {
                         Log.d("_xyz", "initializeFlowCollectors: ${it.data}  x ${it.message}  ")
-                        when(it){
-                            
+                        when (it) {
+
                             is Resource.Error -> {
                                 it.message?.let { it1 ->
+                                    val dialogView = layoutInflater.inflate(
+                                        R.layout.custom_dialog_forget_password,
+                                        null
+                                    )
+                                    val btnSend =
+                                        dialogView.findViewById<View>(R.id.btn_send) as MaterialButton
                                     Log.d("_e", "initializeFlowCollectors: i m error")
-                                    SnackbarUtil.show(this@SignInActivity,
-                                        it1,btnSend)
+                                    SnackbarUtil.show(
+                                        this@SignInActivity,
+                                        it1, btnSend
+                                    )
                                 }
                             }
+
                             is Resource.Loading -> {
-                                       
+
 
                             }
+
                             is Resource.Success -> {
 
                             }

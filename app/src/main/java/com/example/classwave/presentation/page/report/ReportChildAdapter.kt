@@ -35,6 +35,7 @@ class ReportChildAdapter : RecyclerView.Adapter<ReportChildAdapter.ViewHolder>()
     inner class ViewHolder(private val binding: ItemReportDetailBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bindData(report: Report) {
+         //   if(report.)
             binding.textMarksDetails.text = "${report.stdName} ${report.marks} marks achieved on ${report.skillName}"
             binding.textDate.text = report.date
             binding.imageViewMarks.setImageResource(report.stdProfile.toInt())

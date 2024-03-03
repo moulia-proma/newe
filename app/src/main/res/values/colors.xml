@@ -7,6 +7,7 @@
     <color name="primaryColor">#1A192D</color>
     <color name="btnColor">#9D70FF</color>
     <color name = "secendryColor">#292749</color>
+    <color name = "oldNotificationColor">#292661</color>
     <color name ="colorPrimary">#FF0421E4</color>
     <color name="iconColor">#AAB0D8</color>
 

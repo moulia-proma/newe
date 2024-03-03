@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/primaryColor"
 
     >
 
@@ -10,7 +11,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/cyan_500"
+        android:background="@color/primaryColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -32,6 +33,7 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar">
 
         <androidx.cardview.widget.CardView
+            app:cardBackgroundColor="@color/secendryColor"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:cardCornerRadius="16dp" />
@@ -53,9 +55,11 @@
         app:strokeWidth="1dp" />
 
     <TextView
+        android:id="@+id/text_view_teacher_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:textColor="@color/white"
         android:text="Mr.Md Anisur Rahman Parvez"
         app:layout_constraintBottom_toBottomOf="@id/card_view_tcr_bg"
         app:layout_constraintStart_toEndOf="@id/shapable_image_view_tcr_photo"
@@ -67,8 +71,10 @@
         android:layout_height="50dp"
         android:layout_margin="16dp"
         android:background="@drawable/edit_text_style"
-        android:hint="Enter your child full name"
+        android:hint="Enter your child's full id "
         android:padding="8dp"
+        android:textColorHint="@color/grey_700"
+        android:textColor="@color/white"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/card_view_tcr_bg" />
@@ -76,15 +82,16 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_requst_connection"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:backgroundTint="@color/blue_900"
+        android:backgroundTint="@color/btnColor"
         android:text="Request to connect"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/edit_text_child_name" />
 
     <TextView
+        android:id="@+id/text_view_instruction"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
@@ -95,6 +102,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btn_requst_connection" />
+    <ProgressBar
+        android:id="@+id/progress_bar_btn_loading"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:indeterminateTint="@color/white"
+        android:progressTint="@color/white"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/btn_requst_connection"
+        app:layout_constraintEnd_toEndOf="@id/btn_requst_connection"
+        app:layout_constraintStart_toStartOf="@id/btn_requst_connection"
+        app:layout_constraintTop_toTopOf="@id/btn_requst_connection" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.classwave.R
 import com.example.classwave.data.datasource.remote.model.UserItemResponse
 import com.example.classwave.domain.model.Resource
+import com.example.classwave.presentation.page.parent.Child
 import com.example.classwave.presentation.page.teacher.Class
 import com.example.classwave.presentation.page.teacher.Marks
 import com.example.classwave.presentation.page.teacher.Student
@@ -29,7 +30,7 @@ class StudentViewModel : ViewModel() {
     private var dbStdRef = FirebaseDatabase.getInstance().getReference("Students")
     private var dbMarksRef = FirebaseDatabase.getInstance().getReference("Marks")
     private var dbUserRef = FirebaseDatabase.getInstance().getReference("Users")
-
+    private var dbChildRef = FirebaseDatabase.getInstance().getReference("children")
     private var _createStudent = MutableStateFlow<Resource<Student>?>(null)
     var createStudent = _createStudent.asStateFlow()
 
@@ -141,6 +142,7 @@ class StudentViewModel : ViewModel() {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     val classList = arrayListOf<String>()
                     dataSnapshot.children.forEach { std ->
+                        Log.d("_d", "onDataChange: ${std.child("studentId").value.toString()} x $stdId x ${std.child("classId").value.toString()}")
                         if (std.child("studentId").value.toString() == stdId) {
                             classList.add(
                                 std.child("classId").value.toString()
@@ -258,6 +260,40 @@ class StudentViewModel : ViewModel() {
             })
         }
         viewModelScope.launch(Dispatchers.IO) {
+            dbChildRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    snapshot.children.forEach { user ->
+                        if (user.child("uid").value.toString() == Firebase.auth.uid.toString()) {
+                            val k = user.key
+                            val updatedUser = UserItemResponse(
+                                user.child("email").value.toString(),
+                                name,
+                                user.child("type").value.toString(),
+                                user.child("uid").value.toString(),
+                                user.child("uphoto").value.toString(),
+                                user.child("parent").value.toString(),
+                            )
+                            FirebaseDatabase.getInstance().getReference("Users")
+                                .child(k.toString()).removeValue()
+                            dbUserRef.push().setValue(updatedUser).addOnCompleteListener {
+                                Log.d("_msg", "onDataChange: name updated")
+                                findUserType(Firebase.auth.currentUser?.uid.toString())
+                            }.addOnFailureListener {
+                                Log.d("_msg", "onDataChange: something is wrong")
+                            }
+
+
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+
+                }
+
+            })
+        }
+        viewModelScope.launch(Dispatchers.IO) {
             dbStdRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     snapshot.children.forEach { std ->
@@ -290,30 +326,24 @@ class StudentViewModel : ViewModel() {
             })
         }
         viewModelScope.launch(Dispatchers.IO) {
-            dbMarksRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            dbChildRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    snapshot.children.forEach { marks   ->
-                        if (marks.child("stdId").value.toString() == Firebase.auth.uid.toString()) {
-                            val k = marks.key
-                            val updatedMark = Marks(
-                                marks.child("classId").value.toString(),
-                                marks.child("skillId").value.toString(),
-                                marks.child("stdId").value.toString(),
-                                marks.child("marks").value.toString(),
-                                marks.child("date").value.toString(),
-                                marks.child("skillIdStdId").value.toString(),
-                                marks.child("skillName").value.toString(),
-                                marks.child("skillPhoto").value.toString(),
-                                marks.child("highScore").value.toString(),
+                    snapshot.children.forEach { child ->
+                        if (child.child("stdId").value.toString() == Firebase.auth.uid.toString()) {
+                            val k = child.key
+                            val updatedMark = Child(
+                                child.child("parentId").value.toString(),
+                                child.child("parentPhoto").value.toString(),
+                                child.child("parentName").value.toString(),
+                                child.child("stdId").value.toString(),
+                                child.child("stdImage").value.toString(),
                                 name,
-                                marks.child("stdProfile").value.toString(),
-
-
+                                child.child("status").value.toString()
 
                             )
-                            FirebaseDatabase.getInstance().getReference("Marks")
+                            FirebaseDatabase.getInstance().getReference("children")
                                 .child(k.toString()).removeValue()
-                            dbMarksRef.push().setValue(updatedMark).addOnCompleteListener {
+                            dbChildRef.push().setValue(updatedMark).addOnCompleteListener {
                                 Log.d("_msg", "onDataChange: name updated")
                                 findUserType(Firebase.auth.currentUser?.uid.toString())
                             }.addOnFailureListener {

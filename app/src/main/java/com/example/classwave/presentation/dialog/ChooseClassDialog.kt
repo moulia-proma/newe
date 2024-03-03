@@ -23,11 +23,11 @@ import kotlinx.coroutines.launch
 class ChooseClassDialog(
     val tcrId: String,
     val stdId: String,
-    val parentId: String,
+   /* val parentId: String,*/
     val uPhoto: String,
     val name: String,
-    val parentPhoto: String,
-    val parentName: String,
+ /*   val parentPhoto: String,
+    val parentName: String,*/
     val stdImage: String,
     val stdName: String
 ) :
@@ -38,6 +38,8 @@ class ChooseClassDialog(
     private val binding get() = _binding!!
     private val clsListAdapter = ClassListAdapter()
     private var selectedClass = arrayListOf<String>()
+    private var selectedClassName = arrayListOf<String>()
+    private var selectedClassImage = arrayListOf<String>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NO_FRAME, R.style.FullScreenDialog)
@@ -57,19 +59,26 @@ class ChooseClassDialog(
         binding.recyclerViewClsList.adapter = clsListAdapter
         viewModel.fetchClassList(tcrId)
 
+        binding.imageViewProfile.setImageResource(uPhoto.toInt())
+        binding.textViewTcrName.text = name
+
         clsListAdapter.setListener(object : ClassListAdapter.Listener {
-            override fun onRequestClicked(clsId: String, type: String) {
+            override fun onRequestClicked(clsId: String, type: String, Clsname: String, Clsimg: String) {
                 if (type == "remove") {
                     selectedClass.remove(clsId)
+                    selectedClassName.remove(Clsname)
+                    selectedClassImage.remove(Clsimg)
                 } else {
                     selectedClass.add(clsId)
+                    selectedClassName.add(Clsname)
+                    selectedClassImage.add(Clsimg)
                 }
             }
 
         })
 
         binding.floatingActionButtonRequestTeacher.setOnClickListener {
-            viewModel.requestTeacher(tcrId, stdId, parentId, selectedClass,uPhoto,stdImage,parentPhoto,name,parentName,stdName)
+            viewModel.requestTeacher(tcrId, stdId, selectedClass,uPhoto,stdImage,name,stdName,selectedClassName,selectedClassImage)
 
 
 

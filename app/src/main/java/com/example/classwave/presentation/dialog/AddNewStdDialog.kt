@@ -51,7 +51,7 @@ class AddNewStdDialog(val clsId: String) : DialogFragment() {
     private fun registerListener() {
         binding.btnAddStd.setOnClickListener {
             val studentName = binding.editTextAddStdName.text.toString()
-            viewModel.createStudent(clsId, studentName)
+            viewModel.createStudent(clsId, studentName,"","")
 
 
         }

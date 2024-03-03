@@ -66,11 +66,12 @@ class NeedsWorkFragment(val classId: String, val stdId: String,val  stdName: Str
                 name: String,
                 img: String
             ) {
+                val k = "-$highestScore"
                 val dialog = ProvideMarksDialog(
                     classId,
                     stdId,
                     skillId,
-                    highestScore,
+                    k,
                     "neg",
                     name,
                     img,

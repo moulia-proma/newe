@@ -119,7 +119,7 @@ class TeacherActivity : AppCompatActivity() {
                                 val notifications = it.data
                                 val count = notifications?.let { requests ->
                                     requests.count { request ->
-                                        request.state != "viewed"
+                                        request.state == "pending"
                                     }
                                 }
                                 val badge = binding.bottomNavigationView.getOrCreateBadge(R.id.chat)

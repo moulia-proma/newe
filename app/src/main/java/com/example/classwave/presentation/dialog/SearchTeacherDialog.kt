@@ -23,10 +23,10 @@ import kotlinx.coroutines.launch
 
 class SearchTeacherDialog(
     val stdId: String,
-    val parentId: String,
-    val parentName: String,
+   /* val parentId: String,
+    val parentName: String,*/
     val stdName: String,
-    val parentPhoto: String,
+   // val parentPhoto: String,
     val stdImage: String
 ) : DialogFragment() {
 
@@ -54,8 +54,9 @@ class SearchTeacherDialog(
         binding.recyclerViewSearchResult.adapter = searchAdapter
         searchAdapter.setListener(object : SearchResultAdapter.Listener {
             override fun onTeacherClicked(tcr: UserItemResponse) {
-                val dialog = ChooseClassDialog(tcr.uid, stdId, parentId,tcr.uPhoto,tcr.name,parentPhoto,parentName,stdImage,stdName)
+                val dialog = ChooseClassDialog(tcr.uid, stdId,tcr.uPhoto,tcr.name,stdImage,stdName)
                 dialog.show(parentFragmentManager, ChooseClassDialog.TAG)
+                dismiss()
             }
 
         })
@@ -89,6 +90,7 @@ class SearchTeacherDialog(
                             is Resource.Success -> {
                                 //   Log.d("_xyz", "initialFlowCollectors: ${it.data}")
                                 it.data?.let { it1 -> searchAdapter.setChild(it1) }
+                               // dismiss()
 
                             }
                         }

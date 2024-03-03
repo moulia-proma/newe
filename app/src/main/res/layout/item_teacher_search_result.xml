@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="4dp"
+    android:background="@color/secendryColor"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <ImageView
         android:id="@+id/image_view_profile"
@@ -16,6 +17,7 @@
 
         />
     <TextView
+        android:textColor="@color/white"
         android:layout_marginStart="8dp"
         android:id="@+id/text_view_name"
         android:layout_width="wrap_content"
@@ -25,6 +27,13 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/barrier_line"
         android:textSize="15sp"
+        />
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/barrier_line"
         />
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier_line"

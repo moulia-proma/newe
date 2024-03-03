@@ -4,7 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/primaryColor"
+    >
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -18,10 +20,11 @@
             android:paddingBottom="48dp">
 
             <androidx.cardview.widget.CardView
+
                 android:id="@+id/card_view_profile_bg"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:backgroundTint="@color/blue_400"
+                android:backgroundTint="@color/secendryColor"
                 app:cardElevation="0dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -39,6 +42,7 @@
                 app:layout_constraintTop_toBottomOf="@id/card_view_profile_bg">
 
                 <ImageView
+                    android:id="@+id/image_view_profile"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/st_profile_boy" />
@@ -51,6 +55,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="16dp"
                 android:text="Moulia Das Proma' Classes"
+                android:textColor="@color/white"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -75,13 +80,14 @@
     </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+
         android:id="@+id/floating_action_button_request_teacher"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginBottom="16dp"
-        android:backgroundTint="@color/blue_700"
-        android:text="Press to Assign in a class"
+        android:backgroundTint="@color/btnColor"
+        android:text="Assign your child in best class by finding best teacher"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

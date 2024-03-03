@@ -43,7 +43,7 @@ class TeacherChatFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        viewmodel.updateNotificationState()
+        viewmodel.updateNotificationState("viewed")
     }
 
     fun initializeFlowCollectors() {
@@ -53,6 +53,8 @@ class TeacherChatFragment : Fragment() {
                     if (cls != null) {
                         binding.toolbar.title = cls.name
                     } else {
+                        binding.recyclerViewNewNotifications.visibility = View.INVISIBLE
+                        binding.noData.visibility = View.VISIBLE
                         binding.toolbar.title = "No Class"
                     }
                 }
@@ -67,7 +69,18 @@ class TeacherChatFragment : Fragment() {
                         is Resource.Loading -> {}
                         is Resource.Success -> {
                             it.data?.let { it1 ->
-                                newNotificationAdapter.setNotification(it1)
+                                if(it.data.size !=0){
+                                    binding.recyclerViewNewNotifications.visibility = View.VISIBLE
+                                    binding.noData.visibility = View.INVISIBLE
+                                    binding.textViewNoData.visibility - View.INVISIBLE
+                                    newNotificationAdapter.setNotification(it1,context)
+                                }else{
+                                    binding.recyclerViewNewNotifications.visibility = View.INVISIBLE
+                                   binding.noData.visibility = View.VISIBLE
+                                   binding.textViewNoData.visibility =  View.VISIBLE
+
+                                }
+
                             }
                         }
                     }

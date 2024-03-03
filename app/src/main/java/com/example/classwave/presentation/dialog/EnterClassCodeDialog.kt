@@ -1,5 +1,6 @@
 package com.example.classwave.presentation.dialog
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -58,13 +59,15 @@ class EnterClassCodeDialog(
         registerListener()
     }
 
+    @SuppressLint("SuspiciousIndentation")
     fun registerListener() {
         binding.toolbar.setNavigationOnClickListener {
             viewModel.setNull()
             dismiss()
         }
         binding.btnAddStd.setOnClickListener {
-        clsId = binding.editTextAddStdName.text.toString()
+            clsId = binding.editTextAddStdName.text.toString()
+
             if (uName != null) {
                 viewModel.isClassExists(clsId, uName)
             }
@@ -106,6 +109,8 @@ class EnterClassCodeDialog(
                                         requireContext(),
                                         it1, binding.btnAddStd
                                     )
+                                    //viewModel.setNull()
+
 
                                 }
                                 binding.btnAddStd.text = "join"
