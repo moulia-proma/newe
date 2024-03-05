@@ -57,7 +57,6 @@
             android:id="@+id/auto_complete_text_view_dropdown_items"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hint="@string/hint_select_grade"
             android:inputType="none" />
 
     </com.google.android.material.textfield.TextInputLayout>

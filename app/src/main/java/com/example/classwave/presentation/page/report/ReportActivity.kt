@@ -87,10 +87,10 @@ class Repo0rtActivity : AppCompatActivity() {
                             data.data?.let {
                                 reportParentAdapter.setReports(it)
                                 Log.d("_check", "initializeFlowCollectors: ${it}")
-                                viewModel.getTotalPosMarks(it)
+                              /*  viewModel.getTotalPosMarks(it)
                                 viewModel.getTotalNegMarks(it)
                                 viewModel.getTotalAchivedNegMarks(it)
-                                viewModel.getTotalAchivedPosMarks(it)
+                                viewModel.getTotalAchivedPosMarks(it)*/
                                 binding.textPositiveMark.text =
                                     "Positive ${viewModel.getTotalAchivedPosMarks(it)}/${
                                         viewModel.getTotalPosMarks(

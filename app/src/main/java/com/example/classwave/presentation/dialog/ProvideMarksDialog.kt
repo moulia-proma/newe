@@ -10,14 +10,9 @@ import android.widget.ArrayAdapter
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.example.classwave.R
 import com.example.classwave.databinding.DialogProvideMarksBinding
 import com.example.classwave.presentation.page.teacher.TeacherViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class ProvideMarksDialog(
     private val clsId: String,
@@ -38,30 +33,44 @@ class ProvideMarksDialog(
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NO_FRAME, R.style.FullScreenDialog)
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding =  DialogProvideMarksBinding.inflate(inflater, container, false)
+        _binding = DialogProvideMarksBinding.inflate(inflater, container, false)
         return binding.root
     }
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         super.onViewCreated(view, savedInstanceState)
-        val grade =  viewModel.getMarksDropdownList(highestScore,type)
+        val grade = viewModel.getMarksDropdownList(highestScore, type)
 
 
         val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, grade)
         binding.autoCompleteTextViewDropdownItems.setAdapter(arrayAdapter)
+        binding.autoCompleteTextViewDropdownItems.hint = "Select Score"
         registerListener()
     }
+
     @SuppressLint("SuspiciousIndentation")
     @RequiresApi(Build.VERSION_CODES.O)
     private fun registerListener() {
         binding.btnAddMarks.setOnClickListener {
-          val mark =  binding.autoCompleteTextViewDropdownItems.text.toString()
-            viewModel.addMarks(stdId,skillId,mark,name,img,highestScore,clsId,stdName,stdProfile)
+            val mark = binding.autoCompleteTextViewDropdownItems.text.toString()
+            viewModel.addMarks(
+                stdId,
+                skillId,
+                mark,
+                name,
+                img,
+                highestScore,
+                clsId,
+                stdName,
+                stdProfile
+            )
 
             dismiss()
 
@@ -73,15 +82,6 @@ class ProvideMarksDialog(
 
 
     }
-    private fun initialFlowCollectors(){
-        lifecycleScope.launch(Dispatchers.IO) {
-            repeatOnLifecycle(Lifecycle.State.CREATED){
-
-            }
-
-        }
-    }
-
 
     companion object {
         const val TAG = "ProvideMarksdialog"

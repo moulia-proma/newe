@@ -61,8 +61,11 @@ class SkillReportActivity : AppCompatActivity() {
                                     binding.groupPickerEmpty.visibility = View.GONE
                                     binding.groupPickerWithData.visibility = View.VISIBLE
 
+
+
                                     it.data?.let { it1 -> reportChildAdapter.setReports(it1) }
                                     binding.textName.text =
+
                                         "Max: " + (it.data?.get(it.data.size - 1)?.stdName
                                             ?: "") + " " + (it.data?.get(it.data.size - 1)?.marks
                                             ?: "") + "/" + (it.data?.get(it.data.size - 1)?.highestScore

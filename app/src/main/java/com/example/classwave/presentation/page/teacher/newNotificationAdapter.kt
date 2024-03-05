@@ -17,27 +17,12 @@ import com.example.classwave.presentation.page.parent.Request
 class NewNotificationAdapter : RecyclerView.Adapter<NewNotificationAdapter.ViewHolder>() {
     private var notificationList = listOf<Request>()
 lateinit var context :Context
-    /*  private var mListener: NewNotificationAdapter.Listener? = null*/
+
     lateinit var classId: String
-
-    /*    interface Listener {
-            fun onAddNewStudentClicked(clsId: String)
-
-            fun onClassSelected(
-                clsId: String,
-                stdId: String,
-                studentName: String,
-                img: String,
-
-                )
-
-        }*/
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemNotificationBinding.inflate(
             LayoutInflater.from(parent.context), parent, false
         )
-        Log.d("TAG", "initializeFlowCollectors: bind ")
         return ViewHolder(binding)
     }
 
@@ -59,11 +44,6 @@ lateinit var context :Context
         notifyDataSetChanged()
     }
 
-
-    /*  fun setListener(listener: NewNotificationAdapter.Listener) {
-          mListener = listener
-      }*/
-
     inner class ViewHolder(private val binding: ItemNotificationBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
@@ -78,13 +58,10 @@ lateinit var context :Context
                     binding.constraintLayout.context, R.color.secendryColor
 
                 )
-
-                // binding.constraintLayout.setBackgroundColor(R.color.blue_100)
             } else {
                 binding.txtNotificationMsg.text =
                     "${student.parentName}(Parent) Wants to join your Class"
-//               binding.constraintLayout.setBackgroundColor(R.color.white)
-                binding.constraintLayout.background = ContextCompat.getDrawable(
+               binding.constraintLayout.background = ContextCompat.getDrawable(
                     binding.constraintLayout.context, R.color.oldNotificationColor
                 )
             }
@@ -94,27 +71,8 @@ lateinit var context :Context
                 dialog.show(ft, ContentValues.TAG)
             }
 
-
-            /*    binding.imageStdProfile.setImageResource(
-                    student.img.toInt()
-                )
-                binding.txtStdName.text = student.studentName
-                binding.cardAddNewStd.setOnClickListener {
-                    mListener?.onClassSelected(clsId = classId,student.studentId,student.studentName,student.img)
-                }*/
-
         }
-        /*
-                fun setAddStudent() {
-                    binding.imageStdProfile.setImageResource(
-                        R.drawable.ic_add
-                    )
-                    binding.txtStdName.text = "Add Student"
 
-                    binding.cardAddNewStd.setOnClickListener {
-                        mListener?.onAddNewStudentClicked(clsId = classId)
-                    }
-                }*/
     }
 
 

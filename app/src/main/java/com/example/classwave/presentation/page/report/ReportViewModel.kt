@@ -156,12 +156,13 @@ class ReportViewModel @Inject constructor() : ViewModel() {
 
     fun getTotalPosMarks(marks: MutableMap<String, MutableList<Report>>): Int {
         var sum = 0
-        var map = mutableMapOf<String, String>()
         marks.forEach { key ->
             val list = marks[key.key]
-            Log.d("_pro", "getTotalPosMarks: ${list}")
             list?.forEach {
-                sum += it.highestScore.toInt()
+                if(it.marks.toInt()> 0){
+                    sum += it.highestScore.toInt()
+                }
+
             }
         }
 

@@ -15,7 +15,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.example.classwave.R
 import com.example.classwave.databinding.FragmentTeacherHomeBinding
 import com.example.classwave.domain.model.Resource
 import com.example.classwave.presentation.dialog.ClassInviteDialog
@@ -143,25 +142,27 @@ class TeacherHomeFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.selectedClass.collectLatest { cls ->
                     if (cls != null) {
-                       binding.groupPickerNoData.visibility = View.INVISIBLE
+                        binding.groupPickerNoData.visibility = View.INVISIBLE
                         binding.groupPickerOndata.visibility = View.VISIBLE
                         binding.toolbar.title = cls.name
                         viewModel.fetchStudentByClassId(cls.classId)
                         addStudentAdapter.setId(cls.classId)
                         clsId = cls.classId
                         clas = cls
-                        binding.textViewDescription.text = "No Students in your class, to connect students share the class Code with them "
+                        binding.textViewDescription.text =
+                            "No Students in your class, to connect students share the class Code with them "
 
                     } else {
                         viewModel.fetchNotification()
                         viewModel.fetchStudentByClassId("")
-                        binding.groupPickerNoData.visibility  = View.VISIBLE
+                        binding.groupPickerNoData.visibility = View.VISIBLE
                         binding.groupPickerOndata.visibility = View.INVISIBLE
                         binding.textViewDescription.textSize = 20.0F
-                        binding.textViewDescription.text = "No class found! Please create a class first and by sharing the class code invite your student!"
+                        binding.textViewDescription.text =
+                            "No class found! Please create a class first and by sharing the class code invite your student!"
                         binding.toolbar.title = "No Class"
                         binding.groupPickerNoData.visibility = View.VISIBLE
-                        binding.progressBarStudentLoading.visibility= View.INVISIBLE
+                        binding.progressBarStudentLoading.visibility = View.INVISIBLE
                     }
                 }
             }

@@ -60,29 +60,7 @@ class DetailsNotificationDialog(
         binding.textViewStudentName.text = "$stdName  (student)"
         binding.textViewParentName.text = "$parentName"
         binding.imgViewProfilePic.setImageResource(parentPhoto.toInt())
-      //  binding.recyclerViewClsList.adapter = clsListAdapter
-     /*   viewModel.fetchClassList(tcrId)*/
-
-      /*  clsListAdapter.setListener(object : ClassListAdapter.Listener {
-            override fun onRequestClicked(clsId: String, type: String, name: String, img: String) {
-                if (type == "remove") {
-                    selectedClass.remove(clsId)
-                } else {
-                    selectedClass.add(clsId)
-                }
-            }
-
-        })*/
-
-       // binding.floatingActionButtonRequestTeacher.setOnClickListener {
-            /*viewModel.requestTeacher(tcrId, stdId, selectedClass,uPhoto,stdImage,name,stdName)*/
-
-
-
-
-
-           registerListener()
-       // initialFlowCollectors()
+        registerListener()
     }
 
 
@@ -111,37 +89,7 @@ class DetailsNotificationDialog(
                     binding.groupNotificationReviewed.visibility = View.VISIBLE
                     binding.textViewReviewedNotification.text = "You Already $state this Request!!"
                 }
-
-              /*  binding.editTxtClassName.addTextChangedListener {
-                    val teacherName = binding.editTxtClassName.text.toString()
-                    if (teacherName == "") {
-                        searchAdapter.setChild(arrayListOf())
-                    } else {
-                        Log.d("_xyz", "registerListener: $teacherName")
-                        viewModel.searchTeacher(teacherName)
-                    }
-
-                }*/
             }
-    private fun initialFlowCollectors() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.classList.collectLatest {
-                    it?.let {
-                        when (it) {
-                            is Resource.Error -> {}
-                            is Resource.Loading -> {}
-                            is Resource.Success -> {
-                                //it.data?.let { it1 -> clsListAdapter.setChild(it1) }
-
-                            }
-                        }
-
-                    }
-                }
-            }
-        }
-    }
 
     companion object {
         const val TAG = "SkillDialog"

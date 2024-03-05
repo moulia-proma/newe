@@ -75,7 +75,7 @@ class SkillsStudentAdapter : RecyclerView.Adapter<SkillsStudentAdapter.ViewHolde
             binding.imageStdProfile.setImageResource(
                 R.drawable.ic_add
             )
-            binding.txtStdName.text = "Add Skill"
+            binding.txtStdName.text = "Add Task"
 
             binding.imageStdProfile.setOnClickListener {
                 mListener?.onAddNewSkillClicked()
